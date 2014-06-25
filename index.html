@@ -22,14 +22,7 @@
 			<div class="col-md-3">
 				<div class="main-left-div" style="background-color:#9F6;">
 					<h3>Settings</h3>
-					<script>
-						$(document).ready( function() {               
-					   		$("#header").stickUp();		//Header stick
-					   		$("#add-case").modal();
-					   		});
-					    });
-					</script>
-					<button type="button" id="add-case">Add Case</button>
+					<button class="btn btn-primary" data-toggle="modal" data-target="#myModal1">Add Case</button>
 				</div>            	
             </div>
 
@@ -68,92 +61,95 @@
 	</div> <!-- /container -->
 
 
-	<!-- Modal Dialog for Set CPU and Scheme -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<!-- Modal Dialog for Setting CPU and Scheme -->
+	<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title" id="myModalLabel">Set CPU and Scheme</h4>
+	        <h4 class="modal-title" id="myModalLabel">CPU and Scheme Settings</h4>
 	      </div>
 	      <div class="modal-body">
-	      	<div class="input-group">
-	  			<span class="input-group-addon">CPU Quantity</span>
-	  			<input id="CPU-quantity" type="text" class="form-control" placeholder="Quantity">
-			</div>
-			<br/>
-			<div class="input-group">
-	  			<span class="label label-default">CPU Scheduling Scheme</span>
-	  			<input type="text" class="form-control" placeholder="Scheme">
-			</div>
-	      </div>
+	      	<form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="cpu-quantity">Set CPU Quantity</label>
+                        <div class="col-xs-4">
+                            <input type="text" class="form-control" id="cpu-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="scheme">Select Scheme</label>
+                        <div class="col-xs-5">
+                        	<select class="form-control" id="scheme">
+							  <option value="default">----- Select a Scheme -----</option>
+							  <option value="global">Global</option>
+							  <option value="partitioned">Partitioned</option>
+							</select>
+                        </div>
+                    </div>
+            </form>
+          </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	        <button class="btn btn-primary" data-toggle="modal" data-target="#myModa2" data-dismiss="modal" onclick="submitPage1()">Next</button>
+	        <button class="btn btn-primary" data-toggle="modal" data-target="#myModal2" data-dismiss="modal">Next</button>
 	      </div>
-	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+	    </div>
+	  </div>
+	</div>
 
-	<!-- Modal Dialog for Set Algorithm -->
-	<div class="modal fade" id="myModa2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<!-- Modal Dialog for Setting Algorithm -->
+	<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title" id="myModalLabel">Set Algorithm</h4>
+	        <h4 class="modal-title" id="myModalLabel">Algorithm Settings</h4>
 	      </div>
 	      <div class="modal-body">
-	      	<div class="input-group">
-	  			<span class="input-group-addon">CPU Quantity</span>
-	  			<input type="text" class="form-control" placeholder="Quantity">
-			</div>
-			<br/>
-			<div class="input-group">
-	  			<span class="label label-default">CPU Scheduling Scheme</span>
-	  			<input type="text" class="form-control" placeholder="Scheme">
-			</div>
+	    	<form class="form-horizontal" id="algorithm-list"></form>
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModa3" data-dismiss="modal">Next</button>
+	        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal3" data-dismiss="modal">Next</button>
 	      </div>
-	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+	    </div>
+	  </div>
+	</div>
 
-	<!-- Modal Dialog for Set Process -->
-	<div class="modal fade" id="myModa3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<!-- Modal Dialog for Setting Process -->
+	<div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title" id="myModalLabel">Set Process</h4>
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;<tton>
+	        <h4 class="modal-title" id="myModalLabel">Process Settings</h4>
 	      </div>
 	      <div class="modal-body">
-	      	<div class="input-group">
-	  			<span class="input-group-addon">CPU Quantity</span>
-	  			<input type="text" class="form-control" placeholder="Quantity">
-			</div>
-			<br/>
-			<div class="input-group">
-	  			<span class="label label-default">CPU Scheduling Scheme</span>
-	  			<input type="text" class="form-control" placeholder="Scheme">
-			</div>
+	      	<form class="form-horizontal">
+		        <div class="form-group">
+		          <label class="col-sm-4 control-label">Set Process Quantity</label>
+		          <div class="col-xs-3">
+		            <input type="text" class="form-control" id="process-quantity">
+		          </div>
+		        </div>
+		        <br/>
+		        <div id="process-table-div" class="form-group ">
+		        </div>
+		    </form>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	        <button type="button" class="btn btn-primary" data-dismiss="modal">Finish</button>
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel<tton>
+	        <button type="button" class="btn btn-primary" data-dismiss="modal">Finish<tton>
 	      </div>
-	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+	    </div>
+	  </div>
+	</div>
 
 
-
-	<script src="js/framework/bootstrap.min.js"></script>
 	<script src="js/framework/jquery-1.11.1.min.js"></script>
 	<script src="js/framework/jquery.validate.min.js"></script>
+	<script src="js/framework/bootstrap.min.js"></script>
 	<script src="js/framework/header.js"></script>	
+	<script src="js/eventController.js"></script>
 </body>
 </html>

@@ -24,3 +24,16 @@ body {
 	margin:auto;
 	min-height:300px;
 }
+
+#process-table-div{
+	....float: left;
+}
+#process-table td{
+	width: 25%;
+}
+#process-table tr{
+	height: 30px;
+}
+#process-table input{
+	width: 70%;
+}

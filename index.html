@@ -3,22 +3,25 @@
 <head>
 <script src="js/jquery-1.11.1.min.js"></script>
 <script src="js/header.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+<base target="_self">
 </head>
 <body>
 
-<header class="header" role="banner">
+<header id="header" role="banner">
 	<div class="container" >  
        111
     </div>
 </header>
 
 <script>
-              //initiating jQuery
-                $(document).ready( function() {
-                  //enabling stickUp on the '.navbar-wrapper' class
-                  $(".header").stickUp();
-                });
+	$(document).ready( function() {               
+   		$("#header").stickUp();		//Header stick
+   		$("#add-case").modal();
+   		});
+    });
 </script>
-
+<button id="add-case">Add Case</button>
 </body>
 </html>

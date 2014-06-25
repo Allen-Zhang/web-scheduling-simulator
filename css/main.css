@@ -26,7 +26,7 @@ body {
 }
 
 #process-table-div{
-	....float: left;
+	margin-left: 20px;
 }
 #process-table td{
 	width: 25%;
@@ -36,4 +36,5 @@ body {
 }
 #process-table input{
 	width: 70%;
+	height: 25px;
 }

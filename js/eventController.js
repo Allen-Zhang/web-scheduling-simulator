@@ -86,7 +86,7 @@ $("#process-quantity").change(function(){
 		  text.appendTo(td);
 		}
 		else{
-			var input=$("<input></input>")
+			var input=$("<input class='form-control'></input>")
 			input.appendTo(td);
 		}
 	}

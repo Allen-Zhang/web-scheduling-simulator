@@ -8,3 +8,6 @@ function Recorder(processObj, readyQueueArray, processStatusFlag) {
 	this.step = [processObj, readyQueueArray, statusFlag];
 
 }
+
+
+$()

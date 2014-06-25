@@ -1,27 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<script src="js/jquery-1.11.1.min.js"></script>
-<script src="js/header.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-<base target="_self">
+	<meta charset="utf-8" />
+	<title>Scheduling Simulator</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<base target="_self">
 </head>
 <body>
+	<!-- Website Header -->
+	<header id="header" role="banner">
+		<div class="container">  
+	       Real-time CPU Scheduling Simulator for Multiprocessors
+	    </div>
+	</header>
 
-<header id="header" role="banner">
-	<div class="container" >  
-       111
-    </div>
-</header>
+	<div class="container"> 
 
-<script>
-	$(document).ready( function() {               
-   		$("#header").stickUp();		//Header stick
-   		$("#add-case").modal();
-   		});
-    });
-</script>
-<button id="add-case">Add Case</button>
+		<div class="row">
+			<!-- Add Case Pane -->
+			<div class="col-md-3">
+				<div class="main-left-div" style="background-color:#9F6;">
+					<h3>Settings</h3>
+					<script>
+						$(document).ready( function() {               
+					   		$("#header").stickUp();		//Header stick
+					   		$("#add-case").modal();
+					   		});
+					    });
+					</script>
+					<button type="button" id="add-case">Add Case</button>
+				</div>            	
+            </div>
+
+			<!-- Result Display Pane -->
+			<div class="col-md-9">
+				<div class="main-left-div" style="background-color:#FF3;">
+					<h3>Running Results</h3>
+				</div>  
+			</div>
+		</div>
+
+
+		<div class="row">
+			<!-- Control Button Pane -->
+			<div class="col-md-3" >
+				<div class="main-right-div" style="background-color:#FF3;">
+					<h3>Control Button Pane</h3>
+					<button type="button" id="start-simulator">Start Simulator</button>
+
+					<hr>
+
+					<button type="button" id="step-forward">Step Forward</button>
+					<button type="button" id="step-back">Step Back</button>
+					<button type="button" id="stop-simulator">Stop Simulator</button>
+				</div>
+			</div>
+
+			<!-- Statistics Pane -->
+			<div class="col-md-9">
+				<div class="main-right-div" style="background-color:#9F6;">
+					<h3>Statistics</h3>
+				</div>
+			</div>
+		</div>
+
+	</div> <!-- /container -->
+
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/jquery.validate.min.js"></script>
+	<script src="js/header.js"></script>	
 </body>
 </html>

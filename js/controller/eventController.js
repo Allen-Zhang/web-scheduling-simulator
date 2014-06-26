@@ -88,7 +88,7 @@ $("#process-quantity").change(function(){
 		  text.appendTo(td);
 		}
 		else{
-			var input=$("<input class='form-control'></input>")
+			var input=$("<input id='input"+(i*4+j)+"'class='form-control'></input>");
 			input.appendTo(td);
 		}
 	}
@@ -100,28 +100,70 @@ $("#process-quantity").change(function(){
  * Click function for Finish button on modal3
  */ 
 $('#save-case').click(function(){
-
-	var process = new Process();
-	process.startTime = 2;
-
-	process_manager.addProcess(process);
-	alert(process_manager.aa);
-
+	saveCase();
+	// Reset processList and CPUList
+	resetObjList();
+	showCaseSettings();
+});
 
 
-	var scheme = $('#scheme').val();
+function saveCase() {
+	var scheme = $('#scheme').val();  // Get the scheme user selected
+	var cpuQty = $('#cpu-quantity').val();  // Get the quantity of CPU
+	var processQty=$("#process-quantity").val();  // Get the quantity of process
+
 	if (scheme == "global") {
+		var execAlg = $('#globalAlgorithm').val();  // Get the algorithm under global scheme user selected
 
-		$('#globalAlgorithm').val();
-
+		// Create CPU objects one by one and then add them to the CPUList
+		for (var i = 0; i < cpuQty; i++) {
+			var cid = cpu_manager.getNextID();
+			var cpu = new CPU(cid, execAlg);
+			cpu_manager.addCPU(cpu);
+		}
 	}
 	else if (scheme == "partitioned") {
+		// Create CPU objects one by one and then add them to the CPUList
+		for (var i = 0; i < cpuQty; i++) {
+			var cid = cpu_manager.getNextID();
+			var execAlg = $('#cpu' + i + '-alg').val();  // Get the algorithm under partitioned scheme user selected
+			var cpu = new CPU(cid, execAlg);
+			cpu_manager.addCPU(cpu);
+		}
+	}
+
+	// Create Process objects one by one and then add them to the processList
+	for(var i=0;i<processQty;i++){
+		var pid=process_manager.getNextID();
+		var arrivalTime=$("#input"+(i*4+1)).val();
+		var execTime=$("#input"+(i*4+2)).val();
+		var period=$("#input"+(i*4+3)).val();
+		var process=new Process(pid,arrivalTime,execTime,period);
+		process_manager.addProcess(process);
+		// alert(process_manager.processList[i].arrivalTime+"//"+process_manager.processList[i].period);
+	}
+	
+	var rList = cpu_manager.CPUList;
+	var pList = process_manager.processList;
+	// Create a simulator object
+	var simulator = new Simulator(scheme, rList, pList);
+
+	// For Testing CPU
+	// for (var j = 0; j < simulator.resourceList.length; j++) {
+	// 	alert('cid = '+simulator.resourceList[j].cid + ' // '+'name = '+simulator.resourceList[j].name + ' // '+'alg = '+simulator.resourceList[j].executedAlgorithm);
+	// }
+	// For Testing Process
+	// for (var j = 0; j < simulator.processList.length; j++) {
+	// 	alert('pid = '+simulator.processList[j].pid + ' // '+'name = '+simulator.processList[j].name + ' // '+'a time = '+simulator.processList[j].arrivalTime+ ' // '+'period = '+simulator.processList[j].period+ ' // '+'exec time = '+simulator.processList[j].execTime);
+	// }
+}
+
+function resetObjList() {
+	process_manager.resetProcessList();
+	cpu_manager.resetCPUList();
+}
+
+function showCaseSettings() {
 
 
-	var cpu = new CPU(process_manager.getNextID, executedAlgorithm);
-
-	var simulator = new Simulator(scheme, resourceList, processList);
-
-
-
-});
+}

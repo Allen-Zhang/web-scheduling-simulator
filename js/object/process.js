@@ -28,5 +28,9 @@ function ProcessManager() {
 		var index = this.processList.length
 		return index;  // Using index as pid
 	}
+
+	this.resetProcessList = function() {
+		this.processList.length = 0;
+	}
 }
 

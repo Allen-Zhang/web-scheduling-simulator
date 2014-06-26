@@ -16,3 +16,12 @@ function Process(arrivalTime, execTime, period) {
 
 
 }
+
+
+function ProcessManager() {
+    this.processList = [];
+
+    function addProcess(process) {
+        processList[processList.length] = process;
+
+}

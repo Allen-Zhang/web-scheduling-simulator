@@ -22,6 +22,7 @@ $('#show-modal2').click(function(){
 						  +'<option value="default">---- Select a Algorithm ----</option>'
 						  +'<option value="G-EDF">G-EDF</option>'
 						  +'<option value="LLF">LLF</option>'
+						  +'<option value="PF">PF</option>'
 						+'</select>'
 	                +'</div>'
 	            +'</div>';
@@ -35,8 +36,8 @@ $('#show-modal2').click(function(){
 	                    +'<div class="col-xs-5">'
 	                    	+'<select class="form-control" id="cpu' + i + '-alg">'
 							  +'<option value="default">---- Select a Algorithm ----</option>'
-							  +'<option value="G-EDF">G-EDF</option>'
-							  +'<option value="LLF">LLF</option>'
+							  +'<option value="P-EDF">P-EDF</option>'
+							  +'<option value="PF">PF</option>'
 							+'</select>'
 	                    +'</div>'
 	                +'</div>';
@@ -50,7 +51,9 @@ $('#show-modal2').click(function(){
 /*
  * Click function for modal3
  */ 
-$('#show-modal3').click(function(){$('#myModal3').modal({'backdrop': 'static'});});
+$('#show-modal3').click(function(){
+	$('#myModal3').modal({'backdrop': 'static'});
+});
 
 
 /*

@@ -1,5 +1,5 @@
 
-function Process(arrivalTime, execTime, period) {
+function Process(arrivalTime, execTime, period, executedCPU) {
 	
 	this.pid = "";
 	this.name = "";
@@ -9,6 +9,7 @@ function Process(arrivalTime, execTime, period) {
 	this.arrivalTime = arrivalTime !== undefined ? arrivalTime : "";
 	this.period = period !== undefined ? period : "";
 	this.execTime = execTime !== undefined ? execTime : "";
+	this.executedCPU = executedCPU !== undefined ? executedCPU : "";
 
 	this.startTime = "";
 	this.remainingTime = "";

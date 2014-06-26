@@ -2,13 +2,13 @@
 /*
  * Click function for modal1
  */ 
-$('button[data-target="#myModal1"]').click(function(){$('#myModal1').modal({'backdrop': 'static'});});
+$('#add-case').click(function(){$('#myModal1').modal({'backdrop': 'static'});});
 
 
 /*
  * Click function for modal2
  */ 
-$('button[data-target="#myModal2"]').click(function(){
+$('#show-modal2').click(function(){
 	$('#myModal2').modal({'backdrop': 'static'});
 
 	var scheme = $('#scheme').val();
@@ -50,7 +50,7 @@ $('button[data-target="#myModal2"]').click(function(){
 /*
  * Click function for modal3
  */ 
-$('button[data-target="#myModal3"]').click(function(){$('#myModal3').modal({'backdrop': 'static'});});
+$('#show-modal3').click(function(){$('#myModal3').modal({'backdrop': 'static'});});
 
 
 /*
@@ -91,4 +91,8 @@ $("#process-quantity").change(function(){
 		}
 	}
 	}
+});
+
+$('#save-case').click(function(){
+
 });

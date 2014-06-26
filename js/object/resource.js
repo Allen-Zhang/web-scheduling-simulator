@@ -10,7 +10,8 @@ function CPU(processList) {
 function CPUManager() {
     this.CPUList = [];
 
-    function addCPU(cpu) {
+    this.addCPU = function (cpu) {
         CPUList[CPUList.length] = cpu;
 
+	}
 }

@@ -11,7 +11,6 @@ function CPUManager() {
     this.CPUList = [];
 
     this.addCPU = function (cpu) {
-        CPUList[CPUList.length] = cpu;
-
+        this.CPUList[this.CPUList.length] = cpu;
 	}
 }

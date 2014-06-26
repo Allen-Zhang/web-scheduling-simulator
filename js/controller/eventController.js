@@ -1,4 +1,3 @@
-
 /*
  * Click function for modal1
  */ 
@@ -97,5 +96,10 @@ $("#process-quantity").change(function(){
 });
 
 $('#save-case').click(function(){
+	var process = new Process();
+	process.startTime = 2;
+
+	process_manager.addProcess(process);
+	alert(process_manager.aa);
 
 });

@@ -21,8 +21,8 @@ function Process(arrivalTime, execTime, period, executedCPU) {
 
 function ProcessManager() {
     this.processList = [];
-
     this.addProcess = function(process) {
-        processList[processList.length] = process;
+        this.processList[this.processList.length] = process;
 	}
 }
+

@@ -15,14 +15,13 @@ body {
 	padding-top:5px;	
 }
 
-.main-left-div {
-	margin:auto;
-	min-height:350px;
+#control-panel {	
+	min-height:300px;
+	padding-left:30px;
 }
 
-.main-right-div {
-	margin:auto;
-	min-height:300px;
+#running-results {
+	min-height:350px;
 }
 
 #process-table-div{

@@ -19,16 +19,28 @@
 
 		<div class="row">
 			<!-- Add Case Pane -->
-			<div class="col-md-3">
-				<div class="main-left-div" style="background-color:#9F6;">
-					<h3>Settings</h3>
-					<button class="btn btn-primary" id="add-case">Add Case</button>
+			<div class="col-md-4">
+				<div id="control-panel" style="background-color:#9F6;">
+					<h3>Control Panel</h3>
+					<div>
+						<button class="btn btn-primary" id="add-case">Add Case</button>
+						<button class="btn btn-primary" id="edit-case" style="display:none;">Edit Case</button>
+					</div>
+					<hr>
+					<div id="start-running">
+						<button type="button" class="btn btn-primary" id="start-simulator">Start Simulator</button>
+					</div>
+					<div id="stop-running" style="display:none;">
+						<button type="button" class="btn btn-info" id="step-forward">Step Forward</button>
+						<button type="button" class="btn btn-info" id="step-back">Step Back</button>
+						<button type="button" class="btn btn-danger" id="stop-simulator">Stop Simulator</button>
+					</div>
 				</div>            	
             </div>
 
 			<!-- Result Display Pane -->
-			<div class="col-md-9">
-				<div class="main-left-div" style="background-color:#FF3;">
+			<div class="col-md-8">
+				<div id="running-results" style="background-color:#FF3;">
 					<h3>Running Results</h3>
 				</div>  
 			</div>
@@ -37,23 +49,27 @@
 
 		<div class="row">
 			<!-- Control Button Pane -->
-			<div class="col-md-3" >
+			<div class="col-md-4" >
 				<div class="main-right-div" style="background-color:#FF3;">
-					<h3>Control Button Pane</h3>
-					<button type="button" id="start-simulator">Start Simulator</button>
+					<h3>Delete</h3>
 
-					<hr>
-
-					<button type="button" id="step-forward">Step Forward</button>
-					<button type="button" id="step-back">Step Back</button>
-					<button type="button" id="stop-simulator">Stop Simulator</button>
 				</div>
 			</div>
 
 			<!-- Statistics Pane -->
-			<div class="col-md-9">
+			<div class="col-md-8">
 				<div class="main-right-div" style="background-color:#9F6;">
-					<h3>Statistics</h3>
+					<h3>Case Infomation</h3>
+					<div>
+						<h4>Scheme</h4>
+							<p id="scheme-text"> </p>
+						<h4>Resource</h4>
+							<div id= "resource-text"> </div>	
+					</div>
+					<div>
+						<h4>Process</4>
+							<div id= "process-text"> </div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -71,22 +87,22 @@
 	      </div>
 	      <div class="modal-body">
 	      	<form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label" for="cpu-quantity">Set CPU Quantity</label>
-                        <div class="col-xs-4">
-                            <input type="text" class="form-control" id="cpu-quantity" value="1">
-                        </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="cpu-quantity">Set CPU Quantity</label>
+                    <div class="col-xs-4">
+                        <input type="text" class="form-control" id="cpu-quantity" value="1">
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label" for="scheme">Select Scheme</label>
-                        <div class="col-xs-5">
-                        	<select class="form-control" id="scheme">
-							  <option value="default">----- Select a Scheme -----</option>
-							  <option value="global">Global</option>
-							  <option value="partitioned">Partitioned</option>
-							</select>
-                        </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="scheme">Select Scheme</label>
+                    <div class="col-xs-5">
+                    	<select class="form-control" id="scheme">
+						  <option value="default">----- Select a Scheme -----</option>
+						  <option value="global">Global</option>
+						  <option value="partitioned">Partitioned</option>
+						</select>
                     </div>
+                </div>
             </form>
           </div>
 	      <div class="modal-footer">

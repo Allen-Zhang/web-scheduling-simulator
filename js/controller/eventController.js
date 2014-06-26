@@ -1,8 +1,19 @@
 /*
  * Click function for Add Case button
  */ 
-$('#add-case').click(function(){$('#myModal1').modal({'backdrop': 'static'});});
+$('#add-case').click(function(){
+	$('#myModal1').modal({'backdrop': 'static'});
+	// Reset processList and CPUList
+	resetObjList();
+});
 
+/*
+ * Click function for Edit Case button
+ */ 
+$('#edit-case').click(function(){
+	$('#myModal1').modal({'backdrop': 'static'});
+	editCase();
+});
 
 /*
  * Click function for Next button on modal1
@@ -45,7 +56,6 @@ $('#show-modal2').click(function(){
 	$('#algorithm-list').html(html);
 
 });
-
 
 /*
  * Click function for Next button on modal2
@@ -101,9 +111,8 @@ $("#process-quantity").change(function(){
  */ 
 $('#save-case').click(function(){
 	saveCase();
-	// Reset processList and CPUList
-	resetObjList();
 	showCaseSettings();
+	showEditCaseButton();
 });
 
 
@@ -146,7 +155,7 @@ function saveCase() {
 	var rList = cpu_manager.CPUList;
 	var pList = process_manager.processList;
 	// Create a simulator object
-	var simulator = new Simulator(scheme, rList, pList);
+	simulator = new Simulator(scheme, rList, pList);
 
 	// For Testing CPU
 	// for (var j = 0; j < simulator.resourceList.length; j++) {
@@ -158,12 +167,66 @@ function saveCase() {
 	// }
 }
 
+
+function editCase() {
+	// Get all values from saved simulator object respectively
+	var scheme = simulator.scheme; 
+	var cpuQty = simulator.resourceList.length; 
+	var processQty = simulator.processList.length; 
+}
+
+// Function for showing and hiding Edit Case button
+function showEditCaseButton() {
+	if (typeof simulator === 'undefined') 
+		$('#edit-case').hide();
+	else
+		$('#edit-case').show(); 
+}
+
 function resetObjList() {
 	process_manager.resetProcessList();
 	cpu_manager.resetCPUList();
 }
 
 function showCaseSettings() {
+	//scheme info show
+	$("#scheme-text").html(simulator.scheme);
 
+	//CPU info show
+	var html="<table><tr>"
+				+"<th>CID</th>"
+				+"<th>CPU name</th>"
+				+"<th>Algorithm</th></tr>";
+	for(var i=0;i<simulator.resourceList.length;i++){
+		var CPU = simulator.resourceList[i];
+		html+="<tr>"
+				+"<td>"+CPU.cid+"</td>"
+				+"<td>"+CPU.name+"</td>"
+				+"<td>"+CPU.executedAlgorithm+"</td>"
+			+"</tr>";
+	}
+	html+="</table>";
+	$("#resource-text").html(html);
 
+	//Process info show
+		html="<table><tr>"
+				+"<th>PID</th>"
+				+"<th>Process name</th>"
+				+"<th>Arrive Time</th>"
+				+"<th>Execution Time</th>"
+				+"<th>Period</th></tr>";
+	for(var i=0;i<simulator.processList.length;i++){
+		var process = simulator.processList[i];
+		html+="<tr>"
+				+"<td>"+process.pid+"</td>"
+				+"<td>"+process.name+"</td>"
+				+"<td>"+process.arrivalTime+"</td>"
+				+"<td>"+process.execTime+"</td>"
+				+"<td>"+process.period+"</td>"
+			+"</tr>";
+	}
+	html+="</table>";
+	$("#process-text").html(html);
 }
+
+

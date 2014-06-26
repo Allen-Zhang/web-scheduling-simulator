@@ -18,4 +18,5 @@ function CPUManager() {
 		var index = this.CPUList.length
 		return index;  // Using index as cid
 	}
+	
 }

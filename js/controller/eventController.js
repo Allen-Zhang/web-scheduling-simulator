@@ -100,7 +100,7 @@ $("#process-quantity").change(function(){
  * Click function for Finish button on modal3
  */ 
 $('#save-case').click(function(){
-	
+
 	var process = new Process();
 	process.startTime = 2;
 
@@ -118,7 +118,7 @@ $('#save-case').click(function(){
 	else if (scheme == "partitioned") {
 
 
-	var cpu = new CPU(executedAlgorithm);
+	var cpu = new CPU(process_manager.getNextID, executedAlgorithm);
 
 	var simulator = new Simulator(scheme, resourceList, processList);
 

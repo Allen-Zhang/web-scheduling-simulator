@@ -1,11 +1,11 @@
 /*
- * Click function for modal1
+ * Click function for Add Case button
  */ 
 $('#add-case').click(function(){$('#myModal1').modal({'backdrop': 'static'});});
 
 
 /*
- * Click function for modal2
+ * Click function for Next button on modal1
  */ 
 $('#show-modal2').click(function(){
 	$('#myModal2').modal({'backdrop': 'static'});
@@ -17,7 +17,7 @@ $('#show-modal2').click(function(){
 		html = '<div class="form-group">'
 	            	+'<label class="col-sm-4 control-label">Select Algorithm</label>'
 	                +'<div class="col-xs-5">'
-	                	+'<select class="form-control" id="algorithm">'
+	                	+'<select class="form-control" id="globalAlgorithm">'
 						  +'<option value="default">---- Select a Algorithm ----</option>'
 						  +'<option value="G-EDF">G-EDF</option>'
 						  +'<option value="LLF">LLF</option>'
@@ -48,7 +48,7 @@ $('#show-modal2').click(function(){
 
 
 /*
- * Click function for modal3
+ * Click function for Next button on modal2
  */ 
 $('#show-modal3').click(function(){
 	$('#myModal3').modal({'backdrop': 'static'});
@@ -95,11 +95,33 @@ $("#process-quantity").change(function(){
 	}
 });
 
+
+/*
+ * Click function for Finish button on modal3
+ */ 
 $('#save-case').click(function(){
+	
 	var process = new Process();
 	process.startTime = 2;
 
 	process_manager.addProcess(process);
 	alert(process_manager.aa);
+
+
+
+	var scheme = $('#scheme').val();
+	if (scheme == "global") {
+
+		$('#globalAlgorithm').val();
+
+	}
+	else if (scheme == "partitioned") {
+
+
+	var cpu = new CPU(executedAlgorithm);
+
+	var simulator = new Simulator(scheme, resourceList, processList);
+
+
 
 });

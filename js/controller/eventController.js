@@ -8,14 +8,6 @@ $('#add-case').click(function(){
 });
 
 /*
- * Click function for Edit Case button
- */ 
-$('#edit-process').click(function(){
-	$('#myModal4').modal({'backdrop': 'static'});
-	editProcess();
-});
-
-/*
  * Click function for Next button on modal1
  */ 
 $('#show-modal2').click(function(){
@@ -63,6 +55,32 @@ $('#show-modal2').click(function(){
 $('#show-modal3').click(function(){
 	$('#myModal3').modal({'backdrop': 'static'});
 });
+
+/*
+ * Click function for Finish button on modal3
+ */ 
+$('#save-case').click(function(){
+	saveCase();
+	showCaseSettings();
+	showEditCaseButton();
+	showCaseInfo();
+});
+
+/*
+ * Click function for Edit Case button
+ */ 
+$('#edit-process').click(function(){
+	$('#myModal4').modal({'backdrop': 'static'});
+	editProcess();
+});
+
+/*
+ * Click function for adding a new process
+ */
+$('#add-process').click(function(){
+	addProcess();
+});
+
 /*
  * Click function for edit save process button 
  */
@@ -109,16 +127,6 @@ $("#process-quantity").change(function(){
 			}
 		}
 	}
-});
-
-/*
- * Click function for Finish button on modal3
- */ 
-$('#save-case').click(function(){
-	saveCase();
-	showCaseSettings();
-	showEditCaseButton();
-	showCaseInfo();
 });
 
 function saveCase() {
@@ -314,8 +322,30 @@ function saveEditProcess() {
  * clicking Add Process button on modal4
  */ 
 function addProcess() {
-		// var newProcess = new Process(pid,arrivalTime,execTime,period);
-		// process_manager.addProcess(newProcess);
+	// Create a new process and push to processlist
+	var newPid = simulator.processList.length;
+	var newProcess = new Process(newPid);
+	simulator.processList.push(newProcess);
+
+	var table = $('#edit-process-table');
+	var newTr = $("<tr id='process"+newPid+"-row'></tr>");
+	newTr.appendTo(table);
+	for (var j = 0; j < 5; j++) {
+		var td = $("<td></td>");
+		td.appendTo(newTr);
+		if (j == 0) {
+		  var text = $("<span>Process"+newPid+"</span>");
+		  text.appendTo(td);
+		}
+		if (j > 0 && j < 4) {
+			var input = $("<input id='input"+(newPid*4+j)+"' class='form-control'></input>");
+			input.appendTo(td);
+		}
+		if (j == 4) {
+			  var text=$('<a href="#" class="delete-process" onclick="deactivateProcess('+newPid+')">&times</a>');
+			  text.appendTo(td);
+		}
+	}
 }
 
 /*

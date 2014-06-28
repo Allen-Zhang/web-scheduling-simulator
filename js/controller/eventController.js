@@ -342,7 +342,7 @@ function addProcess() {
 		  text.appendTo(td);
 		}
 		if (j > 0 && j < 4) {
-			var input = $("<input id='input"+(newPid*4+j)+"' class='form-control'></input>");
+			var input = $("<input id='edit-input"+(newPid*5+j)+"' class='form-control'></input>");
 			input.appendTo(td);
 		}
 		if (j == 4) {

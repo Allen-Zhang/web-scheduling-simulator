@@ -197,15 +197,15 @@ function editProcess() {
 			  text.appendTo(td);
 			}
 			if(j==1){
-				var input=$("<input id='edit-input"+(i*5+j)+"'class='form-control' value="+process[i].arrivalTime+"></input>");
+				var input=$("<input class='form-control' value="+process[i].arrivalTime+"></input>");
 				input.appendTo(td);
 			}
 			if(j==2){
-				var input=$("<input id='edit-input"+(i*5+j)+"'class='form-control' value="+process[i].execTime+"></input>");
+				var input=$("<input class='form-control' value="+process[i].execTime+"></input>");
 				input.appendTo(td);
 			}
 			if(j==3){
-				var input=$("<input id='edit-input"+(i*5+j)+"'class='form-control' value="+process[i].period+"></input>");
+				var input=$("<input class='form-control' value="+process[i].period+"></input>");
 				input.appendTo(td);
 			}
 			if(j==4){
@@ -279,7 +279,6 @@ function saveEditProcess() {
 
 	var scheme = simulator.scheme;
 	var rList = simulator.resourceList;
-	process_manager.resetProcessList();
 
 	// Create Process objects one by one and then add them to the processList
 	for(var i = 0; i < processQty; i++) {

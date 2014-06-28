@@ -5,7 +5,7 @@ function Process(pid, arrivalTime, execTime, period, executedCPU) {
 	this.name = "P" + this.pid;
 	this.priority = "";
 	this.status = "";
-	this.accessibility = true;
+	this.active = true;  // If a process is deleted by user, change it to false
 
 	this.arrivalTime = arrivalTime !== undefined ? arrivalTime : "";
 	this.period = period !== undefined ? period : "";

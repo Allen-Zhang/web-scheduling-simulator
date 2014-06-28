@@ -97,7 +97,7 @@ $("#process-quantity").change(function(){
 			  text.appendTo(td);
 			}
 			else{
-				var input=$("<input id='input"+(i*4+j)+"'class='form-control'></input>");
+				var input=$("<input id='input"+(i*4+j)+"' class='form-control'></input>");
 				input.appendTo(td);
 			}
 		}
@@ -187,7 +187,7 @@ function editProcess() {
 	th.appendTo(tr);
 
 	for(var i = 0; i < rowCount; i++) {
-		var tr=$("<tr></tr>");
+		var tr=$("<tr id='process"+i+"-row'></tr>");
 		tr.appendTo(table);
 		for(var j = 0; j < 5; j++) {
 			var td=$("<td></td>");
@@ -197,15 +197,15 @@ function editProcess() {
 			  text.appendTo(td);
 			}
 			if(j==1){
-				var input=$("<input class='form-control' value="+process[i].arrivalTime+"></input>");
+				var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].arrivalTime+"></input>");
 				input.appendTo(td);
 			}
 			if(j==2){
-				var input=$("<input class='form-control' value="+process[i].execTime+"></input>");
+				var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].execTime+"></input>");
 				input.appendTo(td);
 			}
 			if(j==3){
-				var input=$("<input class='form-control' value="+process[i].period+"></input>");
+				var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].period+"></input>");
 				input.appendTo(td);
 			}
 			if(j==4){
@@ -277,42 +277,42 @@ function resetObjList() {
 
 function saveEditProcess() {
 
-	var scheme = simulator.scheme;
-	var rList = simulator.resourceList;
+	var scheme = simulator.scheme;  // Copy scheme value from simulator
+	var rList = simulator.resourceList;  // Copy resourceList from simulator
+
+	var processes = process_manager.processList
+	var processQty = processObj.length;
 
 	// Create Process objects one by one and then add them to the processList
 	for(var i = 0; i < processQty; i++) {
+		var arrivalTime = $("#edit-input"+(i*5+1)).val();
+		var execTime = $("#edit-input"+(i*5+2)).val();
+		var period = $("#edit-input"+(i*5+3)).val();
 
-		var pid = process_manager.getNextID();
-		var arrivalTime=$("#input"+(i*4+1)).val();
-		var execTime=$("#input"+(i*4+2)).val();
-		var period=$("#input"+(i*4+3)).val();
-		var process=new Process(pid,arrivalTime,execTime,period);
-		process_manager.addProcess(process);
-		// alert(process_manager.processList[i].arrivalTime+"//"+process_manager.processList[i].period);
+		// Renew process attribute value
+		processes[i].arrivalTime = arrivalTime;
+		processes[i].execTime = execTime;
+		processes[i].period = period;
 	}
 	
-	var rList = cpu_manager.CPUList;
-	var pList = process_manager.processList;
-	// Create a simulator object
-	simulator = new Simulator(scheme, rList, pList);
+	// Recover the simulator object
+	simulator = new Simulator(scheme, rList, processes);
+}
 
 
+/*
+ * Function for adding a new process after 
+ * clicking Add Process button on modal4
+ */ 
+function addProcess() {
+		// var newProcess = new Process(pid,arrivalTime,execTime,period);
+		// process_manager.addProcess(newProcess);
+}
 
-	// // Create Process objects one by one and then add them to the processList
-	// for(var i=0;i<processQty;i++){
-	// 	var pid=process_manager.getNextID();
-	// 	var arrivalTime=$("#edit-input"+(i*4+1)).val();
-	// 	var execTime=$("#edit-input"+(i*4+2)).val();
-	// 	var period=$("#edit-input"+(i*4+3)).val();
-	// 	var process=new Process(pid,arrivalTime,execTime,period);
-	// 	process_manager.addProcess(process);
-	// 	// alert(process_manager.processList[i].arrivalTime+"//"+process_manager.processList[i].period);
-	// }
-	
-	// var rList = cpu_manager.CPUList;
-	// var pList = process_manager.processList;
-	// // Create a simulator object
-	// simulator = new Simulator(scheme, rList, pList);
-	
+/*
+ * Function for deactivate a exist process 
+ * after clicking Delete button on modal4
+ */ 
+function deactivateProcess() {
+	// process_manager.processList
 }

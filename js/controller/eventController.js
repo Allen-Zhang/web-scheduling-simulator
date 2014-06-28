@@ -63,6 +63,13 @@ $('#show-modal2').click(function(){
 $('#show-modal3').click(function(){
 	$('#myModal3').modal({'backdrop': 'static'});
 });
+/*
+ * Click function for edit save process button 
+ */
+$('#save-edit-process').click(function(){
+	saveEditProcess();
+	showCaseSettings();
+});
 
 /*
  * Display process setting form base on the quantity of process used set
@@ -169,6 +176,8 @@ function editProcess() {
 	// Get all process information from saved simulator object respectively
 	var process = simulator.processList;
 	var rowCount = process.length; 
+
+	$("#edit-process-table").remove();
 
 	var table=$("<table id='edit-process-table' border='0'></table>");
    	table.appendTo($("#edit-process-table-div"));
@@ -280,8 +289,8 @@ function saveEditProcess() {
 	var scheme = simulator.scheme;  // Copy scheme value from simulator
 	var rList = simulator.resourceList;  // Copy resourceList from simulator
 
-	var processes = process_manager.processList
-	var processQty = processObj.length;
+	var processes = simulator.processList
+	var processQty = processes.length;
 
 	// Create Process objects one by one and then add them to the processList
 	for(var i = 0; i < processQty; i++) {
@@ -296,7 +305,7 @@ function saveEditProcess() {
 	}
 	
 	// Recover the simulator object
-	simulator = new Simulator(scheme, rList, processes);
+	simulator.processList = processes;
 }
 
 
@@ -317,7 +326,10 @@ function deactivateProcess(pid) {
 	var processes = simulator.processList
 	var processQty = processes.length;
 	for (var i =0; i < processQty; i++) {
-		if (processes[i].pid == pid)
+		if (processes[i].pid == pid) {
 			processes[i].active = false;
+			$("#process"+i+"-row").remove();
+		}
+			
 	}
 }

@@ -209,7 +209,7 @@ function editProcess() {
 				input.appendTo(td);
 			}
 			if(j==4){
-			  var text=$('<a href="#" class="delete-process">&times</a>');
+			  var text=$('<a href="#" class="delete-process" onclick="deactivateProcess('+i+')">&times</a>');
 			  text.appendTo(td);
 			}
 		}
@@ -313,6 +313,11 @@ function addProcess() {
  * Function for deactivate a exist process 
  * after clicking Delete button on modal4
  */ 
-function deactivateProcess() {
-	// process_manager.processList
+function deactivateProcess(pid) {
+	var processes = simulator.processList
+	var processQty = processes.length;
+	for (var i =0; i < processQty; i++) {
+		if (processes[i].pid == pid)
+			processes[i].active = false;
+	}
 }

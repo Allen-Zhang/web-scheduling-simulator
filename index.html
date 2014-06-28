@@ -59,19 +59,36 @@
 			<!-- Case Info Pane -->
 			<div class="col-md-8" style="background-color:#FFF;">
 				<h3>Case Infomation</h3>
-				<p id="no-case-info-text" class="text-center"> N/A</p>
 				<div id="case-info-div" class="main-right-div row" >	
 					<div class="col-md-12">
 						<h4>Scheme</h4>
-						<p id="scheme-text"> </p>
+						<p id="scheme-text"> Default </p>
 					</div>
 					<div class="col-md-4">						
 						<h4>Resource</h4>
-							<div id= "resource-text"> </div>	
+							<div id= "resource-text">
+								<table class='table table-hover'>
+									<tr class='info'>
+										<th>CID</th>
+										<th>CPU name</th>
+										<th>Algorithm</th>
+									</tr>
+								</table>
+							</div>	
 					</div>
 					<div class="col-md-8">
 						<h4>Process</h4>
-							<div id= "process-text"> </div>
+							<div id= "process-text"> 
+								<table class='table table-hover'>
+									<tr class='info'>
+										<th>PID</th>
+										<th>Process name</th>
+										<th>Arrive Time</th>
+										<th>Execution Time</th>
+										<th>Period</th>
+									</tr>
+								</table>
+							</div>
 					</div>
 				</div>
 			</div>

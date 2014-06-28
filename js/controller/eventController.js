@@ -245,21 +245,21 @@ function showCaseSettings() {
 			+"<th>Period</th></tr>";
 	for(var i=0;i<simulator.processList.length;i++){
 		var process = simulator.processList[i];
-		html+="<tr>"
-				+"<td>"+process.pid+"</td>"
-				+"<td>"+process.name+"</td>"
-				+"<td>"+process.arrivalTime+"</td>"
-				+"<td>"+process.execTime+"</td>"
-				+"<td>"+process.period+"</td>"
-			+"</tr>";
+		if(process.active == true){
+			html+="<tr>"
+					+"<td>"+process.pid+"</td>"
+					+"<td>"+process.name+"</td>"
+					+"<td>"+process.arrivalTime+"</td>"
+					+"<td>"+process.execTime+"</td>"
+					+"<td>"+process.period+"</td>"
+				+"</tr>";
+		}
 	}
 	html+="</table>";
 	$("#process-text").html(html);
 }
 
 function showCaseInfo() {
-	$("#no-case-info-text").hide();
-	$("#case-info-div").show();
 }
 
 // Function for showing and hiding Edit Case button

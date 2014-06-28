@@ -1,13 +1,8 @@
 
-function Recorder(processObj, readyQueueArray, processStatusFlag) {
-	
-	this.processObj = processObj !== undefined ? processObj : "";
-	this.readyQueueArray = readyQueueArray !== undefined ? readyQueueArray : [];
-	this.processStatusFlag = processStatusFlag !== undefined ? processStatusFlag : "";  // missing, complete, interrupted
-
-	this.step = [processObj, readyQueueArray, statusFlag];
-
+function Recorder(pid, cid, eventType, timePoint, eventDuartion) {
+	this.rcdrPid = pid !== undefined ? pid : "";
+	this.rcdrCid = cid !== undefined ? cid : "";  // Event happend on which CPU
+	this.eventType = eventType !== undefined ? eventType : "";  // arrive, interrupt, missing, restart, execute
+	this.timePoint = timePoint !== undefined ? timePoint : "";
+	this.eventDuartion = eventDuartion !== undefined ? eventDuartion : "";  // For execution event	
 }
-
-
-$()

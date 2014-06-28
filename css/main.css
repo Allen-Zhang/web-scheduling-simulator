@@ -24,16 +24,34 @@ body {
 	min-height:350px;
 }
 
-#process-table-div{
+#case-info-div{
+	font-size: 14px;
+	display: none;
+}
+
+#process-table-div, #edit-process-table-div{
 	margin-left: 20px;
 }
-#process-table td{
+#process-table td, #edit-process-table td{
 	width: 25%;
 }
-#process-table tr{
+#process-table tr, #edit-process-table tr{
 	height: 30px;
 }
-#process-table input{
+#process-table input, #edit-process-table input{
 	width: 70%;
 	height: 25px;
+}
+
+#add-process {
+	float:left;
+}
+
+.delete-process {
+	font-size:20px;
+	font-weight:bold;
+}
+
+a:link{
+	text-decoration:none;
 }

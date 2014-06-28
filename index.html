@@ -24,7 +24,7 @@
 					<h3>Control Panel</h3>
 					<div>
 						<button class="btn btn-primary" id="add-case">Add Case</button>
-						<button class="btn btn-primary" id="edit-case" style="display:none;">Edit Case</button>
+						<button class="btn btn-primary" id="edit-process" style="display:none;">Edit Process</button>
 					</div>
 					<hr>
 					<div id="start-running">
@@ -56,18 +56,21 @@
 				</div>
 			</div>
 
-			<!-- Statistics Pane -->
-			<div class="col-md-8">
-				<div class="main-right-div" style="background-color:#9F6;">
-					<h3>Case Infomation</h3>
-					<div>
+			<!-- Case Info Pane -->
+			<div class="col-md-8" style="background-color:#FFF;">
+				<h3>Case Infomation</h3>
+				<p id="no-case-info-text" class="text-center"> N/A</p>
+				<div id="case-info-div" class="main-right-div row" >	
+					<div class="col-md-12">
 						<h4>Scheme</h4>
-							<p id="scheme-text"> </p>
+						<p id="scheme-text"> </p>
+					</div>
+					<div class="col-md-4">						
 						<h4>Resource</h4>
 							<div id= "resource-text"> </div>	
 					</div>
-					<div>
-						<h4>Process</4>
+					<div class="col-md-8">
+						<h4>Process</h4>
 							<div id= "process-text"> </div>
 					</div>
 				</div>
@@ -156,6 +159,28 @@
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 	        <button type="button" class="btn btn-primary" id="save-case" data-dismiss="modal">Finish</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<!-- Modal Dialog for Editing Process -->
+	<div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title" id="myModalLabel">Process Editing</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<form class="form-horizontal">
+		        <div id="edit-process-table-div" class="form-group"></div>
+		    </form>
+	      </div>
+	      <div class="modal-footer">
+	      	<button type="button" class="btn btn-primary" id="add-process">Add Process</button>
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button type="button" class="btn btn-primary" id="save-edit-process" data-dismiss="modal">Save</button>
 	      </div>
 	    </div>
 	  </div>

@@ -216,19 +216,6 @@ function editProcess() {
 	}
 }
 
-// Function for showing and hiding Edit Case button
-function showEditCaseButton() {
-	if (typeof simulator === 'undefined') 
-		$('#edit-process').hide();
-	else
-		$('#edit-process').show(); 
-}
-
-function resetObjList() {
-	process_manager.resetProcessList();
-	cpu_manager.resetCPUList();
-}
-
 function showCaseSettings() {
 	//scheme info show
 	$("#scheme-text").html(simulator.scheme);
@@ -275,12 +262,44 @@ function showCaseInfo() {
 	$("#case-info-div").show();
 }
 
-function resetCaseForm() {
+// Function for showing and hiding Edit Case button
+function showEditCaseButton() {
+	if (typeof simulator === 'undefined') 
+		$('#edit-process').hide();
+	else
+		$('#edit-process').show(); 
+}
 
-
+function resetObjList() {
+	process_manager.resetProcessList();
+	cpu_manager.resetCPUList();
 }
 
 function saveEditProcess() {
+
+	var scheme = simulator.scheme;
+	var rList = simulator.resourceList;
+	process_manager.resetProcessList();
+
+	// Create Process objects one by one and then add them to the processList
+	for(var i = 0; i < processQty; i++) {
+
+		var pid = process_manager.getNextID();
+		var arrivalTime=$("#input"+(i*4+1)).val();
+		var execTime=$("#input"+(i*4+2)).val();
+		var period=$("#input"+(i*4+3)).val();
+		var process=new Process(pid,arrivalTime,execTime,period);
+		process_manager.addProcess(process);
+		// alert(process_manager.processList[i].arrivalTime+"//"+process_manager.processList[i].period);
+	}
+	
+	var rList = cpu_manager.CPUList;
+	var pList = process_manager.processList;
+	// Create a simulator object
+	simulator = new Simulator(scheme, rList, pList);
+
+
+
 	// // Create Process objects one by one and then add them to the processList
 	// for(var i=0;i<processQty;i++){
 	// 	var pid=process_manager.getNextID();

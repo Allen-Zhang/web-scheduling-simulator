@@ -204,6 +204,9 @@ function editProcess() {
 	th.appendTo(tr);
 
 	for(var i = 0; i < rowCount; i++) {
+		alert();
+		if(process[i].active == true){
+
 		var tr=$("<tr id='process"+i+"-row'></tr>");
 		tr.appendTo(table);
 		for(var j = 0; j < 5; j++) {
@@ -229,6 +232,7 @@ function editProcess() {
 			  var text=$('<a href="#" class="delete-process" onclick="deactivateProcess('+i+')">&times</a>');
 			  text.appendTo(td);
 			}
+		}
 		}
 	}
 }

@@ -102,6 +102,8 @@ $("#process-quantity").change(function(){
 $("#start-simulator").click(function(){
 	cleanResultPanel();
 	drawResultPanel();
+	nextEvent(5,8,2,0);
+nextEvent(9,18,2,1);
 	$('#start-running').hide();
 	$('#stop-running').show();
 });
@@ -268,13 +270,12 @@ function showCaseSettings() {
 	var html="<table class='table table-hover'><tr class='info'>"
 				+"<th>CID</th>"
 				+"<th>CPU name</th>"
-				+"<th>Algorithm</th></tr>";
+				+"</tr>";
 	for(var i=0;i<simulator.resourceList.length;i++){
 		var CPU = simulator.resourceList[i];
 		html+="<tr>"
 				+"<td>"+CPU.cid+"</td>"
 				+"<td>"+CPU.name+"</td>"
-				+"<td>"+simulator.algorithm+"</td>"
 			+"</tr>";
 	}
 	html+="</table>";

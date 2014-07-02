@@ -7,7 +7,7 @@
 }
 
 #result-display-panel{
-	width: 1550px;
+	width: 2050px;
 }
 
 #result-display-panel table{
@@ -16,7 +16,7 @@
 	display: inline-block;
 }
 #result-display-panel table td{	
-	width: 30px;
+	width: 40px;
 	overflow: visible;
 	float: left;
 }

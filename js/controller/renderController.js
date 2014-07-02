@@ -1,5 +1,4 @@
-nextEvent(5,8,2);
-nextEvent(9,18,2);
+
 
 function cleanResultPanel() {
 	$("#result-display-title").html("");
@@ -36,7 +35,7 @@ function drawDiagram(cid){
 		for(var j=0;j<50;j++)
 		{	
 			if(i==0){
-			var td=$("<td class='row1' id='td"+j+"'> </td>");
+			var td=$("<td class='row1' id='table"+cid+"td"+j+"'> </td>");
 			td.appendTo(tr);}
 			if(i==1){
 			var td=$("<td class='row2'> </td>");
@@ -48,9 +47,10 @@ function drawDiagram(cid){
 	}
 }
 
-function nextEvent(start,end,pid){
-	var td="#td"+start;
-	var length=(end-start)*30;
+function nextEvent(start,end,pid,cid){
+	var td="#table"+cid+"td"+start;
+	alert(td);
+	var length=(end-start)*40;
 	var div=$("<div style='width:"+length+"px;height:55px;;background-color: red;'>1</div>")
 	div.appendTo($(td));
 }

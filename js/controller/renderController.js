@@ -20,7 +20,7 @@ function drawDiagram(cid){
 	//add title content
 	var title;
 	if(cid<0)
-		title=$("<div class='result-title'>Event</div>")
+		title=$("<div class='result-title'>Event</div>");
 	else
 		title=$("<div class='result-title'>CPU"+cid+"</div>");
 
@@ -36,14 +36,17 @@ function drawDiagram(cid){
 		for(var j=0;j<50;j++)
 		{	
 			if(i==0){
-			var td=$("<td class='row1' id='td"+j+"'> </td>");
-			td.appendTo(tr);}
-			if(i==1){
-			var td=$("<td class='row2'> </td>");
-			td.appendTo(tr);}
-			if(i==2){
-			var td=$("<td class='row3'>"+j+"</td>");
-			td.appendTo(tr);}
+				var td=$("<td class='row1' id='td"+j+"'> </td>");
+				td.appendTo(tr);
+			}
+				if(i==1){
+				var td=$("<td class='row2'> </td>");
+				td.appendTo(tr);
+			}
+				if(i==2){
+				var td=$("<td class='row3'>"+j+"</td>");
+				td.appendTo(tr);
+			}
 		}
 	}
 }
@@ -51,6 +54,6 @@ function drawDiagram(cid){
 function nextEvent(start,end,pid){
 	var td="#td"+start;
 	var length=(end-start)*30;
-	var div=$("<div style='width:"+length+"px;height:55px;;background-color: red;'>1</div>")
+	var div=$("<div style='width:"+length+"px; height:55px; background-color: red;'>1</div>")
 	div.appendTo($(td));
 }

@@ -12,9 +12,9 @@ function Process(pid, arrivalTime, execTime, period, executedCPU) {
 	this.execTime = execTime !== undefined ? execTime : "";
 	this.executedCPU = executedCPU !== undefined ? executedCPU : "";
 
-	this.startTime = "";
-	this.remainingTime = "";
-	this.deadline = "";
+	// this.startTime = "";
+	// this.remainingTime = "";
+	// this.deadline = "";
 
 }
 

@@ -102,15 +102,26 @@ $("#process-quantity").change(function(){
 $("#start-simulator").click(function(){
 	cleanResultPanel();
 	drawResultPanel();
-	nextEvent(5,8,2,0);
-nextEvent(9,18,2,1);
+
+	var firstIndex = recorder_manager.getResetedIndex();  // Get the first recorder index
+	var firstRecorder = recorder_manager.recorderList[firstIndex];  // Get the first recorder object
+	renderNextEvent(firstRecorder);
+
+	// Switch start/stop button group
 	$('#start-running').hide();
 	$('#stop-running').show();
 });
 
 $("#stop-simulator").click(function(){
+	// Switch start/stop button group
 	$('#stop-running').hide();
 	$('#start-running').show();	
+});
+
+$("#step-forward").click(function(){
+	var nextIndex = recorder_manager.getNextEventIndex();  // Get the next recorder index
+	var nextRecorder = recorder_manager.recorderList[nextIndex];  // Get the first recorder object
+	renderNextEvent(nextRecorder);
 });
 
 function addSchemeSelector(scheme) {

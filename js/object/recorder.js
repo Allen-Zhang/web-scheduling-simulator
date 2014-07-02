@@ -1,7 +1,7 @@
 
 function Recorder(pid, cid, eventType, eventStartTime, eventEndTime) {
-	this.rcdrPid = pid !== undefined ? pid : "";
-	this.rcdrCid = cid !== undefined ? cid : "";  // Event happend on which CPU
+	this.pid = pid !== undefined ? pid : "";
+	this.cid = cid !== undefined ? cid : "";  // Event happend on which CPU
 	this.eventType = eventType !== undefined ? eventType : "";  // arrival, interrupt, missing, restart, execution
 	this.eventStartTime = eventStartTime !== undefined ? eventStartTime : "";
 	this.eventEndTime = eventEndTime !== undefined ? eventEndTime : eventStartTime;  // For execution event	
@@ -9,9 +9,19 @@ function Recorder(pid, cid, eventType, eventStartTime, eventEndTime) {
 
 function RecorderManager() {
     this.recorderList = [];
+    this.index = 0;
 
-    this.addRecorder = function (recorder) {
+    this.addRecorder = function(recorder) {
         this.recorderList[this.recorderList.length] = recorder;
+	}
+
+	this.getResetedIndex = function() {
+		this.index = 0;
+		return this.index;
+	}
+
+	this.getNextEventIndex = function() {
+		return this.index++;
 	}
 
 	this.testCase = function() {
@@ -31,6 +41,7 @@ function RecorderManager() {
 	}
 	
 	this.testCase();
+	
 
 }
 

@@ -35,7 +35,7 @@ function drawDiagram(cid){
 		for(var j=0;j<50;j++)
 		{	
 			if(i==0){
-				var td=$("<td class='row1' id='td"+j+"'> </td>");
+				var td=$("<td class='row1' id='table"+cid+"td"+j+"'> </td>");
 				td.appendTo(tr);
 			}
 				if(i==1){
@@ -46,16 +46,19 @@ function drawDiagram(cid){
 				var td=$("<td class='row3'>"+j+"</td>");
 				td.appendTo(tr);
 			}
->>>>>>> origin/master
 		}
 	}
 }
 
-<<<<<<< HEAD
-function nextEvent(start,end,pid,cid){
-	var td="#table"+cid+"td"+start;
-	alert(td);
-	var length=(end-start)*40;
-	var div=$("<div style='width:"+length+"px;height:55px;;background-color: red;'>1</div>")
+function renderNextEvent(recorder){
+	var pid = recorder.pid;
+	var cid = recorder.cid;
+	var type = recorder.eventType;
+	var start = recorder.eventStartTime;
+	var end = recorder.eventEndTime;
+
+	var td = "#table"+cid+"td"+start;
+	var length = (end-start)*40;
+	var div = $("<div style='width:"+length+"px; height:55px; background-color: red;'>1</div>")
 	div.appendTo($(td));
 }

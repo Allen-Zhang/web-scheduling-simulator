@@ -19,7 +19,7 @@ function drawDiagram(cid){
 	//add title content
 	var title;
 	if(cid<0)
-		title=$("<div class='result-title'>Event</div>")
+		title=$("<div class='result-title'>Event</div>");
 	else
 		title=$("<div class='result-title'>CPU"+cid+"</div>");
 
@@ -35,18 +35,23 @@ function drawDiagram(cid){
 		for(var j=0;j<50;j++)
 		{	
 			if(i==0){
-			var td=$("<td class='row1' id='table"+cid+"td"+j+"'> </td>");
-			td.appendTo(tr);}
-			if(i==1){
-			var td=$("<td class='row2'> </td>");
-			td.appendTo(tr);}
-			if(i==2){
-			var td=$("<td class='row3'>"+j+"</td>");
-			td.appendTo(tr);}
+				var td=$("<td class='row1' id='td"+j+"'> </td>");
+				td.appendTo(tr);
+			}
+				if(i==1){
+				var td=$("<td class='row2'> </td>");
+				td.appendTo(tr);
+			}
+				if(i==2){
+				var td=$("<td class='row3'>"+j+"</td>");
+				td.appendTo(tr);
+			}
+>>>>>>> origin/master
 		}
 	}
 }
 
+<<<<<<< HEAD
 function nextEvent(start,end,pid,cid){
 	var td="#table"+cid+"td"+start;
 	alert(td);

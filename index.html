@@ -5,6 +5,7 @@
 	<title>Scheduling Simulator</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
 	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<link rel="stylesheet" type="text/css" href="css/result.css" />
 	<base target="_self">
 </head>
 <body>
@@ -16,7 +17,6 @@
 	</header>
 
 	<div class="container"> 
-
 		<div class="row">
 			<!-- Add Case Pane -->
 			<div class="col-md-4">
@@ -39,9 +39,12 @@
             </div>
 
 			<!-- Result Display Pane -->
-			<div class="col-md-8">
-				<div id="running-results" style="background-color:#FF3;">
-					<h3>Running Results</h3>
+			<div class="col-md-8"  style="background-color:#FFF;">
+				<h3>Running Results</h3>
+				<hr/>
+				<div  id="result-display-title" class="col-md-1"></div>
+				<div id="running-results">	
+					<div id="result-display-panel" class="col-md-4"></div>
 				</div>  
 			</div>
 		</div>
@@ -207,12 +210,12 @@
 	<script src="js/framework/jquery-1.11.1.min.js"></script>
 	<script src="js/framework/jquery.validate.min.js"></script>
 	<script src="js/framework/bootstrap.min.js"></script>
-	<script src="js/framework/header.js"></script>	
 	<!-- Customized Script -->
 	<script src="js/object/process.js"></script>
 	<script src="js/object/resource.js"></script>
 	<script src="js/object/simulator.js"></script>	
 	<script src="js/controller/execController.js"></script>
 	<script src="js/controller/eventController.js"></script>
+	<script src="js/controller/renderController.js"></script>
 </body>
 </html>

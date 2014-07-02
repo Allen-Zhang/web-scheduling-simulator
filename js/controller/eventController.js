@@ -99,6 +99,18 @@ $("#process-quantity").change(function(){
 	}
 });
 
+$("#start-simulator").click(function(){
+	cleanResultPanel();
+	drawResultPanel();
+	$('#start-running').hide();
+	$('#stop-running').show();
+});
+
+$("#stop-simulator").click(function(){
+	$('#stop-running').hide();
+	$('#start-running').show();	
+});
+
 function addSchemeSelector(scheme) {
 	var html = "";
 	if (scheme == "global") {

@@ -1,10 +1,9 @@
 
-function CPU(cid, executedAlgorithm) {
+function CPU(cid) {
 	
 	this.cid = cid;
 	this.name = "CPU" + this.cid;
 	this.status = "";
-	this.executedAlgorithm = executedAlgorithm !== undefined ? executedAlgorithm : "";  // algorithm that executed on the cpu
 }
 
 function CPUManager() {

@@ -28,16 +28,16 @@ body {
 	font-size: 14px;
 }
 
-#process-table-div, #edit-process-table-div{
+#process-table-div, #edit-case-table-div{
 	margin-left: 20px;
 }
-#process-table td, #edit-process-table td{
+#process-table td, #edit-case-table td{
 	width: 25%;
 }
-#process-table tr, #edit-process-table tr{
+#process-table tr, #edit-case-table tr{
 	height: 30px;
 }
-#process-table input, #edit-process-table input{
+#process-table input, #edit-case-table input{
 	width: 70%;
 	height: 25px;
 }

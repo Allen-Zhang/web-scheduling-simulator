@@ -12,39 +12,9 @@ $('#add-case').click(function(){
  */ 
 $('#show-modal2').click(function(){
 	$('#myModal2').modal({'backdrop': 'static'});
-
 	var scheme = $('#scheme').val();
-	var html = "";
 	// Display corresponding setting algorithm page base on the scheme and quantity of cpu used set
-	if (scheme == "global") {
-		html = '<div class="form-group">'
-	            	+'<label class="col-sm-4 control-label">Select Algorithm</label>'
-	                +'<div class="col-xs-5">'
-	                	+'<select class="form-control" id="globalAlgorithm">'
-						  +'<option value="default">---- Select a Algorithm ----</option>'
-						  +'<option value="G-EDF">G-EDF</option>'
-						  +'<option value="LLF">LLF</option>'
-						  +'<option value="PF">PF</option>'
-						+'</select>'
-	                +'</div>'
-	            +'</div>';
-
-	}
-	else if (scheme == "partitioned") {
-		var cpuQty = $('#cpu-quantity').val();
-		for (var i = 0; i < cpuQty; i++) {
-			html += '<div class="form-group">'
-	                	+'<label class="col-sm-5 control-label">Select Algorithm for CPU' + i + '</label>'
-	                    +'<div class="col-xs-5">'
-	                    	+'<select class="form-control" id="cpu' + i + '-alg">'
-							  +'<option value="default">---- Select a Algorithm ----</option>'
-							  +'<option value="P-EDF">P-EDF</option>'
-							  +'<option value="PF">PF</option>'
-							+'</select>'
-	                    +'</div>'
-	                +'</div>';
-        }
-	}
+	var html = addSchemeSelector(scheme);
 	$('#algorithm-list').html(html);
 
 });
@@ -69,9 +39,9 @@ $('#save-case').click(function(){
 /*
  * Click function for Edit Case button
  */ 
-$('#edit-process').click(function(){
+$('#edit-case').click(function(){
 	$('#myModal4').modal({'backdrop': 'static'});
-	editProcess();
+	editCase();
 });
 
 /*
@@ -84,8 +54,8 @@ $('#add-process').click(function(){
 /*
  * Click function for edit save process button 
  */
-$('#save-edit-process').click(function(){
-	saveEditProcess();
+$('#save-edit-case').click(function(){
+	saveEditCase();
 	showCaseSettings();
 });
 
@@ -129,29 +99,56 @@ $("#process-quantity").change(function(){
 	}
 });
 
+function addSchemeSelector(scheme) {
+	var html = "";
+	if (scheme == "global") {
+		html = '<div class="form-group">'
+	            	+'<label class="col-sm-4 control-label">Select an Algorithm</label>'
+	                +'<div class="col-xs-5">'
+	                	+'<select class="form-control" id="g-Algorithm">'
+						  +'<option value="default">---- Select an Algorithm ----</option>'
+						  +'<option value="G-EDF">G-EDF</option>'
+						  +'<option value="LLF">LLF</option>'
+						  +'<option value="PF">PF</option>'
+						  +'<option value="RMS">RMS</option>'
+						+'</select>'
+	                +'</div>'
+	            +'</div>';
+
+	}
+	else if (scheme == "partitioned") {
+		html += '<div class="form-group">'
+                	+'<label class="col-sm-4 control-label">Select an Algorithm</label>'
+                    +'<div class="col-xs-5">'
+                    	+'<select class="form-control" id="p-Algorithm">'
+						  +'<option value="default">---- Select an Algorithm ----</option>'
+						  +'<option value="P-EDF">P-EDF</option>'
+						  +'<option value="RMS">RMS</option>'
+						+'</select>'
+                    +'</div>'
+                +'</div>';
+	}
+	return html;
+}
+
+
+
 function saveCase() {
 	var scheme = $('#scheme').val();  // Get the scheme user selected
 	var cpuQty = $('#cpu-quantity').val();  // Get the quantity of CPU
 	var processQty=$("#process-quantity").val();  // Get the quantity of process
+	var execAlg = "";
 
-	if (scheme == "global") {
-		var execAlg = $('#globalAlgorithm').val();  // Get the algorithm under global scheme user selected
+	if (scheme == "global")  // Get the algorithm under global scheme
+		execAlg = $('#g-Algorithm').val();  
+	else if (scheme == "partitioned") 	// Get the algorithm under partitioned scheme	
+		execAlg = $('#p-Algorithm').val();  
 
-		// Create CPU objects one by one and then add them to the CPUList
-		for (var i = 0; i < cpuQty; i++) {
-			var cid = cpu_manager.getNextID();
-			var cpu = new CPU(cid, execAlg);
-			cpu_manager.addCPU(cpu);
-		}
-	}
-	else if (scheme == "partitioned") {
-		// Create CPU objects one by one and then add them to the CPUList
-		for (var i = 0; i < cpuQty; i++) {
-			var cid = cpu_manager.getNextID();
-			var execAlg = $('#cpu' + i + '-alg').val();  // Get the algorithm under partitioned scheme user selected
-			var cpu = new CPU(cid, execAlg);
-			cpu_manager.addCPU(cpu);
-		}
+	// Create CPU objects one by one and then add them to the CPUList
+	for (var i = 0; i < cpuQty; i++) {
+		var cid = cpu_manager.getNextID();
+		var cpu = new CPU(cid);
+		cpu_manager.addCPU(cpu);
 	}
 
 	// Create Process objects one by one and then add them to the processList
@@ -168,7 +165,7 @@ function saveCase() {
 	var rList = cpu_manager.CPUList;
 	var pList = process_manager.processList;
 	// Create a simulator object
-	simulator = new Simulator(scheme, rList, pList);
+	simulator = new Simulator(scheme, execAlg, rList, pList);
 
 	// For Testing CPU
 	// for (var j = 0; j < simulator.resourceList.length; j++) {
@@ -180,15 +177,31 @@ function saveCase() {
 	// }
 }
 
-function editProcess() {
+function editCase() {
+
+	var execAlg = simulator.algorithm;
+	var scheme = simulator.scheme;
+	var html = "";
+
+	if (scheme == "global") {
+		html = addSchemeSelector(scheme).replace("g-Algorithm","edit-g-Algorithm")+'<br/>';  // Change id value
+		$("#edit-case-table-div").html(html);
+		$('#edit-g-Algorithm option[value="'+execAlg+'"]').prop('selected', 'selected');
+	}
+	else if (scheme == "partitioned") {
+		html = addSchemeSelector(scheme).replace("p-Algorithm","edit-p-Algorithm")+'<br/>';  // Change id value
+		$("#edit-case-table-div").html(html);
+		$('#edit-p-Algorithm option[value="'+execAlg+'"]').prop('selected', 'selected');
+	}
+
 	// Get all process information from saved simulator object respectively
 	var process = simulator.processList;
 	var rowCount = process.length; 
 
-	$("#edit-process-table").remove();
+	$("#edit-case-table").remove();
 
-	var table=$("<table id='edit-process-table' border='0'></table>");
-   	table.appendTo($("#edit-process-table-div"));
+	var table=$("<table id='edit-case-table' border='0'></table>");
+   	table.appendTo($("#edit-case-table-div"));
 
 	var tr=$("<tr></tr>");
 	tr.appendTo(table);
@@ -204,35 +217,33 @@ function editProcess() {
 	th.appendTo(tr);
 
 	for(var i = 0; i < rowCount; i++) {
-		alert();
 		if(process[i].active == true){
-
-		var tr=$("<tr id='process"+i+"-row'></tr>");
-		tr.appendTo(table);
-		for(var j = 0; j < 5; j++) {
-			var td=$("<td></td>");
-			td.appendTo(tr);
-			if(j==0){
-			  var text=$("<span>Process"+i+"</span>");
-			  text.appendTo(td);
+			var tr=$("<tr id='process"+i+"-row'></tr>");
+			tr.appendTo(table);
+			for(var j = 0; j < 5; j++) {
+				var td=$("<td></td>");
+				td.appendTo(tr);
+				if(j==0){
+				  var text=$("<span>Process"+i+"</span>");
+				  text.appendTo(td);
+				}
+				if(j==1){
+					var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].arrivalTime+"></input>");
+					input.appendTo(td);
+				}
+				if(j==2){
+					var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].execTime+"></input>");
+					input.appendTo(td);
+				}
+				if(j==3){
+					var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].period+"></input>");
+					input.appendTo(td);
+				}
+				if(j==4){
+				  var text=$('<a href="#" class="delete-process" onclick="deactivateProcess('+i+')">&times</a>');
+				  text.appendTo(td);
+				}
 			}
-			if(j==1){
-				var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].arrivalTime+"></input>");
-				input.appendTo(td);
-			}
-			if(j==2){
-				var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].execTime+"></input>");
-				input.appendTo(td);
-			}
-			if(j==3){
-				var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].period+"></input>");
-				input.appendTo(td);
-			}
-			if(j==4){
-			  var text=$('<a href="#" class="delete-process" onclick="deactivateProcess('+i+')">&times</a>');
-			  text.appendTo(td);
-			}
-		}
 		}
 	}
 }
@@ -251,7 +262,7 @@ function showCaseSettings() {
 		html+="<tr>"
 				+"<td>"+CPU.cid+"</td>"
 				+"<td>"+CPU.name+"</td>"
-				+"<td>"+CPU.executedAlgorithm+"</td>"
+				+"<td>"+simulator.algorithm+"</td>"
 			+"</tr>";
 	}
 	html+="</table>";
@@ -286,9 +297,9 @@ function showCaseInfo() {
 // Function for showing and hiding Edit Case button
 function showEditCaseButton() {
 	if (typeof simulator === 'undefined') 
-		$('#edit-process').hide();
+		$('#edit-case').hide();
 	else
-		$('#edit-process').show(); 
+		$('#edit-case').show(); 
 }
 
 function resetObjList() {
@@ -296,10 +307,13 @@ function resetObjList() {
 	cpu_manager.resetCPUList();
 }
 
-function saveEditProcess() {
+function saveEditCase() {
+	var execAlg = "";
 
-	var scheme = simulator.scheme;  // Copy scheme value from simulator
-	var rList = simulator.resourceList;  // Copy resourceList from simulator
+	if (simulator.scheme == "global")  // Get the algorithm under global scheme
+		execAlg = $('#edit-g-Algorithm').val();  
+	else if (simulator.scheme == "partitioned") 	// Get the algorithm under partitioned scheme	
+		execAlg = $('#edit-p-Algorithm').val();  
 
 	var processes = simulator.processList
 	var processQty = processes.length;
@@ -316,8 +330,10 @@ function saveEditProcess() {
 		processes[i].period = period;
 	}
 	
-	// Recover the simulator object
+	// Refresh the simulator object
+	simulator.algorithm = execAlg;
 	simulator.processList = processes;
+	
 }
 
 
@@ -331,7 +347,7 @@ function addProcess() {
 	var newProcess = new Process(newPid);
 	simulator.processList.push(newProcess);
 
-	var table = $('#edit-process-table');
+	var table = $('#edit-case-table');
 	var newTr = $("<tr id='process"+newPid+"-row'></tr>");
 	newTr.appendTo(table);
 	for (var j = 0; j < 5; j++) {

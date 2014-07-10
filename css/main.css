@@ -1,0 +1,82 @@
+body {
+	background-color:#FFF;
+}
+body>div{
+	padding-top: 40px;
+}
+#header {
+	height:40px;
+	background-color:#000;
+	color: #FFF;
+	font-weight:bold;
+	font-size:20px;
+	font-family:Arial, Helvetica, sans-serif;
+	opacity: 0.7;
+	position: fixed;
+	width: 100%;
+	z-index: 50;	
+}
+
+#header > div {
+	padding-top:5px;	
+}
+
+#control-panel {	
+	padding-left:30px;
+}
+
+#running-results {
+	min-height:350px;
+}
+
+#case-info-div{
+	font-size: 14px;
+}
+
+#process-table-div, #edit-case-table-div{
+	margin-left: 20px;
+}
+#process-table td, #edit-case-table td{
+	width: 25%;
+}
+#process-table tr, #edit-case-table tr{
+	height: 30px;
+}
+#process-table input, #edit-case-table input{
+	width: 70%;
+	height: 25px;
+}
+
+#add-process {
+	float:left;
+}
+
+.delete-process {
+	font-size:20px;
+	font-weight:bold;
+}
+
+a:link{
+	text-decoration:none;
+}
+#scheme-text{
+	margin-left: 20px;
+}
+#algorithm-text{
+	margin-left: 20px;
+<<<<<<< HEAD
+}
+#edit-case{
+	margin-top: 20px;
+	display: block;
+}
+#stop-running button{
+	width: 150px;
+	margin-top: 20px;
+	display: block;
+}
+#resource-text table td,#process-text table td{
+	text-align: center;
+}
+#resource-text table th,#process-text table th{
+	text-align: center;

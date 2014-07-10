@@ -64,7 +64,7 @@ a:link{
 }
 #algorithm-text{
 	margin-left: 20px;
-<<<<<<< HEAD
+
 }
 #edit-case{
 	margin-top: 20px;
@@ -80,3 +80,8 @@ a:link{
 }
 #resource-text table th,#process-text table th{
 	text-align: center;
+}
+
+#scheme-text {
+	text-transform: capitalize; 
+}  

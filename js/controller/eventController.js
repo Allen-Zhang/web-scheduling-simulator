@@ -55,7 +55,7 @@ $('#add-process').click(function(){
  */
 $('#save-edit-case').click(function(){
 	saveEditCase();
-	// showCaseSettings();
+	showCaseSettings();
 });
 
 /*
@@ -109,6 +109,8 @@ $("#start-simulator").click(function(){
 
 	simulator.startSimulator();
 	showCaseSettings();
+
+	simulator.calculateHyperperiod();
 });
 
 

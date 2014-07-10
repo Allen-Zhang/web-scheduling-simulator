@@ -1,4 +1,5 @@
 /*
+ * For partitioned scheme
  * Current process is allocated to the CPU 
  * whose remaining utilization is the largest
  */
@@ -26,6 +27,7 @@ function partitioningStrategy() {
 		pList[i].executedCPU = targetCid;
 
 		// Update this target CPU's remaining utilization
+		// utilization = execution time / period
 		rList[targetRListIndex].remainingUtil = targetReUtil - pList[i].execTime / pList[i].period;
 
 	}

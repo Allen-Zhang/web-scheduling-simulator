@@ -7,7 +7,7 @@ function cleanResultPanel() {
 
 function drawResultPanel() {
 	//draw event diagram
-	drawEventDiagram("event");
+	//drawEventDiagram("event");
 	//draw CPU diagrams
 	var cpuQty=simulator.resourceList.length;
 	for(var i=0;i<cpuQty;i++){
@@ -55,7 +55,7 @@ function drawCPUDiagram(cid){
 	//draw a diagram
 	var table=$("<table id='cpu-table' border='0'></table>");
    	table.appendTo($("#result-display-panel"));
-	for(var i=0;i<3;i++)
+	for(var i=0;i<4;i++)
 	{
 		var tr=$("<tr></tr>");
 		tr.appendTo(table);
@@ -65,12 +65,16 @@ function drawCPUDiagram(cid){
 				var td=$("<td class='row1' id='table"+cid+"td"+j+"'> </td>");
 				td.appendTo(tr);
 			}
-				if(i==1){
+			if(i==1){
 				var td=$("<td class='row2'> </td>");
 				td.appendTo(tr);
 			}
-				if(i==2){
+			if(i==2){
 				var td=$("<td class='row3'>"+j+"</td>");
+				td.appendTo(tr);
+			}
+			if(i==3){
+				var td=$("<td class='row4' id='event-table"+cid+"td"+j+"'></td>");
 				td.appendTo(tr);
 			}
 		}
@@ -124,10 +128,10 @@ function renderNextEvent(recorder){
 		$("#"+divID).animate({width:length+'px',opacity:'0.8'},1000);
 	}
 	else {
-		var td = "#tableeventtd"+start;
-		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:30px;background-color: "+color+";'> P"+pid+" "+type+"</div>");
+		var td = "#event-table"+cid+"td"+start;
+		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;'>&#8593 P"+pid+"</div>");
 		div.appendTo($(td));
-		$("#"+divID).css("opacity","0.8").hide().fadeIn(1000);
+		$("#"+divID).hide().fadeIn(1000);
 	}
 }
 

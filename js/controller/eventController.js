@@ -55,7 +55,7 @@ $('#add-process').click(function(){
  */
 $('#save-edit-case').click(function(){
 	saveEditCase();
-	showCaseSettings();
+	// showCaseSettings();
 });
 
 /*
@@ -106,7 +106,11 @@ $("#start-simulator").click(function(){
 	showNextEvents();
 	$('#start-running').hide();
 	$('#stop-running').show();
+
+	simulator.startSimulator();
+	showCaseSettings();
 });
+
 
 $("#stop-simulator").click(function(){
 	$('#stop-running').hide();
@@ -191,8 +195,12 @@ function saveCase() {
 	
 	var rList = cpu_manager.CPUList;
 	var pList = process_manager.processList;
-	// Create a simulator object
-	simulator = new Simulator(scheme, execAlg, rList, pList);
+	
+	// Update simulator object
+	simulator.scheme = scheme;
+	simulator.algorithm = execAlg;
+	simulator.resourceList = rList;
+	simulator.processList = pList;
 
 	// For Testing CPU
 	// for (var j = 0; j < simulator.resourceList.length; j++) {
@@ -301,8 +309,11 @@ function showCaseSettings() {
 			+"<th>Process Name</th>"
 			+"<th>Arrive Time</th>"
 			+"<th>Execution Time</th>"
-			+"<th>Period</th>"
-			+"<th>color</th></tr>";
+			+"<th>Period</th>";
+	if(simulator.scheme == "partitioned")
+		html+="<th>executedCPU</th>";
+	html += "<th>color</th></tr>";
+	
 	for(var i=0;i<simulator.processList.length;i++){
 		var process = simulator.processList[i];
 		if(process.active == true){
@@ -311,8 +322,10 @@ function showCaseSettings() {
 					+"<td>"+process.name+"</td>"
 					+"<td>"+process.arrivalTime+"</td>"
 					+"<td>"+process.execTime+"</td>"
-					+"<td>"+process.period+"</td>"
-					+"<td style='background-color: "+process.showColor+";'> </td>"
+					+"<td>"+process.period+"</td>";
+			if(simulator.scheme == "partitioned")
+				html+="<td>"+process.executedCPU+"</td>";
+			html+="<td style='background-color: "+process.showColor+";'> </td>"
 				+"</tr>";
 		}
 	}
@@ -357,7 +370,7 @@ function saveEditCase() {
 		processes[i].period = period;
 	}
 	
-	// Refresh the simulator object
+	// Update simulator object
 	simulator.algorithm = execAlg;
 	simulator.processList = processes;
 	

@@ -52,12 +52,19 @@
 	border-style: solid;
 	font-weight: bold; 
 	border-width: 1px 0px 0px 0px;
-	height: 10px;
+	height: 15px;
+}
+#cpu-table .row4{
+	font-weight: bolder;
+	text-align: left; 
+	border: none;
+	height: 50px;
+	font-size: 15px;
 }
 .result-title{
 	width: 70px;
 	font-size: 20px;
-	height: 125px;
+	height: 175px;
 	text-align: center;
 	padding-top: 75px;
 }
@@ -67,7 +74,4 @@
 	font-size: 24px;
 	font-weight: bold;
 	padding-top: 15px;
-}
-.event-div{
-	text-align: center;
 }

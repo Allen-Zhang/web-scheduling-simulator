@@ -4,6 +4,7 @@ function CPU(cid) {
 	this.cid = cid;
 	this.name = "CPU" + this.cid;
 	this.status = "";
+	this.remainingUtil = 1;  // Remaining utilization
 }
 
 function CPUManager() {

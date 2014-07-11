@@ -85,3 +85,10 @@ a:link{
 #scheme-text {
 	text-transform: capitalize; 
 }  
+
+/* For error message */
+label.error {
+  color: red;
+  padding: 2px 8px;
+  margin-top: 2px;
+}

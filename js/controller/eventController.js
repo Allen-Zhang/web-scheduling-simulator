@@ -11,28 +11,43 @@ $('#add-case').click(function(){
  * Click function for Next button on modal1
  */ 
 $('#show-modal2').click(function(){
-	$('#myModal2').modal({'backdrop': 'static'});
-	var scheme = $('#scheme').val();
-	// Display corresponding setting algorithm page base on the scheme and quantity of cpu used set
-	var html = addSchemeSelector(scheme);
-	$('#algorithm-list').html(html);
-
+	// Form validation 
+	if ($(".form-myModal1").valid() == true) {
+		// Go to the next modal
+		$("#show-modal2").attr('data-dismiss','modal');
+		$('#myModal2').modal({'backdrop': 'static'});
+		var scheme = $('#scheme').val();
+		// Display corresponding setting algorithm page base on the scheme and quantity of cpu used set
+		var html = addSchemeSelector(scheme);
+		$('#algorithm-list').html(html);
+	}
 });
 
 /*
  * Click function for Next button on modal2
  */ 
 $('#show-modal3').click(function(){
-	$('#myModal3').modal({'backdrop': 'static'});
+	// Form validation 
+	if ($(".form-myModal2").valid() == true) {
+		// Go to the next modal
+		$("#show-modal3").attr('data-dismiss','modal');
+		$('#myModal3').modal({'backdrop': 'static'});
+	}
 });
 
 /*
  * Click function for Finish button on modal3
  */ 
 $('#save-case').click(function(){
-	saveCase();
-	showCaseSettings();
-	showEditCaseAndStartButton();
+
+	// Form validation 
+	if ($(".form-myModal3").valid() == true && validateProcessUnit()) {
+		// Save the case
+		$("#save-case").attr('data-dismiss','modal');
+		saveCase();
+		showCaseSettings();
+		showEditCaseAndStartButton();
+	}
 });
 
 /*
@@ -54,45 +69,53 @@ $('#add-process').click(function(){
  * Click function for edit save process button 
  */
 $('#save-edit-case').click(function(){
-	saveEditCase();
-	showCaseSettings();
+	// Form validation 
+	if ($(".form-myModal4").valid() == true && validateProcessUnit()) {
+		// Save the case
+		$("#save-edit-case").attr('data-dismiss','modal');
+		saveEditCase();
+		showCaseSettings();
+	}
 });
 
 /*
  * Display process setting form base on the quantity of process used set
  */
 $("#process-quantity").change(function(){
-    $("#process-table").remove();
-	var rowCount= $("#process-quantity").val();
-    var table=$("<table id='process-table' border='0'></table>");
-   	table.appendTo($("#process-table-div"));
+	$("#process-table").remove();
+	// Form validation 
+	if ($(".form-myModal3").valid() == true) {
+		var rowCount= $("#process-quantity").val();
+	    var table=$("<table id='process-table' border='0'></table>");
+	   	table.appendTo($("#process-table-div"));
 
-	var tr=$("<tr></tr>");
-	tr.appendTo(table);
-	var th=$("<th>PID</th>");
-	th.appendTo(tr);
-	var th=$("<th>Arrive Time</th>");
-	th.appendTo(tr);
-	var th=$("<th>Execution Time</th>");
-	th.appendTo(tr);
-	var th=$("<th>Period</th>");
-	th.appendTo(tr);
-
-	for(var i=0;i<rowCount;i++)
-	{
 		var tr=$("<tr></tr>");
 		tr.appendTo(table);
-		for(var j=0;j<4;j++)
+		var th=$("<th>Process Name</th>");
+		th.appendTo(tr);
+		var th=$("<th>Arrive Time</th>");
+		th.appendTo(tr);
+		var th=$("<th>Execution Time</th>");
+		th.appendTo(tr);
+		var th=$("<th>Period</th>");
+		th.appendTo(tr);
+
+		for(var i=0;i<rowCount;i++)
 		{
-			var td=$("<td></td>");
-			td.appendTo(tr);
-			if(j==0){
-			  var text=$("<span>Process"+i+"</span>");
-			  text.appendTo(td);
-			}
-			else{
-				var input=$("<input id='input"+(i*4+j)+"' class='form-control'></input>");
-				input.appendTo(td);
+			var tr=$("<tr></tr>");
+			tr.appendTo(table);
+			for(var j=0;j<4;j++)
+			{
+				var td=$("<td></td>");
+				td.appendTo(tr);
+				if(j==0){
+				  var text=$("<span>Process"+i+"</span>");
+				  text.appendTo(td);
+				}
+				else{
+					var input=$("<input id='input"+(i*4+j)+"' class='form-control p-unit'></input>");
+					input.appendTo(td);
+				}
 			}
 		}
 	}
@@ -137,8 +160,8 @@ function addSchemeSelector(scheme) {
 		html = '<div class="form-group">'
 	            	+'<label class="col-sm-4 control-label">Select an Algorithm</label>'
 	                +'<div class="col-xs-5">'
-	                	+'<select class="form-control" id="g-Algorithm">'
-						  +'<option value="default">---- Select an Algorithm ----</option>'
+	                	+'<select class="form-control" id="g-Algorithm" name="algorithm">'
+						  +'<option value="">---- Select an Algorithm ----</option>'
 						  +'<option value="G-EDF">G-EDF</option>'
 						  +'<option value="LLF">LLF</option>'
 						  +'<option value="PF">PF</option>'
@@ -152,8 +175,8 @@ function addSchemeSelector(scheme) {
 		html += '<div class="form-group">'
                 	+'<label class="col-sm-4 control-label">Select an Algorithm</label>'
                     +'<div class="col-xs-5">'
-                    	+'<select class="form-control" id="p-Algorithm">'
-						  +'<option value="default">---- Select an Algorithm ----</option>'
+                    	+'<select class="form-control" id="p-Algorithm" name="algorithm">'
+						  +'<option value="">---- Select an Algorithm ----</option>'
 						  +'<option value="P-EDF">P-EDF</option>'
 						  +'<option value="RMS">RMS</option>'
 						+'</select>'
@@ -239,7 +262,7 @@ function editCase() {
 
 	var tr=$("<tr></tr>");
 	tr.appendTo(table);
-	var th=$("<th>PID</th>");
+	var th=$("<th>Process Name</th>");
 	th.appendTo(tr);
 	var th=$("<th>Arrive Time</th>");
 	th.appendTo(tr);
@@ -262,15 +285,15 @@ function editCase() {
 				  text.appendTo(td);
 				}
 				if(j==1){
-					var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].arrivalTime+"></input>");
+					var input=$("<input class='form-control p-unit' id='edit-input"+(i*5+j)+"' value="+process[i].arrivalTime+"></input>");
 					input.appendTo(td);
 				}
 				if(j==2){
-					var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].execTime+"></input>");
+					var input=$("<input class='form-control p-unit' id='edit-input"+(i*5+j)+"' value="+process[i].execTime+"></input>");
 					input.appendTo(td);
 				}
 				if(j==3){
-					var input=$("<input class='form-control' id='edit-input"+(i*5+j)+"' value="+process[i].period+"></input>");
+					var input=$("<input class='form-control p-unit' id='edit-input"+(i*5+j)+"' value="+process[i].period+"></input>");
 					input.appendTo(td);
 				}
 				if(j==4){
@@ -399,7 +422,7 @@ function addProcess() {
 		  text.appendTo(td);
 		}
 		if (j > 0 && j < 4) {
-			var input = $("<input id='edit-input"+(newPid*5+j)+"' class='form-control'></input>");
+			var input = $("<input id='edit-input"+(newPid*5+j)+"' class='form-control p-unit'></input>");
 			input.appendTo(td);
 		}
 		if (j == 4) {

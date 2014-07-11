@@ -105,8 +105,7 @@ function showNextEvents(){
 			renderNextEvent(recorder);			
 		}else{
 			break;
-		}
-		
+		}		
 	}
 }
 
@@ -161,15 +160,18 @@ function removeCurrentEvents(){
 }
 
 function deleteEvent(divID){
-
-	$("#result-div"+divID).fadeOut(1000,function(){this.remove();});
+	$("#result-div"+divID).fadeOut(1000,function(){
+		this.remove();
+	});
 }
 
 
 function showAllEvent(){
 	$(".event").remove();
 	recorder_manager.index = -1;
-	for(var i=0;i<recorder_manager.recorderList.length;i++){
+	while(1){
+		if(recorder_manager.index == recorder_manager.recorderList.length-1)
+			break;
 		showNextEvents();
 		$(".event").stop(true,true);
 	}

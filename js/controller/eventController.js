@@ -32,7 +32,7 @@ $('#show-modal3').click(function(){
 $('#save-case').click(function(){
 	saveCase();
 	showCaseSettings();
-	showEditCaseButton();
+	showEditCaseAndStartButton();
 });
 
 /*
@@ -103,20 +103,20 @@ $("#start-simulator").click(function(){
 
 	$("#result-display-panel").css("width","2050px")
 	drawResultPanel();
-	showNextEvents();
+	showNextEvents();	
+	$('#case-panel').hide();
 	$('#start-running').hide();
-	$('#stop-running').show();
+	$('#stop-running').fadeIn('fast');
 
 	simulator.startSimulator();
 	showCaseSettings();
-
-	simulator.calculateHyperperiod();
 });
 
-
 $("#stop-simulator").click(function(){
+	showAllEvent();
+	$('#case-panel').fadeIn('fast');;
+	$('#start-running').fadeIn('fast');
 	$('#stop-running').hide();
-	$('#start-running').show();	
 });
 
 $("#step-forward").click(function(){
@@ -130,7 +130,6 @@ $("#step-back").click(function(){
 $("#finish-simulator").click(function(){
 	showAllEvent();
 });
-
 
 function addSchemeSelector(scheme) {
 	var html = "";
@@ -163,8 +162,6 @@ function addSchemeSelector(scheme) {
 	}
 	return html;
 }
-
-
 
 function saveCase() {
 	var scheme = $('#scheme').val();  // Get the scheme user selected
@@ -335,13 +332,16 @@ function showCaseSettings() {
 	$("#process-text").html(html);
 }
 
-
-// Function for showing and hiding Edit Case button
-function showEditCaseButton() {
-	if (typeof simulator === 'undefined') 
+// Function for showing and hiding Edit Case and Start Simulator button
+function showEditCaseAndStartButton() {
+	if (typeof simulator === 'undefined') {
 		$('#edit-case').hide();
-	else
-		$('#edit-case').show(); 
+		$('#start-running').hide();
+	}
+	else {
+		$('#edit-case').fadeIn('fast');
+		$('#start-running').fadeIn('fast'); 
+	}
 }
 
 function resetObjList() {
@@ -377,7 +377,6 @@ function saveEditCase() {
 	simulator.processList = processes;
 	
 }
-
 
 /*
  * Function for adding a new process after 

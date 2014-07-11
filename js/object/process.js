@@ -1,5 +1,5 @@
 
-var colors = new Array("#2ecc71","#3498db","#9b59b6","#f1c40f","#e67e22","#e74c3c","#ecf0f1","#7f8c8d","#f39c12","#1abc9c")
+var colors = new Array("#2ecc71","#3498db","#9b59b6","#f1c40f","#e67e22","#e74c3c","#ecf0f1","#7f8c8d","#f39c12","#1abc9c");
 
 function Process(pid, arrivalTime, execTime, period, executedCPU) {
 	
@@ -9,18 +9,14 @@ function Process(pid, arrivalTime, execTime, period, executedCPU) {
 	this.status = "";
 	this.active = true;  // If a process is deleted by user, change it to false
 
-	this.arrivalTime = arrivalTime !== undefined ? arrivalTime : "";
-	this.period = period !== undefined ? period : "";
-	this.execTime = execTime !== undefined ? execTime : "";
-	this.executedCPU = executedCPU !== undefined ? executedCPU : "";
+	this.arrivalTime = arrivalTime !== undefined ? arrivalTime : 0;
+	this.period = period !== undefined ? period : 0;
+	this.execTime = execTime !== undefined ? execTime : 0;
+	this.executedCPU = executedCPU !== undefined ? executedCPU : 0;
 	this.showColor = colors[pid%10];
-	// this.startTime = "";
+	this.startTime = -1;
 	// this.remainingTime = "";
-	// this.deadline = "";
-	// function getRandomColor(){
- 	//  	return '#'+Math.floor(Math.random()*16777215).toString(16); 
-	// }
-	
+	this.deadline = parseInt(this.arrivalTime) + parseInt(this.period);	//first deadline
 
 }
 

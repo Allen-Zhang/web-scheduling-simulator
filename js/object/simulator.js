@@ -5,6 +5,7 @@ function Simulator(scheme, algorithm, resourceList, processList) {
 	this.algorithm = algorithm !== undefined ? algorithm : ""; 
 	this.resourceList = resourceList !== undefined ? resourceList : [];
 	this.processList = processList !== undefined ? processList : [];
+	this.finishEventList = [];
 
 	this.startSimulator = function() {
 		switch(this.scheme){
@@ -12,6 +13,7 @@ function Simulator(scheme, algorithm, resourceList, processList) {
 				partitioningStrategy();
 				switch(this.algorithm){
 					case "P-EDF":
+						P_EDF();
 						break;
 				}
 				break;

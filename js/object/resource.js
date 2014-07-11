@@ -3,8 +3,10 @@ function CPU(cid) {
 	
 	this.cid = cid;
 	this.name = "CPU" + this.cid;
-	this.status = "";
+	this.status = 0;	// 0 represent for idle 1 for busy
 	this.remainingUtil = 1;  // Remaining utilization
+	this.readyQueue = [];
+	this.runningProcess = "";
 }
 
 function CPUManager() {

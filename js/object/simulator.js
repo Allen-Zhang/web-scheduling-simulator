@@ -1,0 +1,85 @@
+
+function Simulator(scheme, algorithm, resourceList, processList) {
+	
+	this.scheme = scheme !== undefined ? scheme : "";
+	this.algorithm = algorithm !== undefined ? algorithm : ""; 
+	this.resourceList = resourceList !== undefined ? resourceList : [];
+	this.processList = processList !== undefined ? processList : [];
+	this.finishEventList = [];
+	// this.frameSize = 0;
+
+	this.startSimulator = function() {
+		switch(this.scheme){
+			case "partitioned":
+				partitioningStrategy();
+				switch(this.algorithm){
+					case "P-EDF":
+						P_EDF();
+						break;
+				}
+				break;
+			case "global": 
+				break;
+		}
+	}
+
+	/*
+	 * Set min frame size 12, and max frame size 30
+	 */
+	this.setFrameSize = function() {
+		var hyperperiod = this.calculateHyperperiod();
+		if (hyperperiod < 12)  // hyperperiod is less than 12
+			this.frameSize = 12;
+		else if (hyperperiod >= 12 && hyperperiod <=30)  // hyperperiod is between 12 and 30
+			this.frameSize = hyperperiod;
+		else  // hyperperiod is more than 30
+			this.frameSize = 30;
+	}
+
+	/* Calculate the hyperperiod begin */
+
+	/*
+	 * Formula: hyperperiod = lcm[P0(arrival time + period), P1(arrival time + period), ...]
+	 */
+	this.calculateHyperperiod = function() {
+		var periodList = [];
+		for (var i in this.processList) {
+			periodList.push(parseInt(this.processList[i].arrivalTime) + parseInt(this.processList[i].period));
+		}
+		return this.lcm_nums(periodList);
+	}
+
+	this.gcf = function(a, b) { 
+		return (b == 0) ? (a) : (this.gcf(b, a % b)); 
+	}
+	
+	this.lcm = function(a, b) { 
+		return (a / this.gcf(a,b)) * b; 
+	}
+
+	// Calculate the least common multiple
+	this.lcm_nums = function(ar) {
+		if (ar.length > 1) {
+			ar.push(this.lcm(ar.shift(), ar.shift()));
+			return this.lcm_nums(ar);
+		} else {
+			return ar[0];
+		}
+	}
+
+	/* Calculate the hyperperiod end */
+
+	// Calculate the utilization for each resource
+	this.calculateUtilization = function() {
+		var utilList = [];
+		for (var i in this.resourceList) {
+			var remainingUtil = this.resourceList[i].remainingUtil
+			if (remainingUtil < 0) 
+				utilList.push(1);
+			else 
+				utilList.push(1 - remainingUtil);
+		}
+		return utilList;
+	}
+
+}

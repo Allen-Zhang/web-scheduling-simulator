@@ -38,6 +38,8 @@ function ProcessManager() {
 
 	this.resetProcessList = function() {
 		this.processList.length = 0;
+		this.pid = -1;
+		this.copyOfProcessList.length = 0;
 	}
 
 	this.drawProcessTable = function() {
@@ -119,17 +121,8 @@ function ProcessManager() {
 	 */ 
 	this.deactivateProcess = function(index) {
 		var processes = process_manager.processList;
-		// var processQty = processes.length;
-		// for (var i =0; i < processQty; i++) {
-		// 	if (processes[i].pid == pid) {
-		// 		processes[i].active = false;
-		// 		$("#process"+i+"-row").remove();
-		// 	}
-				
-		// }
 		$("#process"+index+"-row").remove();
 		processes[index].active = false;
-		//processes.splice(index,1);
 	}
 
 	/*
@@ -174,6 +167,129 @@ function ProcessManager() {
 	this.getBackUpProcessList = function() {
 		return this.copyOfProcessList;
 	}
+
+	/* JavaScript File Read/Write Functions Begin */
+
+	// Save processes information as a txt file 
+	this.saveProcessAsTxtFile = function() {
+		// Get the text that need to be wrote
+		var textToWrite = this.getProcessInfoToWrite();
+		var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+		var fileName = document.getElementById("fileName").value;
+		var fileNameToSaveAs = "";
+
+		// Use default file name when file name is undefined by user		
+		if (fileName.replace(/[ ]/g,"").length == 0) {
+			fileNameToSaveAs = "default.txt";
+		} else {
+			fileNameToSaveAs = fileName + ".txt";  // Saved as a txt file
+		}		
+		
+		var downloadLink = document.createElement("a");
+		downloadLink.download = fileNameToSaveAs;
+		downloadLink.innerHTML = "Download File";
+		if (window.webkitURL != null) {
+			// Chrome allows the link to be clicked
+			// without actually adding it to the DOM.
+			downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+		}
+		else {
+			// Firefox requires the link to be added to the DOM
+			// before it can be clicked.
+			downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+			downloadLink.onclick = this.destroyClickedElement;
+			downloadLink.style.display = "none";
+			document.body.appendChild(downloadLink);
+		}
+		downloadLink.click();
+	}
+
+	// Get information of all processes and serialize them
+	this.getProcessInfoToWrite = function() {
+		var processQty = $("#process-quantity").val();  // Get the quantity of process
+		var textToWrite = "";
+
+		for(var i = 0; i < processQty; i++){
+			textToWrite += $("#input"+(i*4+1)).val()  // Get arrival time
+						+ ","
+						+ $("#input"+(i*4+2)).val()  // Get execution time
+						+ ","
+						+ $("#input"+(i*4+3)).val()  // Get period
+						+ ";"
+		}
+		return textToWrite;
+	}
+
+	this.destroyClickedElement = function(event) {
+		document.body.removeChild(event.target);
+	}
+
+	// Load processes information from the chosen file 
+	this.loadProcess = function() {
+
+	    var files = document.getElementById('files').files;
+	    if (!files.length) {
+	      alert('Please choose a file.');
+	      return;
+	    }
+	    var file = files[0];
+	    var start = 0;
+	    var stop = file.size - 1;
+	    var reader = new FileReader();  
+	    var check = true;  
+
+	    // If we use onloadend, we need to check the readyState.
+	    reader.onloadend = function(evt) {
+	      	if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+	      		
+		        // Format file content
+		        var content = evt.target.result.replace(/\;/g,",").split(",");
+		        var p_unit = [];
+		        for (var i = 0; i < content.length - 1; i++) {
+				    p_unit.push(parseInt(content[i]));		
+				    // Data validity validation
+				    if (isNaN(p_unit[i])) {
+				    	// alert('Invalid p_unit['+i+']: '+p_unit[i]);
+				    	check = false;
+				    }
+				}
+				// Non empty validation
+				if (p_unit.length == 0) {
+					check = false;
+				}
+				if (check == true) {
+					// Data size validation 
+					var remainder = (p_unit.length) % 3;	
+					if (remainder != 0) {  // Worng data size
+						alert('Load process failed! Please choose other files.');
+					} 
+					else {  // Correct data size
+						var processQty = (p_unit.length) / 3;
+						$("#process-quantity").val(processQty);
+						$("#process-quantity").blur();
+
+						for(var i = 0; i < processQty; i++) {
+							for(var j = 0; j < 4; j++) {
+								var index = j - 1 + i * 3;
+								if (j == 1)
+									$('#input'+(i*4+j)+'').val(p_unit[index]);
+								else if (j == 2)
+									$('#input'+(i*4+j)+'').val(p_unit[index]);
+								else if (j == 3)
+									$('#input'+(i*4+j)+'').val(p_unit[index]);
+							}
+						}	
+					}				
+				} else {
+					alert('Load process failed! Please choose other files.');
+				}
+		    }
+		};
+	    var blob = file.slice(start, stop + 1);
+	    reader.readAsBinaryString(blob);
+	}
+
+	/* JavaScript File Read/Write Functions End */
 
 }
 

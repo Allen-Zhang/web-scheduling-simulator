@@ -4,6 +4,9 @@ $('#add-case').click(function(){
 	$('#myModal1').modal({'backdrop': 'static'});
 	// Reset processList and CPUList
 	resetObjList();
+	cleanResultPanel();
+	recorder_manager.recorderList.length = 0;
+	recorder_manager.recorderSequence.length = 0;
 });
 
 // Click function for Next button on modal1 
@@ -34,20 +37,29 @@ $('#show-modal3').click(function(){
 $("#process-quantity").blur(function(){
 	$("#process-table").remove();
 	// Form validation 
-
 	if ($(".form-myModal3").valid() == true) {
-		$("#random-process").fadeIn();
+		$("#random-process").fadeIn(); 
+		$(".save-process-group").fadeIn();		
 		process_manager.drawProcessTable();
 	} else {
 		$("#random-process").hide();
+		$(".save-process-group").hide();
 	}
+});
+
+// Click function for save process button
+$("#save-process").click(function(){
+	// Form validation
+	if ($(".form-myModal3").valid() == true && 
+			validateProcessUnit("process-table", $("#process-quantity").val())) {
+		process_manager.saveProcessAsTxtFile();
+	} 
 });
 
 // Click function for load process button
 $("#load-process").click(function(){
-	loadProcess();
+	process_manager.loadProcess();
 });
-
 
 // Click function for radomize button
 $("#random-process").click(function(){
@@ -58,7 +70,6 @@ $("#random-process").click(function(){
 
 // Click function for Finish button on modal3
 $('#save-case').click(function(){
-
 	// Form validation 
 	if ($(".form-myModal3").valid() == true && 
 			validateProcessUnit("process-table", $("#process-quantity").val())) {
@@ -71,6 +82,7 @@ $('#save-case').click(function(){
 		$("#save-case").removeAttr('data-dismiss','modal');
 	}
 });
+
 // Click function for Edit Case button
 $('#edit-case').click(function(){
 	$('#myModal4').modal({'backdrop': 'static'});
@@ -116,12 +128,13 @@ $("#start-simulator").click(function(){
 	recorder_manager.recorderSequence.length = 0;
 
 	initializeData();
-
 	cleanResultPanel();
+
+	drawResultPanel();
 	$("#result-display-panel").css("width","1500px");
 	var height = simulator.resourceList.length * 190;
 	$("#result-recorder-div").css("height",height+"px");
-	drawResultPanel();
+	$(".result-global-readyqueue").css("height",height+"px");
 
 	simulator.startSimulator();
 	recorder_manager.handleRecorderSequence();
@@ -238,12 +251,20 @@ function changeAlgTitle(algorithm) {
 }
 
 function showCaseSettings() {
-	//scheme info show
-	$("#scheme-text").html(simulator.scheme);
-	$("#algorithm-text").html(simulator.algorithm);
-
+	// Scheme information
+	$("#scheme-text").html("<b>" + simulator.scheme + "</b>");
+	// Algorithm information
+	$("#algorithm-text").html("<b>" + simulator.algorithm + "</b>");
+	// Workload information
 	var results = simulator.compareTotalProcessUtilWithTotalCpuRemainingUtil();
-	//alert(results.totalProUtil +" "+results.totalCpuUtil+" "+results.condition);
+	var workloadHtml = "<table id='workload-table'>"
+						  + "<tr>"
+							  + "<td>Total process utilization: <b>" + results.totalProUtil + "</b></td>"
+							  + "<td>Total CPU utilization: <b>" + results.totalCpuUtil + "</b></td>"
+							  + "<td>Status: <b>" + results.condition + "</b></td>"
+						  + "</tr>"
+					  + "</table>"
+	$("#workload-text").html(workloadHtml);
 
 	//CPU info show
 	var html="<table class='table table-hover'><tr class='info'>"
@@ -288,6 +309,7 @@ function showCaseSettings() {
 	html+="</table>";
 	$("#process-text").html(html);
 }
+
 
 /*
  * Function for showing and hiding Edit Case and Start Simulator button

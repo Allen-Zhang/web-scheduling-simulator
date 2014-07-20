@@ -5,6 +5,8 @@ function Simulator(scheme, algorithm, resourceList, processList) {
 	this.algorithm = algorithm !== undefined ? algorithm : ""; 
 	this.resourceList = resourceList !== undefined ? resourceList : [];
 	this.processList = processList !== undefined ? processList : [];
+	this.globalReadyQueue = [];
+	this.globalRunningProcess = "";
 	this.finishEventList = [];
 	// this.frameSize = 0;
 
@@ -22,6 +24,14 @@ function Simulator(scheme, algorithm, resourceList, processList) {
 				}
 				break;
 			case "global": 
+				switch(this.algorithm){
+					case "G-EDF":
+						G_EDF();
+						break;
+					case "G-RMS":
+						//G_RMS();
+						break;
+				}
 				break;
 		}
 	}

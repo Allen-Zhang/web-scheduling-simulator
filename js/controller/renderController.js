@@ -7,51 +7,72 @@ function cleanResultPanel() {
 }
 
 function drawResultPanel() {
-	//draw event diagram
-	//drawEventDiagram("event");
-	//draw CPU diagrams
-	var cpuQty=simulator.resourceList.length;
-	for(var i=0;i<cpuQty;i++){
-		drawCPUDiagram(simulator.resourceList[i].cid);
+	var scheme = simulator.scheme;
+	switch(scheme){
+		case "partitioned":
+			//draw CPU diagrams
+			var cpuQty=simulator.resourceList.length;
+			for(var i=0;i<cpuQty;i++){
+				drawCPUDiagram(simulator.resourceList[i].cid);
+			}
+			break;
+		case "global":
+			//draw event diagram
+			drawEventDiagram("event");
+			//draw CPU diagrams
+			var cpuQty=simulator.resourceList.length;
+			for(var i=0;i<cpuQty;i++){
+				drawCPUDiagram(simulator.resourceList[i].cid);
+			}
+			drawGlobalReadyQueue();
+			break;
 	}
 }
 
-// function drawEventDiagram(cid){
-// 	//add title content
-// 	var title;
-// 	title=$("<div class='result-title' id='event-title'>Event</div>");
-// 	title.appendTo($("#result-display-title"));
+function drawEventDiagram(){
+	//add title content
+	var title;
+	title=$("<div id='event-title'>Event</div>");
+	title.appendTo($("#result-display-title"));
 
-// 	//draw a diagram
-// 	var table=$("<table id='event-table' border='0'></table>");
-//    	table.appendTo($("#result-display-panel"));
-// 	for(var i=0;i<3;i++)
-// 	{
-// 		var tr=$("<tr></tr>");
-// 		tr.appendTo(table);
-// 		for(var j=0;j<50;j++)
-// 		{	
-// 			if(i==0){
-// 				var td=$("<td class='row1'>"+j+"</td>");
-// 				td.appendTo(tr);
-// 			}
-// 				if(i==1){
-// 				var td=$("<td class='row2'> </td>");
-// 				td.appendTo(tr);
-// 			}
-// 				if(i==2){				
-// 				var td=$("<td class='row3' id='table"+cid+"td"+j+"'> </td>");
-// 				td.appendTo(tr);
-// 			}
-// 		}
-// 	}
-// }
+	//draw a diagram
+	var table=$("<table id='event-table'></table>");
+   	table.appendTo($("#result-display-panel"));
+	for(var i=0;i<4;i++)
+	{
+		var tr=$("<tr></tr>");
+		tr.appendTo(table);
+		for(var j=0;j<30;j++)
+		{	
+			if(i==0){
+				var td=$("<td class='row1' id='miss-table-td"+j+"'></td>");
+				td.appendTo(tr);
+			}
+			if(i==1){
+				var td=$("<td class='row2'> </td>");
+				td.appendTo(tr);
+			}
+			if(i==2){
+				var td=$("<td class='row3'>"+j+"</td>");
+				td.appendTo(tr);
+			}
+			if(i==3){				
+				var td=$("<td class='row4' id='event-table-td"+j+"'> </td>");
+				td.appendTo(tr);
+			}
+		}
+	}
+}
 
 function drawCPUDiagram(cid){
 	//add title content
-	var title=$("<div class='result-title'>CPU"+cid+"</div>");
+	var title=$("<div class='result-title' id='result-title"+cid+"' >CPU"+cid+"</div>");
 	title.appendTo($("#result-display-title"));
-
+	var scheme = simulator.scheme;
+	if(scheme == "global")
+		$(".result-title").css("height","180px");
+	else
+		$(".result-title").css("height","200px");
 	//draw a CPU diagram
 	var table=$("<table id='cpu-table' border='0'></table>");
    	table.appendTo($("#result-display-panel"));
@@ -61,7 +82,7 @@ function drawCPUDiagram(cid){
 		tr.appendTo(table);
 		for(var j=0;j<30;j++)
 		{	
-			if(i==0){
+			if(i==0 && scheme == "partitioned"){
 				var td=$("<td class='row1' id='miss-table"+cid+"td"+j+"'></td>");
 				td.appendTo(tr);
 			}
@@ -84,10 +105,23 @@ function drawCPUDiagram(cid){
 		}
 	}
 	//draw ready queue
-	var title = $("<p>CPU"+cid+"</p><div class='runningP-div' id='currentRunningP"+cid+"'> </div><div class='result-readyqueue' id='result-readyqueue"+cid+"'></div>");
-	title.appendTo($("#result-display-readyqueue"));
+	var scheme = simulator.scheme;
+	switch(scheme){
+		case "partitioned":
+			var title = $("<p>CPU"+cid+"</p><div class='runningP-div' id='currentRunningP"+cid+"'> </div><div class='result-readyqueue' id='result-readyqueue"+cid+"'></div>");
+			title.appendTo($("#result-display-readyqueue"));
+			break;
+		case "global":
+			var title = $("<div class='runningP-div' id='currentRunningP"+cid+"'> </div>");
+			title.appendTo($("#result-title"+cid));
+			break;
+	}
 }
 
+function drawGlobalReadyQueue(){
+	var title = $("<p>Global</p><div class='result-global-readyqueue' id='global-readyqueue'></div>");
+	title.appendTo($("#result-display-readyqueue"));
+}
 
 function showNextEvents(flag){
 	var index = recorder_manager.getNextEventIndex();
@@ -111,6 +145,7 @@ function renderNextEvent(eventIndex,flag){
 	var color = colors[recorder.pid];
 	var divID = "result-div"+eventIndex;
 	var text = "";
+	var scheme = simulator.scheme;
 
 	if (type == "execution") {	
 		var td = "#table"+cid+"td"+start;
@@ -121,9 +156,16 @@ function renderNextEvent(eventIndex,flag){
 		div.appendTo($(td));
 		$("#"+divID).animate({width:length+'px',opacity:'0.8'},1000);
 		text = "P"+pid+" executes on CPU"+cid;
+		if(scheme == "global"){
+			var td = "#currentRunningP"+cid;
+				$(td).html("P"+recorder.runningProcess+" ("+recorder.runningProcessPriority+")");
+		}
 	}
 	if(type == "arrival"){
-		var td = "#event-table"+cid+"td"+start;
+		if(scheme == "partitioned")
+			var td = "#event-table"+cid+"td"+start;
+		else
+			var td = "#event-table-td"+start;
 		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;'>&#8593 P"+pid+"</div>");
 		div.appendTo($(td));
 		$("#"+divID).hide().fadeIn(1000);
@@ -138,7 +180,10 @@ function renderNextEvent(eventIndex,flag){
 	}
 	if(type == "miss"){
 		var flag = 0;
-		var td = "#miss-table"+cid+"td"+start;
+		if(scheme == "partitioned")
+			var td = "#miss-table"+cid+"td"+start;
+		else
+			var td = "#miss-table-td"+start;
 		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:red;top:0px;'>&#8595 P"+pid+"</div>");
 		if($(td).html()){
 			var top = $(td).children().last().css("top").slice(0,-2)-30;
@@ -149,20 +194,35 @@ function renderNextEvent(eventIndex,flag){
 		text = "P"+pid+" misses";
 	}
 	//draw readyQueue
-	var td = "#currentRunningP"+cid;
-	if(recorder.runningProcess != ""||recorder.runningProcess == "0")
-		$(td).html("P"+recorder.runningProcess+" ("+recorder.runningProcessPriority+")");
-	else
-		$(td).html("");
+	switch(scheme){
+		case "partitioned":
+			var td = "#currentRunningP"+cid;
+			if(recorder.runningProcess != ""||recorder.runningProcess == "0")
+				$(td).html("P"+recorder.runningProcess+" ("+recorder.runningProcessPriority+")");
+			else
+				$(td).html("");
 
-	var td = "#result-readyqueue"+cid;
-	$(td).empty();
-	for(var i in recorder.readyQueue){
-		var	div = $("<div class='readyQueue-div event' >P"+recorder.readyQueue[i]+" ("+recorder.readyQueuePriority[i]+")</div>");
-		div.appendTo($(td));
-		if(type != "miss")
-			div.hide().fadeIn(700);
+			var td = "#result-readyqueue"+cid;
+			$(td).empty();
+			for(var i in recorder.readyQueue){
+				var	div = $("<div class='readyQueue-div event' >P"+recorder.readyQueue[i]+" ("+recorder.readyQueuePriority[i]+")</div>");
+				div.appendTo($(td));
+				if(type != "miss")
+					div.hide().fadeIn(700);
+			}
+			break;
+		case "global":
+			var td = "#global-readyqueue";
+			$(td).empty();
+			for(var i in recorder.readyQueue){
+				var	div = $("<div class='readyQueue-div event' >P"+recorder.readyQueue[i]+" ("+recorder.readyQueuePriority[i]+")</div>");
+				div.appendTo($(td));
+				if(type != "miss")
+					div.hide().fadeIn(700);
+			}
+			break;
 	}
+
 
 	//draw event recorder
 	if(flag != 1){

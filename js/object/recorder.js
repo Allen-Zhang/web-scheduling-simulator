@@ -83,6 +83,16 @@ function RecorderManager() {
 				else
 					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, runningProcess.pid,runningProcess.period);		
 				break;
+			case "G-EDF":
+				for(var i in readyQueue){
+					readyQueueList[i] = readyQueue[i].pid;
+					readyqueuePriority[i] = readyQueue[i].deadline;
+				}
+				if(runningProcess == "")
+					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, "","");
+				else
+					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, runningProcess.pid,runningProcess.period);		
+				break;
 		}
 		this.addRecorder(record);
 	}

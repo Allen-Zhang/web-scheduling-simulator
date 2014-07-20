@@ -33,3 +33,7 @@ function partitioningStrategy() {
 	}
 
 }
+/*
+ * First, find an idle cpu
+ * if not, allocate this process to a cpu whose running process's priority is smallest.
+ */

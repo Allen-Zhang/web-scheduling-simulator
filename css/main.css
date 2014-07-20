@@ -19,6 +19,13 @@ body > div{
 #header > div {
 	padding-top:5px;	
 }
+.main-pane {
+	min-height:280px;
+	padding-left: 10px;
+}
+.modal-footer {
+	margin-top: -10px;
+}
 #running-results {
 	min-height:150px;
 }
@@ -48,12 +55,11 @@ body > div{
 a:link{
 	text-decoration:none;
 }
-#scheme-text{
+#scheme-text, #algorithm-text, #workload-text{
 	margin-left: 20px;
 }
-#algorithm-text{
-	margin-left: 20px;
-
+#workload-table {
+	width: 100%;
 }
 #control-pane{
 	margin-top:20px;
@@ -82,6 +88,6 @@ label.error {
   margin-top: 2px;
 }
 
-#random-process {
-	margin-top:2px;
+#files {
+	width: 200px;
 }

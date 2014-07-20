@@ -5,15 +5,15 @@ function P_EDF(){
 			var resource = simulator.resourceList[j];
 
 			//check deadline miss event
-			checkMissEvent(resource,i);
+			checkMissEvent(i,resource);
 
 			//check process finish event
-			checkAndHandleFinishProcess(resource,i);
+			checkAndHandleFinishProcess(i,resource);
 
 			//check arrival process
-			checkAndHandleArrivalProcess(i, resource);	
+			checkAndHandleArrivalProcess(i,resource);	
 			if(resource.status == 0)
-				executionProcess(resource,i);
+				executionProcess(i,resource);
 		}
 	}
 }

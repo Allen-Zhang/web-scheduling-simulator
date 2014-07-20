@@ -5,13 +5,15 @@ $(document).ready(function(){
 		    'cpu-quantity': {
 		      	required: true,
 		      	digits: true,
-		      	min: 1    
+		      	min: 1,
+		      	max: 10    
 		    },
 		    'scheme': 'required'
 		},
 		messages:{
 			'cpu-quantity': {
-		      	min: 'Please enter at least 1 CPU.'
+		      	min: 'Please enter at least 1 CPU.',
+		      	max: 'No more than 10 CPUs.'
 		    }
 		}
 	}); 
@@ -27,12 +29,14 @@ $(document).ready(function(){
 		    'process-quantity': {
 		      	required: true,
 		      	digits: true,
-		      	min: 1    
+		      	min: 1,
+		      	max: 15    
 		    }
 		},
 		messages:{
 			'process-quantity': {
-		      	min: 'Requrie at least 1 process.'
+		      	min: 'Requrie at least 1 process.',
+		      	max: 'No more than 15 processes.'
 		    }
 		}
 	}); 	
@@ -59,8 +63,8 @@ function validateProcessUnit(tableId, rowCount) {
 	});
 	// Execution time validation
 	for(var i = 0; i < rowCount; i++) {
-		var executionTime = $('#'+tableId+' input[class*="p-exec'+i+'"]').val();
-		var period = $('#'+tableId+' input[class*="p-period'+i+'"]').val();
+		var executionTime = parseInt($('#'+tableId+' input[class*="p-exec'+i+'"]').val());
+		var period = parseInt($('#'+tableId+' input[class*="p-period'+i+'"]').val());
 		// execution time must be smaller than period
 		if (executionTime > period) { 
 			$('.p-exec'+i+'').val(''); 
@@ -72,5 +76,7 @@ function validateProcessUnit(tableId, rowCount) {
 		alert("Execution time must be smaller than period.");
 	if (checkOther == false)
 		alert("Please enter all valid process information.");
+
+	// alert(isValid);
 	return isValid;
 }

@@ -1,5 +1,4 @@
-// P-EDF algorithm
-function P_EDF(){
+function P_RMS(){
 	for(var i=0; i < 30; i++){
 		for(var j in simulator.resourceList){
 			var resource = simulator.resourceList[j];

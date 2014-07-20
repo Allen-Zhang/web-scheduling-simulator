@@ -4,29 +4,31 @@
  */
 function partitioningStrategy() {
 
-	var pList = simulator.processList;
-	var rList = simulator.resourceList;
+	var simPList = simulator.processList;
+	var simRList = simulator.resourceList;
+	var manPList = process_manager.processList;
 
-	for (var i in pList) {
+	for (var i in simPList) {
 
 		// Find the CPU whose remaining utilization is the largest
-		var targetCid = rList[0].cid;
-		var targetReUtil = rList[0].remainingUtil;
+		var targetCid = simRList[0].cid;
+		var targetReUtil = simRList[0].remainingUtil;
 		var targetRListIndex = 0;
 
-		for (var j = 0; j < rList.length - 1; j++) {
-			if (targetReUtil < rList[j+1].remainingUtil) {
-				targetReUtil = rList[j+1].remainingUtil;
-				targetCid = rList[j+1].cid;
+		for (var j = 0; j < simRList.length - 1; j++) {
+			if (targetReUtil < simRList[j+1].remainingUtil) {
+				targetReUtil = simRList[j+1].remainingUtil;
+				targetCid = simRList[j+1].cid;
 				targetRListIndex = j + 1;
 			}
 		}
 
 		// Allocate current process to the target CPU
-		pList[i].executedCPU = targetCid;
+		simPList[i].executedCPU = targetCid;
+		manPList[i].executedCPU = targetCid;
 
 		// Update this target CPU's remaining utilization
-		rList[targetRListIndex].remainingUtil = targetReUtil - pList[i].execTime / pList[i].period;
+		simRList[targetRListIndex].remainingUtil = targetReUtil - simPList[i].execTime / simPList[i].period;
 
 	}
 

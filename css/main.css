@@ -38,7 +38,7 @@ body > div{
 	width: 70%;
 	height: 25px;
 }
-#add-process {
+#add-process, #load-process {
 	float:left;
 }
 .delete-process {

@@ -30,6 +30,32 @@ $('#show-modal3').click(function(){
 	}
 });
 
+// Display process setting form base on the quantity of process used set
+$("#process-quantity").blur(function(){
+	$("#process-table").remove();
+	// Form validation 
+
+	if ($(".form-myModal3").valid() == true) {
+		$("#random-process").fadeIn();
+		process_manager.drawProcessTable();
+	} else {
+		$("#random-process").hide();
+	}
+});
+
+// Click function for load process button
+$("#load-process").click(function(){
+	loadProcess();
+});
+
+
+// Click function for radomize button
+$("#random-process").click(function(){
+	if ($(".form-myModal3").valid() == true) {
+		process_manager.randomizeProcess();
+	}
+});
+
 // Click function for Finish button on modal3
 $('#save-case').click(function(){
 
@@ -41,111 +67,80 @@ $('#save-case').click(function(){
 		saveCase();
 		showCaseSettings();
 		showEditCaseAndStartButton();
+	} else {
+		$("#save-case").removeAttr('data-dismiss','modal');
 	}
 });
-
 // Click function for Edit Case button
 $('#edit-case').click(function(){
 	$('#myModal4').modal({'backdrop': 'static'});
+	// Back up the processList
+	process_manager.setBackUpProcessList();
 	editCase();
 });
 
-// Click function for adding a new process
+// Click function for adding a new process on edit case page
 $('#add-process').click(function(){
-	addProcess();
+	process_manager.addNewEditProcess();
 });
 
 // Click function for edit save process button 
 $('#save-edit-case').click(function(){
 	// Form validation 
 	if ($(".form-myModal4").valid() == true && 
-			validateProcessUnit("edit-case-table", simulator.processList.length)) {
+			validateProcessUnit("edit-case-table", process_manager.processList.length)) {
 		// Save the case
 		$("#save-edit-case").attr('data-dismiss','modal');
 		saveEditCase();
 		showCaseSettings();
-	}
-});
-
-// Display process setting form base on the quantity of process used set
-$("#process-quantity").change(function(){
-	$("#process-table").remove();
-	// Form validation 
-	if ($(".form-myModal3").valid() == true) {
-		$("#random-process").fadeIn();
-		var rowCount= $("#process-quantity").val();
-	    var table=$("<table id='process-table' border='0'></table>");
-	   	table.appendTo($("#process-table-div"));
-
-		var tr=$("<tr></tr>");
-		tr.appendTo(table);
-		var th=$("<th>Process Name</th>");
-		th.appendTo(tr);
-		var th=$("<th>Arrive Time</th>");
-		th.appendTo(tr);
-		var th=$("<th>Execution Time</th>");
-		th.appendTo(tr);
-		var th=$("<th>Period</th>");
-		th.appendTo(tr);
-
-		for(var i=0;i<rowCount;i++) {
-			var tr=$("<tr></tr>");
-			tr.appendTo(table);
-			for(var j=0;j<4;j++) {
-				var td=$("<td></td>");
-				td.appendTo(tr);
-				if(j == 0){
-				  var text=$("<span>Process"+i+"</span>");
-				  text.appendTo(td);
-				} else if(j == 1){
-					var input=$("<input id='input"+(i*4+j)+"' class='form-control p-unit'></input>");
-					input.appendTo(td);
-				} else if(j == 2){
-					var input=$("<input id='input"+(i*4+j)+"' class='form-control p-unit p-exec"+i+"'></input>");
-					input.appendTo(td);
-				} else if(j == 3){
-					var input=$("<input id='input"+(i*4+j)+"' class='form-control p-unit p-period"+i+"'></input>");
-					input.appendTo(td);
-				}
-			}
-		}
 	} else {
-		$("#random-process").hide();
+		$("#save-edit-case").removeAttr('data-dismiss','modal');
 	}
 });
 
-// Click function for radomize button
-$("#random-process").click(function(){
-	if ($(".form-myModal3").valid() == true) {
-		randomizeProcess();
-	}
+// Click function for cancel edit case button
+$("#cancel-edit-case").click(function(){ 
+	var copy = process_manager.getBackUpProcessList();
+	// Recover the processList
+	process_manager.processList = copy;
 });
 
 // Click function for start simulator button
-$("#start-simulator").click(function(){
-	cleanResultPanel();
-	$("#result-display-panel").css("width","1500px");
-	var height = simulator.resourceList.length * 190;
-	$("#result-recorder-div").css("height",height+"px");
-	drawResultPanel();
-			
+$("#start-simulator").click(function(){				
 	$("#result-legend").show();	
 	$('#case-panel').hide();
 	$('#start-running').hide();
 	$('#stop-running').fadeIn('fast');
 
+	recorder_manager.recorderList.length = 0;
+	recorder_manager.recorderSequence.length = 0;
+
+	initializeData();
+
+	cleanResultPanel();
+	$("#result-display-panel").css("width","1500px");
+	var height = simulator.resourceList.length * 190;
+	$("#result-recorder-div").css("height",height+"px");
+	drawResultPanel();
+
 	simulator.startSimulator();
 	recorder_manager.handleRecorderSequence();
+
 	showNextEvents();
 	showCaseSettings();
 });
 
 // Click function for stop simulator button
 $("#stop-simulator").click(function(){
-	showAllEvent();
-	$('#case-panel').fadeIn('fast');;
+	recorder_manager.resetIndex();
+	$('.event').remove();
+	$('.runningP-div').empty();
+	$('#result-recorder-table').empty();
+	$('#case-panel').fadeIn('fast');
 	$('#start-running').fadeIn('fast');
 	$('#stop-running').hide();
+	process_manager.resetProcessAllocation();
+	showCaseSettings();
 });
 
 $("#step-forward").click(function(){
@@ -158,13 +153,6 @@ $("#step-back").click(function(){
 
 $("#finish-simulator").click(function(){
 	showAllEvent();
-	// for(var i in recorder_manager.recorderSequence){
-	// 	var text ="";
-	// 	for(var j in recorder_manager.recorderSequence[i]){	
-	// 		text+=recorder_manager.recorderSequence[i][j]+"*"+recorder_manager.recorderList[recorder_manager.recorderSequence[i][j]].eventType+"|";
-	// 	}
-	// 	alert(text);
-	// }
 });
 
 function addSchemeSelector(scheme) {
@@ -176,9 +164,8 @@ function addSchemeSelector(scheme) {
 	                	+'<select class="form-control" id="g-Algorithm" name="algorithm">'
 						  +'<option value="">---- Select an Algorithm ----</option>'
 						  +'<option value="G-EDF">G-EDF</option>'
+						  +'<option value="G-RMS">G-RMS</option>'
 						  +'<option value="LLF">LLF</option>'
-						  +'<option value="PF">PF</option>'
-						  +'<option value="RMS">RMS</option>'
 						+'</select>'
 	                +'</div>'
 	            +'</div>';
@@ -190,7 +177,7 @@ function addSchemeSelector(scheme) {
                     	+'<select class="form-control" id="p-Algorithm" name="algorithm">'
 						  +'<option value="">---- Select an Algorithm ----</option>'
 						  +'<option value="P-EDF">P-EDF</option>'
-						  +'<option value="RMS">RMS</option>'
+						  +'<option value="P-RMS">P-RMS</option>'
 						+'</select>'
                     +'</div>'
                 +'</div>';
@@ -224,17 +211,11 @@ function saveCase() {
 		var period=$("#input"+(i*4+3)).val();
 		var process=new Process(pid,arrivalTime,execTime,period);
 		process_manager.addProcess(process);
-		// alert(process_manager.processList[i].arrivalTime+"//"+process_manager.processList[i].period);
 	}
-	
-	var rList = cpu_manager.CPUList;
-	var pList = process_manager.processList;
 	
 	// Update simulator object
 	simulator.scheme = scheme;
 	simulator.algorithm = execAlg;
-	simulator.resourceList = rList;
-	simulator.processList = pList;
 
 	// Change the main page title
 	changeAlgTitle(execAlg);
@@ -261,13 +242,16 @@ function showCaseSettings() {
 	$("#scheme-text").html(simulator.scheme);
 	$("#algorithm-text").html(simulator.algorithm);
 
+	var results = simulator.compareTotalProcessUtilWithTotalCpuRemainingUtil();
+	//alert(results.totalProUtil +" "+results.totalCpuUtil+" "+results.condition);
+
 	//CPU info show
 	var html="<table class='table table-hover'><tr class='info'>"
 				+"<th>CID</th>"
 				+"<th>CPU Name</th>"
 				+"</tr>";
-	for(var i=0;i<simulator.resourceList.length;i++){
-		var CPU = simulator.resourceList[i];
+	for(var i=0;i<cpu_manager.CPUList.length;i++){
+		var CPU = cpu_manager.CPUList[i];
 		html+="<tr>"
 				+"<td>"+CPU.cid+"</td>"
 				+"<td>"+CPU.name+"</td>"
@@ -284,23 +268,22 @@ function showCaseSettings() {
 			+"<th>Execution Time</th>"
 			+"<th>Period</th>";
 	if(simulator.scheme == "partitioned")
-		html+="<th>executedCPU</th>";
-	html += "<th>color</th></tr>";
+		html+="<th>Executed CPU</th>";
+	html += "<th>Color</th></tr>";
 	
-	for(var i=0;i<simulator.processList.length;i++){
-		var process = simulator.processList[i];
-		if(process.active == true){
+	for(var i=0;i<process_manager.processList.length;i++){
+		var process = process_manager.processList[i];
 			html+="<tr>"
 					+"<td>"+process.pid+"</td>"
 					+"<td>"+process.name+"</td>"
-					+"<td>"+process.firstArrivalTime+"</td>"
+					+"<td>"+process.arrivalTime+"</td>"
 					+"<td>"+process.execTime+"</td>"
 					+"<td>"+process.period+"</td>";
-			if(simulator.scheme == "partitioned")
+			if(simulator.scheme == "partitioned") {
 				html+="<td>"+process.executedCPU+"</td>";
+			}
 			html+="<td style='background-color: "+process.showColor+";'> </td>"
 				+"</tr>";
-		}
 	}
 	html+="</table>";
 	$("#process-text").html(html);
@@ -337,7 +320,7 @@ function editCase() {
 	}
 
 	// Get all process information from saved simulator object respectively
-	var process = simulator.processList;
+	var process = process_manager.processList;
 	var rowCount = process.length; 
 	$("#edit-case-table").remove();
 
@@ -358,14 +341,14 @@ function editCase() {
 	th.appendTo(tr);
 
 	for(var i = 0; i < rowCount; i++) {
-		if(process[i].active == true){
+		//if(process[i].active == true){
 			var tr=$("<tr id='process"+i+"-row'></tr>");
 			tr.appendTo(table);
 			for(var j = 0; j < 5; j++) {
 				var td=$("<td></td>");
 				td.appendTo(tr);
 				if(j == 0){
-				  var text=$("<span>Process"+i+"</span>");
+				  var text=$("<span>Process"+process[i].pid+"</span>");
 				  text.appendTo(td);
 				} else if(j == 1){
 					var input=$("<input class='form-control p-unit' id='edit-input"+(i*5+j)+"' value="+process[i].arrivalTime+"></input>");
@@ -377,11 +360,11 @@ function editCase() {
 					var input=$("<input class='form-control p-unit p-period"+i+"' id='edit-input"+(i*5+j)+"' value="+process[i].period+"></input>");
 					input.appendTo(td);
 				} else if(j == 4){
-				  var text=$('<a href="#" class="delete-process" onclick="deactivateProcess('+i+')">&times</a>');
+				  var text=$('<a href="#" class="delete-process" onclick="process_manager.deactivateProcess('+i+')">&times</a>');
 				  text.appendTo(td);
 				}
 			}
-		}
+		//}
 	}
 }
 
@@ -398,7 +381,7 @@ function saveEditCase() {
 	else if (simulator.scheme == "partitioned") 	// Get the algorithm under partitioned scheme	
 		execAlg = $('#edit-p-Algorithm').val();  
 
-	var processes = simulator.processList
+	var processes = process_manager.processList;
 	var processQty = processes.length;
 
 	// Create Process objects one by one and then add them to the processList
@@ -406,90 +389,50 @@ function saveEditCase() {
 		var arrivalTime = $("#edit-input"+(i*5+1)).val();
 		var execTime = $("#edit-input"+(i*5+2)).val();
 		var period = $("#edit-input"+(i*5+3)).val();
-
+		//var process = new Process(processes[i].pid,arrivalTime,execTime,period);
 		// Renew process attribute value
-		processes[i].arrivalTime = arrivalTime;
 		processes[i].execTime = execTime;
+		processes[i].arrivalTime = arrivalTime;
 		processes[i].period = period;
+
 	}
-	
+
+	for(var i = 0; i < processQty; i++) {
+		if(processes[i].active == false){
+			processes.splice(i,1);
+			i--;
+			processQty--;
+			//alert(processes[0].pid);
+		}
+	}
 	// Update simulator object
 	simulator.algorithm = execAlg;
-	simulator.processList = processes;
+	//simulator.processList = processes;
 	
 	// Change the main page title
 	changeAlgTitle(execAlg);
 }
 
-/*
- * Function for adding a new process after 
- * clicking Add Process button on modal4
- */ 
-function addProcess() {
-	// Create a new process and push to processlist
-	var newPid = simulator.processList.length;
-	var newProcess = new Process(newPid);
-	simulator.processList.push(newProcess);
-
-	var table = $('#edit-case-table');
-	var newTr = $("<tr id='process"+newPid+"-row'></tr>");
-	newTr.appendTo(table);
-	for (var j = 0; j < 5; j++) {
-		var td = $("<td></td>");
-		td.appendTo(newTr);
-		if (j == 0) {
-		  var text = $("<span>Process"+newPid+"</span>");
-		  text.appendTo(td);
-		} else if (j == 1) {
-			var input = $("<input id='edit-input"+(newPid*5+j)+"' class='form-control p-unit'></input>");
-			input.appendTo(td);
-		} else if (j == 2) {
-			var input = $("<input id='edit-input"+(newPid*5+j)+"' class='form-control p-unit p-exec"+newPid+"'></input>");
-			input.appendTo(td);
-		} else if (j == 3) {
-			var input = $("<input id='edit-input"+(newPid*5+j)+"' class='form-control p-unit p-period"+newPid+"'></input>");
-			input.appendTo(td);
-		} else if (j == 4) {
-			  var text=$('<a href="#" class="delete-process" onclick="deactivateProcess('+newPid+')">&times</a>');
-			  text.appendTo(td);
-		}
+function initializeData(){
+	//initialize processList
+	var processes = process_manager.processList;
+	simulator.processList.length = 0;
+	for(var i in processes){
+		var process = new Process(processes[i].pid,processes[i].arrivalTime,processes[i].execTime,processes[i].period );
+		simulator.processList[i]= process;
+		//alert(process_manager.processList[i].pid+"|"+process_manager.processList[i].arrivalTime);
+		//alert(simulator.processList[i].pid+"|"+simulator.processList[i].arrivalTime);
 	}
-}
 
-/*
- * Function for deactivate a exist process 
- * after clicking Delete button on modal4
- */ 
-function deactivateProcess(pid) {
-	var processes = simulator.processList
-	var processQty = processes.length;
-	for (var i =0; i < processQty; i++) {
-		if (processes[i].pid == pid) {
-			processes[i].active = false;
-			$("#process"+i+"-row").remove();
-		}
-			
+	//initialize resouseList
+	var resources = cpu_manager.CPUList;
+	for(var i in resources){
+		var resource = new CPU(resources[i].cid);
+		simulator.resourceList[i] = resource;
 	}
+
+	//reset relative para
+	simulator.finishEventList.length = 0;
 }
 
-/*
- * Generate random parameters for processes
- */
-function randomizeProcess() {
-	var rowCount= $("#process-quantity").val();
-	for(var i = 0; i < rowCount; i++) {
 
-		var arrivalTime = parseInt((Math.random() * 6));  // Randomize arrival time between 0 and 5	
-		var period = parseInt((Math.random() * 10) + 1);  // Randomize arrival time between 1 and 10
-		var execTime = parseInt((Math.random() * period) + 1);  // Randomize arrival time between 1 and period
-
-		for(var j = 0; j < 4; j++) {
-			if (j == 1)
-				$('#input'+(i*4+j)+'').val(arrivalTime);
-			else if (j == 2)
-				$('#input'+(i*4+j)+'').val(execTime);
-			else if (j == 3)
-				$('#input'+(i*4+j)+'').val(period);
-		}
-	}	
-}

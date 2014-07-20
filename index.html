@@ -37,7 +37,7 @@
 								<button type="button" class="btn btn-primary" id="step-forward">Step Forward</button>
 								<button type="button" class="btn btn-primary" id="step-back">Step Back</button>
 								<button type="button" class="btn btn-danger" id="finish-simulator">Finish</button>
-								<button type="button" class="btn btn-danger" id="stop-simulator">Stop Simulator</button>
+								<button type="button" class="btn btn-danger" id="stop-simulator">Restart</button>
 							</div>
 						</form>
 					</div>
@@ -193,9 +193,9 @@
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 	        <h4 class="modal-title" id="myModalLabel">Process Settings</h4>
 	      </div>
-	      <div class="modal-body">
+	      <div class="modal-body">	      	
 	      	<form class="form-horizontal form-myModal3">
-		        <div class="form-group">
+	      		<div class="form-group">					
 		          <label class="col-sm-4 control-label">Set Process Quantity</label>
 		          <div class="col-xs-5">
 		            <input type="text" class="form-control" id="process-quantity" name="process-quantity">
@@ -208,12 +208,15 @@
 		    </form>
 	      </div>
 	      <div class="modal-footer">
+	      	<p><input type="file" id="files" name="file"/></P>
+	      	<button class="btn btn-primary btn-sm" id="load-process">Load Process</button>
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 	        <button type="button" class="btn btn-primary" id="save-case">Finish</button>
 	      </div>
 	    </div>
 	  </div>
 	</div>
+
 
 
 	<!-- Modal Dialog for Editing Process -->
@@ -231,7 +234,7 @@
 	      </div>
 	      <div class="modal-footer">
 	      	<button type="button" class="btn btn-primary" id="add-process">Add Process</button>
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button type="button" class="btn btn-default" id="cancel-edit-case"data-dismiss="modal">Cancel</button>
 	        <button type="button" class="btn btn-primary" id="save-edit-case">Save</button>
 	      </div>
 	    </div>
@@ -253,6 +256,8 @@
 	<script src="js/controller/renderController.js"></script>
 	<!-- Algorithm Script -->
 	<script src="js/algorithm/scheme.js"></script>
+	<script src="js/algorithm/alg-functions.js"></script>
 	<script src="js/algorithm/P_EDF.js"></script>
+	<script src="js/algorithm/P_RMS.js"></script>
 </body>
 </html>

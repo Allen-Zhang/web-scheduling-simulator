@@ -91,6 +91,7 @@
 	width: 70px;
 	font-size: 14px;
 	height: 150px;
+	overflow: hidden;
 	text-align: center;
 	border: 1px solid;
 }
@@ -154,4 +155,7 @@
 	border: 1px solid;
 	display: inline-block;
 	height: 15px;
+}
+.event-div{
+	position: relative;
 }

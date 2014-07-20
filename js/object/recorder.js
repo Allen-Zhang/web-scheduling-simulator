@@ -1,21 +1,19 @@
-
-function Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueue, readyQueueDeadlines, runningProcessDeadline) {
+function Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueue, readyQueuePriority ,runningProcess, runningProcessPriority) {
 	this.pid = pid !== undefined ? pid : "";
 	this.cid = cid !== undefined ? cid : "";  // Event happend on which CPU
 	this.eventType = eventType !== undefined ? eventType : "";  // arrival, interrupt, missing, restart, execution
 	this.eventStartTime = eventStartTime !== undefined ? eventStartTime : "";
 	this.eventEndTime = eventEndTime !== undefined ? eventEndTime : eventStartTime;  // For execution event
 	this.readyQueue = readyQueue !== undefined ? readyQueue : [];
-	this.readyQueueDeadlines = readyQueueDeadlines !== undefined ? readyQueueDeadlines : [];
-	this.runningProcessDeadline = runningProcessDeadline !== undefined ? runningProcessDeadline: "";
-	this.checked = 0;
+	this.readyQueuePriority = readyQueuePriority !== undefined ? readyQueuePriority : [];
+	this.runningProcess = runningProcess !== undefined ? runningProcess: "";
+	this.runningProcessPriority = runningProcessPriority !== undefined ? runningProcessPriority: "";
 }
 
 function RecorderManager() {
     this.recorderList = [];
     this.index = -1;
     this.recorderSequence = [];
-    this.previousExecutionEvent = [];
 
     this.addRecorder = function(recorder) {
         this.recorderList[this.recorderList.length] = recorder;
@@ -60,24 +58,33 @@ function RecorderManager() {
 	
 	//this.testCase();
 	
-	this.recordNewEvent = function(pid, cid, eventType, eventStartTime, eventEndTime, readyQueue, runningProcessDeadline){
+	this.recordNewEvent = function(pid, cid, eventType, eventStartTime, eventEndTime, readyQueue,runningProcess){
 		var readyQueueList = [];
-		var readyqueueDeadlines = [];
-		for(var i in readyQueue){
-			readyQueueList[i] = readyQueue[i].pid;
-			readyqueueDeadlines[i] = readyQueue[i].deadline;
+		var readyqueuePriority = [];
+		var algorithm = simulator.algorithm;
+		switch(algorithm){
+			case "P-EDF":
+				for(var i in readyQueue){
+					readyQueueList[i] = readyQueue[i].pid;
+					readyqueuePriority[i] = readyQueue[i].deadline;
+				}
+				if(runningProcess == "")
+					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, "","");
+				else
+					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, runningProcess.pid,runningProcess.deadline);		
+				break;
+			case "P-RMS":
+				for(var i in readyQueue){
+					readyQueueList[i] = readyQueue[i].pid;
+					readyqueuePriority[i] = readyQueue[i].period;
+				}
+				if(runningProcess == "")
+					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, "","");
+				else
+					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, runningProcess.pid,runningProcess.period);		
+				break;
 		}
-
-		var deadline = "";
-		if(eventType == "execution")
-			deadline = runningProcessDeadline;
-		
-		var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueueDeadlines, deadline);
 		this.addRecorder(record);
-		// var text="";
-		// 	for(var t in readyQueueList){
-		// 	 	text+=readyQueueList[t]+"|";}
-		// 	 alert(text);
 	}
 
 	this.handleRecorderSequence = function(){
@@ -112,7 +119,7 @@ function RecorderManager() {
 
 		for(var i=1; i<this.recorderList.length;i++){
 			var nextRecorder = this.recorderList[i];
-			if(recorder.eventType == nextRecorder.eventType && nextRecorder.eventStartTime== recorder.eventStartTime){
+			if( recorder.eventType!="interrupt" && recorder.eventType == nextRecorder.eventType && nextRecorder.eventStartTime== recorder.eventStartTime){
 				pointer++;
 				this.recorderSequence[index][pointer] = i;
 			}

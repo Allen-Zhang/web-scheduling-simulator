@@ -1,8 +1,9 @@
 
 
 function cleanResultPanel() {
-	$("#result-display-title").html("");
-	$("#result-display-panel").html("");
+	$("#result-display-title").empty();
+	$("#result-display-panel").empty();
+	$("#result-display-readyqueue").empty();
 }
 
 function drawResultPanel() {
@@ -106,17 +107,19 @@ function renderNextEvent(eventIndex,flag){
 	var type = recorder.eventType;
 	var start = recorder.eventStartTime;
 	var end = recorder.eventEndTime;
-	var color = simulator.processList[pid].showColor;
+	//var color = simulator.processList[pid].showColor;
+	var color = colors[recorder.pid];
 	var divID = "result-div"+eventIndex;
 	var text = "";
 
 	if (type == "execution") {	
 		var td = "#table"+cid+"td"+start;
+		if(end > 30)
+			end = 30;
 		var length = (end-start)*40;
 		var div = $("<div class='cpu-div event' id='"+divID+"' style='width:0px;height:55px;background-color: "+color+";'> P"+pid+"</div>");
 		div.appendTo($(td));
 		$("#"+divID).animate({width:length+'px',opacity:'0.8'},1000);
-		recorder_manager.previousExecutionEvent[cid] = end;
 		text = "P"+pid+" executes on CPU"+cid;
 	}
 	if(type == "arrival"){
@@ -134,26 +137,28 @@ function renderNextEvent(eventIndex,flag){
 		text = "P"+pid+" preempties on CPU"+cid;
 	}
 	if(type == "miss"){
+		var flag = 0;
 		var td = "#miss-table"+cid+"td"+start;
-		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:red;'>&#8595 P"+pid+"</div>");
+		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:red;top:0px;'>&#8595 P"+pid+"</div>");
+		if($(td).html()){
+			var top = $(td).children().last().css("top").slice(0,-2)-30;
+			div.css("top",top+"px");
+		}
 		div.appendTo($(td));
 		$("#"+divID).hide().fadeIn(1000);
 		text = "P"+pid+" misses";
 	}
 	//draw readyQueue
 	var td = "#currentRunningP"+cid;
-	if((type == "arrival"|| type == "interrupt") && start>=recorder_manager.previousExecutionEvent[cid]){
+	if(recorder.runningProcess != ""||recorder.runningProcess == "0")
+		$(td).html("P"+recorder.runningProcess+" ("+recorder.runningProcessPriority+")");
+	else
 		$(td).html("");
-	}
-	if(type == "execution"){
-		$(td).html("P"+pid+" ("+recorder.runningProcessDeadline+")");
-	}
-
 
 	var td = "#result-readyqueue"+cid;
 	$(td).empty();
 	for(var i in recorder.readyQueue){
-		var	div = $("<div class='readyQueue-div event' >P"+recorder.readyQueue[i]+" ("+recorder.readyQueueDeadlines[i]+")</div>");
+		var	div = $("<div class='readyQueue-div event' >P"+recorder.readyQueue[i]+" ("+recorder.readyQueuePriority[i]+")</div>");
 		div.appendTo($(td));
 		if(type != "miss")
 			div.hide().fadeIn(700);
@@ -182,30 +187,6 @@ function removeCurrentEvents(){
 		else
 			deleteEvent(recorderIndex,0);
 	}
-	// recorder_manager.gotoPreviousIndex();
-
-	// //redraw readyqueue panel
-	// var index = recorder_manager.getCurrentIndex();
-	// for(var i in recorder_manager.recorderSequence[index]){
-	// 		var recorderIndex = recorder_manager.recorderSequence[index][i];
-	// 		var recorder = recorder_manager.recorderList[recorderIndex];
-	// 		var cid = recorder.cid;
-	// 		var td = "#result-readyqueue"+cid;
-	// 		$(td).empty();
-	// 		for(var j in recorder.readyQueue){
-	// 			var	div = $("<div class='readyQueue-div event' >P"+recorder.readyQueue[j]+"</div>");
-	// 			div.appendTo($(td));
-	// 		}
-	// }
-	//$(".event").stop(false,true);
-	// $(".event").remove();
-	// var index = recorder_manager.getCurrentIndex();
-	// recorder_manager.index = -1;
-
-	// for(var i=0;i<index;i++){
-	// 	showNextEvents();
-	// }
-	// $(".event").stop(true,true);
 }
 
 function deleteEvent(eventIndex,flag){
@@ -227,9 +208,10 @@ function deleteEvent(eventIndex,flag){
 
 function showAllEvent(){
 	$(".event").remove();
+	$('#result-recorder-table').empty();
 	recorder_manager.resetIndex();
 	for(var i=0;i<recorder_manager.recorderSequence.length;i++){
-		showNextEvents();
+		showNextEvents(0);
 	}
 	$(".event").stop(true,true);
 }

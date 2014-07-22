@@ -2,8 +2,6 @@
 // Click function for Add Case button
 $('#add-case').click(function(){
 	$('#myModal1').modal({'backdrop': 'static'});
-	// Reset processList and CPUList
-	resetObjList();
 	cleanResultPanel();
 	recorder_manager.recorderList.length = 0;
 	recorder_manager.recorderSequence.length = 0;
@@ -73,6 +71,8 @@ $('#save-case').click(function(){
 	// Form validation 
 	if ($(".form-myModal3").valid() == true && 
 			validateProcessUnit("process-table", $("#process-quantity").val())) {
+		// Reset processList and CPUList
+		resetObjList();
 		// Save the case
 		$("#save-case").attr('data-dismiss','modal');
 		saveCase();
@@ -148,6 +148,7 @@ $("#stop-simulator").click(function(){
 	recorder_manager.resetIndex();
 	$('.event').remove();
 	$('.runningP-div').empty();
+	$("#result-display-readyqueue").empty();
 	$('#result-recorder-table').empty();
 	$('#case-panel').fadeIn('fast');
 	$('#start-running').fadeIn('fast');
@@ -455,6 +456,9 @@ function initializeData(){
 
 	//reset relative para
 	simulator.finishEventList.length = 0;
+	simulator.idleCPUList = [];
+	simulator.leastPriorityProcess = "";
+	simulator.globalReadyQueue = [];
 }
 
 

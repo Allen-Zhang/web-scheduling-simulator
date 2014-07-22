@@ -1,5 +1,5 @@
 body {
-	background-color:#FFF;
+
 }
 body > div{
 	padding-top: 45px;
@@ -70,24 +70,21 @@ a:link{
 	width: 115px;
 	margin-right:10px;
 }
-#resource-text table td,#process-text table td{
+#resource-text table th, #process-text table th, #stats-overall-text table th, #stats-detail-text table th{
 	text-align: center;
 }
-#resource-text table th,#process-text table th{
+#resource-text table td, #process-text table td, #stats-overall-text table td, #stats-detail-text table td{
 	text-align: center;
 }
-
 #scheme-text {
 	text-transform: capitalize; 
 }  
-
 /* For error message */
 label.error {
-  color: red;
-  padding: 2px 8px;
-  margin-top: 2px;
+	color: red;
+	padding: 2px 8px;
+	margin-top: 2px;
 }
-
 #files {
 	width: 200px;
 }

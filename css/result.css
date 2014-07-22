@@ -22,13 +22,14 @@
 #event-table{
 	border: none;
 	height: 80px;
+	padding-top: 20px;
 }
 #event-title{
 	width: 70px;
 	font-size: 20px;
 	height: 140px;
 	text-align: center;
-	padding-top: 25px; 
+	padding-top: 45px; 
 }
 #event-table .row1{
 	border: none;
@@ -47,7 +48,7 @@
 	border-style: solid;
 	font-weight: bold; 
 	border: none;
-	height: 15px;
+	height: 20px;
 }
 #event-table .row4{
 	border: none;
@@ -88,7 +89,7 @@
 	width: 70px;
 	font-size: 20px;
 	text-align: center;
-	padding-top: 75px;
+	padding-top: 45px;
 }
 .cpu-div{
 	position: relative;

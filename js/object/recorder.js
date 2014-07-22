@@ -84,6 +84,7 @@ function RecorderManager() {
 					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, runningProcess.pid,runningProcess.period);		
 				break;
 			case "G-EDF":
+			//alert(readyQueue.length);
 				for(var i in readyQueue){
 					readyQueueList[i] = readyQueue[i].pid;
 					readyqueuePriority[i] = readyQueue[i].deadline;
@@ -91,7 +92,7 @@ function RecorderManager() {
 				if(runningProcess == "")
 					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, "","");
 				else
-					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, runningProcess.pid,runningProcess.period);		
+					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, runningProcess.pid,runningProcess.deadline);		
 				break;
 		}
 		this.addRecorder(record);

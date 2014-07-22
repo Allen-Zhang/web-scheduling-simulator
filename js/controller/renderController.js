@@ -105,7 +105,6 @@ function drawCPUDiagram(cid){
 		}
 	}
 	//draw ready queue
-	var scheme = simulator.scheme;
 	switch(scheme){
 		case "partitioned":
 			var title = $("<p>CPU"+cid+"</p><div class='runningP-div' id='currentRunningP"+cid+"'> </div><div class='result-readyqueue' id='result-readyqueue"+cid+"'></div>");
@@ -169,17 +168,19 @@ function renderNextEvent(eventIndex,flag){
 		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;'>&#8593 P"+pid+"</div>");
 		div.appendTo($(td));
 		$("#"+divID).hide().fadeIn(1000);
-		text = "P"+pid+" arrives on CPU"+cid;
+		if(scheme == "partitioned")
+			text = "P"+pid+" arrives on CPU"+cid;
+		else
+			text = "P"+pid+" arrives";
 	}
 	if(type == "interrupt"){
 		var td = "#event-table"+cid+"td"+start;
 		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:blue;'>&#8593 P"+pid+"</div>");
 		div.appendTo($(td));
 		$("#"+divID).hide().fadeIn(1000);
-		text = "P"+pid+" preempties on CPU"+cid;
+		text = "P"+pid+" preempts on CPU"+cid;
 	}
 	if(type == "miss"){
-		var flag = 0;
 		if(scheme == "partitioned")
 			var td = "#miss-table"+cid+"td"+start;
 		else
@@ -191,8 +192,9 @@ function renderNextEvent(eventIndex,flag){
 		}
 		div.appendTo($(td));
 		$("#"+divID).hide().fadeIn(1000);
-		text = "P"+pid+" misses";
+		text = "P"+pid+" misses on CPU"+cid;
 	}
+
 	//draw readyQueue
 	switch(scheme){
 		case "partitioned":
@@ -238,10 +240,9 @@ function renderNextEvent(eventIndex,flag){
  */
 function removeCurrentEvents(){
 	var index = recorder_manager.getCurrentIndex();
-
 	for(var i in recorder_manager.recorderSequence[index]){
 		var recorderIndex = recorder_manager.recorderSequence[index][i];
-		$("#event-record"+recorderIndex).fadeOut(500,function(){ this.remove();});
+		$("#event-record"+recorderIndex).fadeOut(500,function(){ $("#event-record"+recorderIndex).remove();});
 		if(i == recorder_manager.recorderSequence[index].length-1)
 			deleteEvent(recorderIndex,1);
 		else
@@ -274,4 +275,44 @@ function showAllEvent(){
 		showNextEvents(0);
 	}
 	$(".event").stop(true,true);
+}
+
+function showStatistics() {
+	// Show overall statistics
+	var html = "<table class='table table-hover'><tr class='info'>"
+				+ "<th>Number of CPUs</th>"
+				+ "<th>Average Utilization</th>"
+				+ "<th>Average Missing Rate</th>"
+				+ "</tr>";
+	// Specific data
+	html += "<tr>"
+			+ "<td>" +  + "</td>"
+			+ "<td>" +  + "</td>"
+			+ "<td>" +  + "</td>"
+			+ "</tr>"
+	 		+ "</table>";
+	$("#stats-overall-text").html(html);
+
+	// Show detail statistics
+	html = "<table class='table table-hover'><tr class='info'>"
+			+ "<th>CID</th>";			
+	if(simulator.scheme == "partitioned") {
+		html += "<th>Number of allocated Processes</th>";
+	}
+	html += "<th>Utilization</th>"
+			+ "<th>Missing Rate</th>";
+	// Specific data
+	for(var i = 0; i < process_manager.processList.length; i++){
+		var process = process_manager.processList[i];
+			html += "<tr>"
+					+ "<td>" +  + "</td>";			
+		if(simulator.scheme == "partitioned") {
+			html += "<td>"+  + "</td>";
+		}
+		html += "<td>" +  + "</td>"
+				+ "<td>" +  + "</td>"
+				+ "</tr>";
+	}
+	html += "</table>";
+	$("#stats-detail-text").html(html);
 }

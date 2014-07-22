@@ -55,13 +55,40 @@ function checkAndHandleArrivalProcess(time, resource){
 			break;
 		case "G-EDF":
 			var pList = simulator.processList;
+			var deadline = simulator.leastPriorityProcess.deadline;
+			var arrivalPs = [];
+
 			for(var i in pList){		
 				if(pList[i].arrivalTime == time){
 					var newP = new Process(pList[i].pid, pList[i].arrivalTime, pList[i].execTime, pList[i].period, "");
+					arrivalPs.push(newP);
 					pList[i].arrivalTime = pList[i].deadline;
 					pList[i].deadline = parseInt(pList[i].deadline) + parseInt(pList[i].period);	
 					handleArrvialEvent(newP);
 					recorder_manager.recordNewEvent(newP.pid,-1,"arrival",newP.arrivalTime,newP.arrivalTime,simulator.globalReadyQueue,"");
+				}
+			}
+			arrivalPs.sort(function(a,b){return a.deadline-b.deadline;});
+			// var text="";
+			// for(var i in arrivalPs){
+			// 	text+=arrivalPs[i].pid;
+			// }
+			// alert(text);
+			for(var i in arrivalPs){
+				if(arrivalPs[i].deadline == simulator.globalReadyQueue[0].deadline && arrivalPs[i].pid == simulator.globalReadyQueue[0].pid){
+					if(simulator.idleCPUList.length != 0){			
+						executionProcess(time,simulator.idleCPUList[0]);
+					}
+					else if(simulator.leastPriorityProcess.deadline > arrivalPs[i].deadline){
+						var resource = "";
+						for(var j in simulator.resourceList){
+							if(simulator.resourceList[j].cid == simulator.leastPriorityProcess.executedCPU)
+								resource = simulator.resourceList[j];
+						}
+						handleInterrupt(time,resource);
+						recorder_manager.recordNewEvent(arrivalPs[i].pid,resource.cid,"interrupt",arrivalPs[i].arrivalTime,arrivalPs[i].arrivalTime,simulator.globalReadyQueue,"");			
+						executionProcess(time,resource);
+					}
 				}
 			}
 			break;
@@ -129,9 +156,10 @@ function executionProcess(time,resource){
 				execP.startTime = time;
 				execP.executedCPU = resource.cid;
 				simulator.finishEventList.push(execP);		
-				//alert(resource.cid+"|"+time+"|"+resource.status);
 				resource.status = 1;
 				resource.runningProcess = execP;
+
+				updateIdleCPUListAndLeastPriorityProcess();
 				//record new execution event
 				recorder_manager.recordNewEvent(execP.pid,resource.cid,"execution",time,parseInt(execP.execTime)+parseInt(execP.startTime),simulator.globalReadyQueue, execP);
 				
@@ -143,10 +171,12 @@ function executionProcess(time,resource){
 function checkAndHandleFinishProcess(time,resource){
 
 	var finishList = simulator.finishEventList;
+	//alert(simulator.finishEventList.length);
 	for(var i in finishList){
+		//alert(time+"|"+resource.cid);
 		if( parseInt(finishList[i].startTime)+parseInt(finishList[i].execTime) == time && resource.cid == finishList[i].executedCPU){
 			handleFinishEvent(finishList[i],resource);
-			//alert(time+"|"+resource.cid);
+			
 		}
 	}
 }
@@ -156,7 +186,9 @@ function handleFinishEvent(process,resource){
 	resource.runningProcess = "";	
 	deleteFinishEvent(process.pid);
 	if(simulator.scheme == "global"){
-		resource.remainingUtil -= process.execTime/process.period;
+		//resource.remainingUtil -= process.execTime/process.period;
+		//simulator.idleCPUList.push(resource);
+		updateIdleCPUListAndLeastPriorityProcess();
 	}
 }
 
@@ -168,15 +200,15 @@ function handleInterrupt(time, resource){
 		//put it into ready queue
 		handleArrvialEvent(interP,resource);
 		//delete interrupt previous finish event
-		deleteFinishEvent(interP.pid);
+		handleFinishEvent(interP,resource);
 
-		//update cpu
-		resource.status = 0;
-		resource.runningProcess = "";
+		// //update cpu
+		// resource.status = 0;
+		// resource.runningProcess = "";
 
 		//modify interrupted process execution recorder
 		modifyRecorderEndTime(interP.pid, interP.executedCPU, interP.startTime, "execution", time );
-	}	
+	}
 }
 
 function deleteFinishEvent(pid){
@@ -221,6 +253,23 @@ function modifyRecorderEndTime(pid,cid,startTime,eventType,newEndTime){
 		if(cid == temp.cid && startTime == temp.eventStartTime && pid == temp.pid && eventType == temp.eventType){
 			recorder_manager.recorderList[i].eventEndTime = newEndTime;
 			break;
+		}
+	}
+}
+
+function updateIdleCPUListAndLeastPriorityProcess(){
+	simulator.idleCPUList.length = 0;
+	var deadline = -1;
+	for(var i in simulator.resourceList){
+		if(simulator.resourceList[i].status == 0){
+			//var resource = new CPU(simulator.recorderList[i].cid);
+			simulator.idleCPUList.push(simulator.resourceList[i]);
+		}
+		else{
+			if(simulator.resourceList[i].runningProcess.deadline > deadline){
+				deadline = simulator.resourceList[i].runningProcess.deadline;
+				simulator.leastPriorityProcess = simulator.resourceList[i].runningProcess;
+			}
 		}
 	}
 }

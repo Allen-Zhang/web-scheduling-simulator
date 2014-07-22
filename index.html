@@ -69,10 +69,11 @@
 				<div id="result-legend">
 					<ul class="list-inline">
   						<li><span>&#8593</span> arrival event<span></span></li>
-  						<li><span style="color:blue;">&#8593</span><span> preempty event</span></li>
+  						<li><span style="color:blue;">&#8593</span><span> preempt event</span></li>
   						<li><span style="color:red;">&#8595</span><span> miss event</span></li>
   						<li><span id="legend-runningprocess"> </span><span> running process</span></li>
   						<li><span id="legend-readyqueue"> </span><span> ready queue</span></li>
+  						<li><span>P# (priority)</span></li>
 					</ul>
 				</div>
 			</div>
@@ -132,7 +133,32 @@
 		<div class="row main-pane">
 			<h3>Statistics</h3>
 			<hr/>
+			<div class="row">
+				<div class="col-md-6">						
+					<div id="stats-overall-text">
+						<table class="table table-hover">
+							<tr class="info">
+								<th>Number of CPUs</th>
+								<th>Average Utilization</th>
+								<th>Average Missing Rate</th>
+							</tr>
+						</table>
+					</div>	
+				</div>
+				<div class="col-md-6">
+					<div id="stats-detail-text"> 
+						<table class="table table-hover">
+							<tr class="info">
+								<th>CID</th>
+								<th>Utilization</th>
+								<th>Missing Rate</th>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
 		</div>
+
 
 	</div> <!-- /container -->
 

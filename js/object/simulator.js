@@ -5,10 +5,11 @@ function Simulator(scheme, algorithm, resourceList, processList) {
 	this.algorithm = algorithm !== undefined ? algorithm : ""; 
 	this.resourceList = resourceList !== undefined ? resourceList : [];
 	this.processList = processList !== undefined ? processList : [];
-	this.globalReadyQueue = [];
-	this.globalRunningProcess = "";
-	this.finishEventList = [];
-	// this.frameSize = 0;
+	this.finishEventList = [];	
+	this.globalReadyQueue = [];		//for global scheme
+	this.globalRunningProcess = "";	//for global scheme
+	this.leastPriorityProcess = "";	//for global scheme
+	this.idleCPUList = [];//for global scheme
 
 	this.startSimulator = function() {
 		switch(this.scheme){

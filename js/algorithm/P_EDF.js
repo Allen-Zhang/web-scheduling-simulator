@@ -1,6 +1,6 @@
 // P-EDF algorithm
 function P_EDF(){
-	for(var i=0; i < 30; i++){
+	for(var i=0; i < 50; i++){
 		for(var j in simulator.resourceList){
 			var resource = simulator.resourceList[j];
 

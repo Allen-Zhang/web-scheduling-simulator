@@ -26,6 +26,9 @@ body > div{
 .modal-footer {
 	margin-top: -10px;
 }
+.range {
+	font-weight:normal;
+}
 #running-results {
 	min-height:150px;
 }

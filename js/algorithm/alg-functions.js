@@ -184,7 +184,7 @@ function checkAndHandleFinishProcess(time,resource){
 function handleFinishEvent(process,resource){
 	resource.status = 0;
 	resource.runningProcess = "";	
-	deleteFinishEvent(process.pid);
+	deleteFinishEvent(process.pid,process.executedCPU,process.startTime);
 	if(simulator.scheme == "global"){
 		//resource.remainingUtil -= process.execTime/process.period;
 		//simulator.idleCPUList.push(resource);
@@ -211,9 +211,9 @@ function handleInterrupt(time, resource){
 	}
 }
 
-function deleteFinishEvent(pid){
+function deleteFinishEvent(pid,cid,startTime){
 	for(var i in simulator.finishEventList){
-		if(simulator.finishEventList[i].pid == pid)
+		if(simulator.finishEventList[i].pid == pid&&simulator.finishEventList[i].executedCPU == cid&&simulator.finishEventList[i].startTime == startTime)
 			simulator.finishEventList.splice(i,1);
 	}
 }

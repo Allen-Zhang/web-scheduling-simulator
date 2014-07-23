@@ -40,7 +40,7 @@
 #event-table .row2{
 	border-style: solid;
 	font-weight: bold; 
-	border-width: 1px 1px 0px 1px;
+	border-width: 0px 1px 1px 1px;
 	height: 5px;
 }
 #event-table .row3{
@@ -89,7 +89,7 @@
 	width: 70px;
 	font-size: 20px;
 	text-align: center;
-	padding-top: 45px;
+	padding-top: 65px;
 }
 .cpu-div{
 	position: relative;

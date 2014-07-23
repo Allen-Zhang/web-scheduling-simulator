@@ -22,7 +22,7 @@
 			<div class="col-md-10">
 				<div class="row">
 					<div class="col-md-5">
-						<h3><span id="alg-title"></span> Scheduling Algorithm</h3>
+						<h3><b><span id="alg-title"></span> Scheduling Algorithm</b></h3>
 					</div>
 					<div class="col-md-7">
 						<form class="form-inline" id="control-pane">
@@ -53,7 +53,7 @@
 			<!-- Recorder and Description Pane -->
 			<div class="col-md-2">
 				<div id="result-recorder">
-					<h3>Recorder</h3>
+					<h3><b>Recorder</b></h3>
 					<hr/>
 					<span class="col1" >Time</span>
 					<span class="col2">Event</span>
@@ -70,7 +70,7 @@
 					<ul class="list-inline">
   						<li><span>&#8593</span> arrival event<span></span></li>
   						<li><span style="color:blue;">&#8593</span><span> preempt event</span></li>
-  						<li><span style="color:red;">&#8595</span><span> miss event</span></li>
+  						<li><span style="color:red;text-decoration:line-through">&nbsp&nbspP#&nbsp&nbsp</span><span> miss event</span></li>
   						<li><span id="legend-runningprocess"> </span><span> running process</span></li>
   						<li><span id="legend-readyqueue"> </span><span> ready queue</span></li>
   						<li><span>P# (priority)</span></li>
@@ -81,7 +81,7 @@
 
 		<!-- Case Infofmation Pane -->
 		<div class="row main-pane">			
-			<h3>Case Infomation</h3>
+			<h3><b>Case Infomation</b></h3>
 			<hr/>
 			<div id="case-info-div">
 				<div class="row">
@@ -131,22 +131,24 @@
 
 		<!-- Statistics Pane -->
 		<div class="row main-pane">
-			<h3>Statistics</h3>
+			<h3><b>Statistics</b></h3>
 			<hr/>
 			<div class="row">
-				<div class="col-md-6">						
-					<div id="stats-overall-text">
+				<div class="col-md-4">	
+					<h4>The Whole System</h4>					
+					<div id="statstics-system">
 						<table class="table table-hover">
 							<tr class="info">
 								<th>Number of CPUs</th>
-								<th>Average Utilization</th>
-								<th>Average Missing Rate</th>
+								<th>Avg. Utilization</th>
+								<th>Avg. Missing Rate</th>
 							</tr>
 						</table>
 					</div>	
 				</div>
-				<div class="col-md-6">
-					<div id="stats-detail-text"> 
+				<div class="col-md-4">
+					<h4>Per CPU</h4>
+					<div id="statstics-cpu"> 
 						<table class="table table-hover">
 							<tr class="info">
 								<th>CID</th>
@@ -156,8 +158,21 @@
 						</table>
 					</div>
 				</div>
+				<div class="col-md-4">
+					<h4>Per Process</h4>
+					<div id="statstics-process"> 
+						<table class="table table-hover">
+							<tr class="info">
+								<th>PID</th>
+								<th>Utilization</th>
+								<th>Missing Rate</th>
+							</tr>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
+
 
 
 	</div> <!-- /container -->

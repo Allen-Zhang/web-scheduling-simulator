@@ -42,7 +42,7 @@ function drawEventDiagram(){
 	{
 		var tr=$("<tr></tr>");
 		tr.appendTo(table);
-		for(var j=0;j<30;j++)
+		for(var j=0;j<50;j++)
 		{	
 			if(i==0){
 				var td=$("<td class='row1' id='miss-table-td"+j+"'></td>");
@@ -80,7 +80,7 @@ function drawCPUDiagram(cid){
 	{
 		var tr=$("<tr></tr>");
 		tr.appendTo(table);
-		for(var j=0;j<30;j++)
+		for(var j=0;j<50;j++)
 		{	
 			if(i==0 && scheme == "partitioned"){
 				var td=$("<td class='row1' id='miss-table"+cid+"td"+j+"'></td>");
@@ -111,8 +111,8 @@ function drawCPUDiagram(cid){
 			title.appendTo($("#result-display-readyqueue"));
 			break;
 		case "global":
-			var title = $("<div class='runningP-div' id='currentRunningP"+cid+"'> </div>");
-			title.appendTo($("#result-title"+cid));
+			var title = $("<p>CPU"+cid+"</p><div class='runningP-div' id='currentRunningP"+cid+"'> </div>");
+			title.appendTo($("#result-display-readyqueue"));
 			break;
 	}
 }
@@ -146,10 +146,11 @@ function renderNextEvent(eventIndex,flag){
 	var text = "";
 	var scheme = simulator.scheme;
 
+	
 	if (type == "execution") {	
 		var td = "#table"+cid+"td"+start;
-		if(end > 30)
-			end = 30;
+		if(end > 50)
+			end = 50;
 		var length = (end-start)*40;
 		var div = $("<div class='cpu-div event' id='"+divID+"' style='width:0px;height:55px;background-color: "+color+";'> P"+pid+"</div>");
 		div.appendTo($(td));
@@ -159,6 +160,8 @@ function renderNextEvent(eventIndex,flag){
 			var td = "#currentRunningP"+cid;
 				$(td).html("P"+recorder.runningProcess+" ("+recorder.runningProcessPriority+")");
 		}
+		var left = (start-14)*40;
+		$("#running-results").scrollLeft(left);
 	}
 	if(type == "arrival"){
 		if(scheme == "partitioned")
@@ -185,7 +188,7 @@ function renderNextEvent(eventIndex,flag){
 			var td = "#miss-table"+cid+"td"+start;
 		else
 			var td = "#miss-table-td"+start;
-		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:red;top:0px;'>&#8595 P"+pid+"</div>");
+		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:red;top:0px;text-decoration:line-through;'>&nbsp&nbspP"+pid+"&nbsp&nbsp</div>");
 		if($(td).html()){
 			var top = $(td).children().last().css("top").slice(0,-2)-30;
 			div.css("top",top+"px");
@@ -231,6 +234,8 @@ function renderNextEvent(eventIndex,flag){
 		var div = $("<tr id='event-record"+eventIndex+"'><td class='col1'>"+start+"</td><td class='col2'>"+text+"</td></tr>");
 		div.appendTo($("#result-recorder-table"));
 		div.hide().fadeIn(700);
+		var top = $("#result-recorder-div").scrollTop()+500;
+		$("#result-recorder-div").scrollTop(top);
 	}
 }
 
@@ -278,11 +283,11 @@ function showAllEvent(){
 }
 
 function showStatistics() {
-	// Show overall statistics
+	// Show the statistics of the whole system
 	var html = "<table class='table table-hover'><tr class='info'>"
 				+ "<th>Number of CPUs</th>"
-				+ "<th>Average Utilization</th>"
-				+ "<th>Average Missing Rate</th>"
+				+ "<th>Avg. Utilization</th>"
+				+ "<th>Avg. Missing Rate</th>"
 				+ "</tr>";
 	// Specific data
 	html += "<tr>"
@@ -291,13 +296,13 @@ function showStatistics() {
 			+ "<td>" +  + "</td>"
 			+ "</tr>"
 	 		+ "</table>";
-	$("#stats-overall-text").html(html);
+	$("#statstics-system").html(html);
 
-	// Show detail statistics
+	// Show the statistics of per CPU
 	html = "<table class='table table-hover'><tr class='info'>"
 			+ "<th>CID</th>";			
 	if(simulator.scheme == "partitioned") {
-		html += "<th>Number of allocated Processes</th>";
+		html += "<th>Number of Processes</th>";
 	}
 	html += "<th>Utilization</th>"
 			+ "<th>Missing Rate</th>";
@@ -314,5 +319,23 @@ function showStatistics() {
 				+ "</tr>";
 	}
 	html += "</table>";
-	$("#stats-detail-text").html(html);
+	$("#statstics-cpu").html(html);
+
+	// Show the statistics of per process
+	html = "<table class='table table-hover'><tr class='info'>"
+			+ "<th>PID</th>";			
+			+ "<th>Utilization</th>"
+			+ "<th>Missing Rate</th>";
+	// Specific data
+	for(var i = 0; i < process_manager.processList.length; i++){
+		var process = process_manager.processList[i];
+			html += "<tr>"
+					+ "<td>" +  + "</td>";			
+					+ "<td>" +  + "</td>"
+					+ "<td>" +  + "</td>"
+					+ "</tr>";
+	}
+	html += "</table>";
+	$("#statstics-process").html(html);
 }
+

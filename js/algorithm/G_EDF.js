@@ -2,13 +2,8 @@
 function G_EDF(){
 	
 	updateIdleCPUListAndLeastPriorityProcess();
-	// var text="";
-	// 		for(var i in simulator.idleCPUList){
-	// 			text+=simulator.idleCPUList[i].cid;
-	// 		}
-	// 		alert(text);
-	for(var i=0; i < 30; i++){
 
+	for(var i=0; i < 50; i++){
 		//check deadline miss event
 		checkMissEvent(i);
 		for(var j in simulator.resourceList){
@@ -22,11 +17,7 @@ function G_EDF(){
 		while(1){
 			if(simulator.idleCPUList.length == 0||simulator.globalReadyQueue.length == 0)
 				break;
-			executionProcess(i,simulator.idleCPUList[0]);	//idlelist is sorted by cpu utilization dynamically
-			//alert("2");
+			executionProcess(i,simulator.idleCPUList[0]);	//idleCPUList is sorted by cpu utilization dynamically
 		}
-		// for(var j in simulator.idleCPUList)
-		// 	executionProcess(i,simulator.idleCPUList[0]);//idlelist is sorted by cpu utilization dynamically
-
 	}
 }

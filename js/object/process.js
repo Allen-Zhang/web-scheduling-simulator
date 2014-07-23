@@ -42,6 +42,7 @@ function ProcessManager() {
 		this.copyOfProcessList.length = 0;
 	}
 
+	// Draw process table at adding case part
 	this.drawProcessTable = function() {
 		var rowCount= $("#process-quantity").val();
 	    var table=$("<table id='process-table' border='0'></table>");
@@ -49,13 +50,13 @@ function ProcessManager() {
 
 		var tr=$("<tr></tr>");
 		tr.appendTo(table);
-		var th=$("<th>Process Name</th>");
+		var th=$("<th>Process Name<br/>&nbsp;</th>");
 		th.appendTo(tr);
-		var th=$("<th>Arrive Time</th>");
+		var th=$("<th>Arrive Time<br/><span class='range'>(0 - 5)</span></th>");
 		th.appendTo(tr);
-		var th=$("<th>Execution Time</th>");
+		var th=$("<th>Execution Time<br/><span class='range'>(1 - period)</span></th>");
 		th.appendTo(tr);
-		var th=$("<th>Period</th>");
+		var th=$("<th>Period<br/><span class='range'>(1 - 10)</span></th>");
 		th.appendTo(tr);
 
 		for(var i=0;i<rowCount;i++) {
@@ -68,7 +69,7 @@ function ProcessManager() {
 				  var text=$("<span>Process"+i+"</span>");
 				  text.appendTo(td);
 				} else if(j == 1){
-					var input=$("<input id='input"+(i*4+j)+"' class='form-control p-unit'></input>");
+					var input=$("<input id='input"+(i*4+j)+"' class='form-control p-unit p-arr"+i+"'></input>");
 					input.appendTo(td);
 				} else if(j == 2){
 					var input=$("<input id='input"+(i*4+j)+"' class='form-control p-unit p-exec"+i+"'></input>");
@@ -76,6 +77,54 @@ function ProcessManager() {
 				} else if(j == 3){
 					var input=$("<input id='input"+(i*4+j)+"' class='form-control p-unit p-period"+i+"'></input>");
 					input.appendTo(td);
+				}
+			}
+		}
+	}
+
+	// Draw process table at editing case part
+	this.drawEditProcessTable = function() {
+		var process = process_manager.processList;
+		var rowCount = process.length; 
+		$("#edit-case-table").remove();
+
+		var table=$("<table id='edit-case-table' border='0'></table>");
+	   	table.appendTo($("#edit-case-table-div"));
+
+		var tr=$("<tr></tr>");
+		tr.appendTo(table);
+		var th=$("<th>Process Name<br/>&nbsp;</th>");
+		th.appendTo(tr);
+		var th=$("<th>Arrive Time<br/><span class='range'>(0 - 5)</span></th>");
+		th.appendTo(tr);
+		var th=$("<th>Execution Time<br/><span class='range'>(1 - period)</span></th>");
+		th.appendTo(tr);
+		var th=$("<th>Period<br/><span class='range'>(1 - 10)</span></th>");
+		th.appendTo(tr);
+		var th=$("<th>Delete<br/>&nbsp;</th>");
+		th.appendTo(tr);
+
+		for(var i = 0; i < rowCount; i++) {
+			var tr=$("<tr id='process"+i+"-row'></tr>");
+			tr.appendTo(table);
+			for(var j = 0; j < 5; j++) {
+				var td=$("<td></td>");
+				td.appendTo(tr);
+				if(j == 0){
+				  var text=$("<span>Process"+process[i].pid+"</span>");
+				  text.appendTo(td);
+				} else if(j == 1){
+					var input=$("<input class='form-control p-unit p-arr"+i+"' id='edit-input"+(i*5+j)+"' value="+process[i].arrivalTime+"></input>");
+					input.appendTo(td);
+				} else if(j == 2){
+					var input=$("<input class='form-control p-unit p-exec"+i+"' id='edit-input"+(i*5+j)+"' value="+process[i].execTime+"></input>");
+					input.appendTo(td);
+				} else if(j == 3){
+					var input=$("<input class='form-control p-unit p-period"+i+"' id='edit-input"+(i*5+j)+"' value="+process[i].period+"></input>");
+					input.appendTo(td);
+				} else if(j == 4){
+				  var text=$('<a href="#" class="delete-process" onclick="process_manager.deactivateProcess('+i+')">&times</a>');
+				  text.appendTo(td);
 				}
 			}
 		}
@@ -101,7 +150,7 @@ function ProcessManager() {
 			  var text = $("<span>Process"+newPid+"</span>");
 			  text.appendTo(td);
 			} else if (j == 1) {
-				var input = $("<input id='edit-input"+(index*5+j)+"' class='form-control p-unit'></input>");
+				var input = $("<input id='edit-input"+(index*5+j)+"' class='form-control p-unit p-arr"+index+"'></input>");
 				input.appendTo(td);
 			} else if (j == 2) {
 				var input = $("<input id='edit-input"+(index*5+j)+"' class='form-control p-unit p-exec"+index+"'></input>");

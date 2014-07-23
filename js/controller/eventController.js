@@ -1,6 +1,8 @@
 
 // Click function for Add Case button
 $('#add-case').click(function(){
+	cpu_manager.CPUList.length = 0;
+	process_manager.processList.length = 0;
 	$('#myModal1').modal({'backdrop': 'static'});
 	cleanResultPanel();
 	recorder_manager.recorderList.length = 0;
@@ -37,7 +39,8 @@ $("#process-quantity").blur(function(){
 	// Form validation 
 	if ($(".form-myModal3").valid() == true) {
 		$("#random-process").fadeIn(); 
-		$(".save-process-group").fadeIn();		
+		$(".save-process-group").fadeIn();	
+		// Draw the process table	
 		process_manager.drawProcessTable();
 	} else {
 		$("#random-process").hide();
@@ -131,10 +134,12 @@ $("#start-simulator").click(function(){
 	cleanResultPanel();
 
 	drawResultPanel();
-	$("#result-display-panel").css("width","1500px");
+	$("#result-display-panel").css("width","2050px");
 	var height = simulator.resourceList.length * 190;
 	$("#result-recorder-div").css("height",height+"px");
+	var height = simulator.resourceList.length * 140+100;
 	$(".result-global-readyqueue").css("height",height+"px");
+
 
 	simulator.startSimulator();
 	recorder_manager.handleRecorderSequence();
@@ -179,7 +184,6 @@ function addSchemeSelector(scheme) {
 						  +'<option value="">---- Select an Algorithm ----</option>'
 						  +'<option value="G-EDF">G-EDF</option>'
 						  +'<option value="G-RMS">G-RMS</option>'
-						  +'<option value="LLF">LLF</option>'
 						+'</select>'
 	                +'</div>'
 	            +'</div>';
@@ -216,7 +220,6 @@ function saveCase() {
 		var cpu = new CPU(cid);
 		cpu_manager.addCPU(cpu);
 	}
-
 	// Create Process objects one by one and then add them to the processList
 	for(var i=0;i<processQty;i++){
 		var pid=process_manager.getNextID();
@@ -233,15 +236,6 @@ function saveCase() {
 
 	// Change the main page title
 	changeAlgTitle(execAlg);
-
-	// For Testing CPU
-	// for (var j = 0; j < simulator.resourceList.length; j++) {
-	// 	alert('cid = '+simulator.resourceList[j].cid + ' // '+'name = '+simulator.resourceList[j].name + ' // '+'alg = '+simulator.resourceList[j].executedAlgorithm);
-	// }
-	// For Testing Process
-	// for (var j = 0; j < simulator.processList.length; j++) {
-	// 	alert('pid = '+simulator.processList[j].pid + ' // '+'name = '+simulator.processList[j].name + ' // '+'a time = '+simulator.processList[j].arrivalTime+ ' // '+'period = '+simulator.processList[j].period+ ' // '+'exec time = '+simulator.processList[j].execTime);
-	// }
 }
 
 /*
@@ -260,8 +254,8 @@ function showCaseSettings() {
 	var results = simulator.compareTotalProcessUtilWithTotalCpuRemainingUtil();
 	var workloadHtml = "<table id='workload-table'>"
 						  + "<tr>"
-							  + "<td>Total process utilization: <b>" + results.totalProUtil + "</b></td>"
-							  + "<td>Total CPU utilization: <b>" + results.totalCpuUtil + "</b></td>"
+						 	  + "<td>Total number of CPUs: <b>" + results.totalCpuUtil + "</b></td>"
+							  + "<td>Total utilization: <b>" + results.totalProUtil + "</b></td>"							  
 							  + "<td>Status: <b>" + results.condition + "</b></td>"
 						  + "</tr>"
 					  + "</table>"
@@ -311,7 +305,6 @@ function showCaseSettings() {
 	$("#process-text").html(html);
 }
 
-
 /*
  * Function for showing and hiding Edit Case and Start Simulator button
  */
@@ -341,54 +334,8 @@ function editCase() {
 		$("#edit-case-table-div").html(html);
 		$('#edit-p-Algorithm option[value="'+execAlg+'"]').prop('selected', 'selected');
 	}
-
-	// Get all process information from saved simulator object respectively
-	var process = process_manager.processList;
-	var rowCount = process.length; 
-	$("#edit-case-table").remove();
-
-	var table=$("<table id='edit-case-table' border='0'></table>");
-   	table.appendTo($("#edit-case-table-div"));
-
-	var tr=$("<tr></tr>");
-	tr.appendTo(table);
-	var th=$("<th>Process Name</th>");
-	th.appendTo(tr);
-	var th=$("<th>Arrive Time</th>");
-	th.appendTo(tr);
-	var th=$("<th>Execution Time</th>");
-	th.appendTo(tr);
-	var th=$("<th>Period</th>");
-	th.appendTo(tr);
-	var th=$("<th>Delete</th>");
-	th.appendTo(tr);
-
-	for(var i = 0; i < rowCount; i++) {
-		//if(process[i].active == true){
-			var tr=$("<tr id='process"+i+"-row'></tr>");
-			tr.appendTo(table);
-			for(var j = 0; j < 5; j++) {
-				var td=$("<td></td>");
-				td.appendTo(tr);
-				if(j == 0){
-				  var text=$("<span>Process"+process[i].pid+"</span>");
-				  text.appendTo(td);
-				} else if(j == 1){
-					var input=$("<input class='form-control p-unit' id='edit-input"+(i*5+j)+"' value="+process[i].arrivalTime+"></input>");
-					input.appendTo(td);
-				} else if(j == 2){
-					var input=$("<input class='form-control p-unit p-exec"+i+"' id='edit-input"+(i*5+j)+"' value="+process[i].execTime+"></input>");
-					input.appendTo(td);
-				} else if(j == 3){
-					var input=$("<input class='form-control p-unit p-period"+i+"' id='edit-input"+(i*5+j)+"' value="+process[i].period+"></input>");
-					input.appendTo(td);
-				} else if(j == 4){
-				  var text=$('<a href="#" class="delete-process" onclick="process_manager.deactivateProcess('+i+')">&times</a>');
-				  text.appendTo(td);
-				}
-			}
-		//}
-	}
+	// Draw the process table
+	process_manager.drawEditProcessTable();
 }
 
 function resetObjList() {
@@ -401,7 +348,7 @@ function saveEditCase() {
 
 	if (simulator.scheme == "global")  // Get the algorithm under global scheme
 		execAlg = $('#edit-g-Algorithm').val();  
-	else if (simulator.scheme == "partitioned") 	// Get the algorithm under partitioned scheme	
+	else if (simulator.scheme == "partitioned")  // Get the algorithm under partitioned scheme	
 		execAlg = $('#edit-p-Algorithm').val();  
 
 	var processes = process_manager.processList;
@@ -417,21 +364,16 @@ function saveEditCase() {
 		processes[i].execTime = execTime;
 		processes[i].arrivalTime = arrivalTime;
 		processes[i].period = period;
-
 	}
-
 	for(var i = 0; i < processQty; i++) {
 		if(processes[i].active == false){
 			processes.splice(i,1);
 			i--;
 			processQty--;
-			//alert(processes[0].pid);
 		}
 	}
 	// Update simulator object
-	simulator.algorithm = execAlg;
-	//simulator.processList = processes;
-	
+	simulator.algorithm = execAlg;	
 	// Change the main page title
 	changeAlgTitle(execAlg);
 }
@@ -446,14 +388,14 @@ function initializeData(){
 		//alert(process_manager.processList[i].pid+"|"+process_manager.processList[i].arrivalTime);
 		//alert(simulator.processList[i].pid+"|"+simulator.processList[i].arrivalTime);
 	}
-
 	//initialize resouseList
+
 	var resources = cpu_manager.CPUList;
+	simulator.resourceList.length = 0;
 	for(var i in resources){
 		var resource = new CPU(resources[i].cid);
 		simulator.resourceList[i] = resource;
 	}
-
 	//reset relative para
 	simulator.finishEventList.length = 0;
 	simulator.idleCPUList = [];

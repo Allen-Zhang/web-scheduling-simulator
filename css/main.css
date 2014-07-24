@@ -91,3 +91,47 @@ label.error {
 #files {
 	width: 200px;
 }
+.instruction-icon{
+	width: 20px;
+	height: 20px;
+	display: none;
+	background-image: url(../icon/question.png);
+	vertical-align: middle;
+}
+
+.instruction-div{
+	width: 350px;
+	height: 200px;
+	background-color: black;
+	opacity: 0.75;
+	color: white;
+	position: relative;
+	top: 10px;
+	left: 10px;
+	font-weight: normal;
+	font-size: 16px;
+	padding-left: 25px;
+	padding-top: 20px;
+	padding-right: 25px;
+	line-height:180%;
+	letter-spacing: 2px;
+	z-index: 50;
+	font-family:"Georgia Regular";
+	clear: both;
+}
+.instruction-div span{
+	float: left;
+	width:50px;
+	font-size:400%;
+	padding-top: 15px;
+	height: 40px;
+}
+#algorithm-text, #scheme-text{
+	display: inline-block;
+}
+#statistics-panel table tr{
+	text-align: center;
+}
+#statistics-panel table th{
+	text-align: center;
+}

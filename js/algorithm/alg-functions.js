@@ -55,7 +55,6 @@ function checkAndHandleArrivalProcess(time, resource){
 			break;
 		case "G-EDF":
 			var pList = simulator.processList;
-			var deadline = simulator.leastPriorityProcess.deadline;
 			var arrivalPs = [];
 
 			for(var i in pList){		
@@ -69,17 +68,45 @@ function checkAndHandleArrivalProcess(time, resource){
 				}
 			}
 			arrivalPs.sort(function(a,b){return a.deadline-b.deadline;});
-			// var text="";
-			// for(var i in arrivalPs){
-			// 	text+=arrivalPs[i].pid;
-			// }
-			// alert(text);
 			for(var i in arrivalPs){
 				if(arrivalPs[i].deadline == simulator.globalReadyQueue[0].deadline && arrivalPs[i].pid == simulator.globalReadyQueue[0].pid){
 					if(simulator.idleCPUList.length != 0){			
 						executionProcess(time,simulator.idleCPUList[0]);
 					}
 					else if(simulator.leastPriorityProcess.deadline > arrivalPs[i].deadline){
+						var resource = "";
+						for(var j in simulator.resourceList){
+							if(simulator.resourceList[j].cid == simulator.leastPriorityProcess.executedCPU)
+								resource = simulator.resourceList[j];
+						}
+						handleInterrupt(time,resource);
+						recorder_manager.recordNewEvent(arrivalPs[i].pid,resource.cid,"interrupt",arrivalPs[i].arrivalTime,arrivalPs[i].arrivalTime,simulator.globalReadyQueue,"");			
+						executionProcess(time,resource);
+					}
+				}
+			}
+			break;
+		case "G-RMS":
+			var pList = simulator.processList;
+			var arrivalPs = [];
+
+			for(var i in pList){		
+				if(pList[i].arrivalTime == time){
+					var newP = new Process(pList[i].pid, pList[i].arrivalTime, pList[i].execTime, pList[i].period, "");
+					arrivalPs.push(newP);
+					pList[i].arrivalTime = pList[i].deadline;
+					pList[i].deadline = parseInt(pList[i].deadline) + parseInt(pList[i].period);	
+					handleArrvialEvent(newP);
+					recorder_manager.recordNewEvent(newP.pid,-1,"arrival",newP.arrivalTime,newP.arrivalTime,simulator.globalReadyQueue,"");
+				}
+			}
+			arrivalPs.sort(function(a,b){return a.period-b.period;});
+			for(var i in arrivalPs){
+				if(arrivalPs[i].period == simulator.globalReadyQueue[0].period && arrivalPs[i].pid == simulator.globalReadyQueue[0].pid){
+					if(simulator.idleCPUList.length != 0){			
+						executionProcess(time,simulator.idleCPUList[0]);
+					}
+					else if(simulator.leastPriorityProcess.period > arrivalPs[i].period){
 						var resource = "";
 						for(var j in simulator.resourceList){
 							if(simulator.resourceList[j].cid == simulator.leastPriorityProcess.executedCPU)
@@ -126,6 +153,17 @@ function handleArrvialEvent(arrivalP,resource){
 			readyQueue.push(arrivalP);
 			for(var t = readyQueue.length-2;t>=0;t--){
 				if(arrivalP.deadline < readyQueue[t].deadline){ // if arrival preocee deadline is equal with other, put it first place
+					var temp = readyQueue[t];
+					readyQueue[t]=arrivalP;
+					readyQueue[t+1]=temp;
+				}
+			}
+			break;
+		case "G-RMS":
+			var readyQueue = simulator.globalReadyQueue;
+			readyQueue.push(arrivalP);
+			for(var t = readyQueue.length-2;t>=0;t--){
+				if(arrivalP.period < readyQueue[t].period){ // if arrival preocee deadline is equal with other, put it first place
 					var temp = readyQueue[t];
 					readyQueue[t]=arrivalP;
 					readyQueue[t+1]=temp;
@@ -201,11 +239,6 @@ function handleInterrupt(time, resource){
 		handleArrvialEvent(interP,resource);
 		//delete interrupt previous finish event
 		handleFinishEvent(interP,resource);
-
-		// //update cpu
-		// resource.status = 0;
-		// resource.runningProcess = "";
-
 		//modify interrupted process execution recorder
 		modifyRecorderEndTime(interP.pid, interP.executedCPU, interP.startTime, "execution", time );
 	}
@@ -234,10 +267,14 @@ function checkMissEvent(time, resource){
 			}
 			break;
 		case "global":
-			var process = simulator.globalRunningProcess;
 			var readyQueue = simulator.globalReadyQueue;
-			if((parseInt(process.startTime)+parseInt(process.execTime)) > process.deadline && process.deadline == time)
-				recorder_manager.recordNewEvent(process.pid,-1,"miss",time,time,readyQueue,"");	
+			for(var i in simulator.resourceList){
+				if(simulator.resourceList[i].status == 1){
+					var process = simulator.resourceList[i].runningProcess;
+					if((parseInt(process.startTime)+parseInt(process.execTime)) > process.deadline && process.deadline == time)
+						recorder_manager.recordNewEvent(process.pid,-1,"miss",time,time,readyQueue,"");	
+				}
+			}
 			for(var i in readyQueue){
 				if(time == readyQueue[i].deadline){
 					recorder_manager.recordNewEvent(readyQueue[i].pid,-1,"miss",time,time,readyQueue,"");
@@ -258,18 +295,37 @@ function modifyRecorderEndTime(pid,cid,startTime,eventType,newEndTime){
 }
 
 function updateIdleCPUListAndLeastPriorityProcess(){
-	simulator.idleCPUList.length = 0;
-	var deadline = -1;
-	for(var i in simulator.resourceList){
-		if(simulator.resourceList[i].status == 0){
-			//var resource = new CPU(simulator.recorderList[i].cid);
-			simulator.idleCPUList.push(simulator.resourceList[i]);
-		}
-		else{
-			if(simulator.resourceList[i].runningProcess.deadline > deadline){
-				deadline = simulator.resourceList[i].runningProcess.deadline;
-				simulator.leastPriorityProcess = simulator.resourceList[i].runningProcess;
+	var algorithm = simulator.algorithm;
+	switch(algorithm){
+		case "G-EDF":
+			simulator.idleCPUList.length = 0;
+			var deadline = -1;
+			for(var i in simulator.resourceList){
+				if(simulator.resourceList[i].status == 0){
+					simulator.idleCPUList.push(simulator.resourceList[i]);
+				}
+				else{
+					if(simulator.resourceList[i].runningProcess.deadline > deadline){
+						deadline = simulator.resourceList[i].runningProcess.deadline;
+						simulator.leastPriorityProcess = simulator.resourceList[i].runningProcess;
+					}
+				}
 			}
-		}
+			break;
+		case "G-RMS":
+			simulator.idleCPUList.length = 0;
+			var period = -1;
+			for(var i in simulator.resourceList){
+				if(simulator.resourceList[i].status == 0){
+					simulator.idleCPUList.push(simulator.resourceList[i]);
+				}
+				else{
+					if(simulator.resourceList[i].runningProcess.period > period){
+						period = simulator.resourceList[i].runningProcess.period;
+						simulator.leastPriorityProcess = simulator.resourceList[i].runningProcess;
+					}
+				}
+			}
+			break;
 	}
 }

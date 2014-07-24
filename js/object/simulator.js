@@ -7,7 +7,6 @@ function Simulator(scheme, algorithm, resourceList, processList) {
 	this.processList = processList !== undefined ? processList : [];
 	this.finishEventList = [];	
 	this.globalReadyQueue = [];		//for global scheme
-	this.globalRunningProcess = "";	//for global scheme
 	this.leastPriorityProcess = "";	//for global scheme
 	this.idleCPUList = [];//for global scheme
 
@@ -30,7 +29,7 @@ function Simulator(scheme, algorithm, resourceList, processList) {
 						G_EDF();
 						break;
 					case "G-RMS":
-						//G_RMS();
+						G_RMS();
 						break;
 				}
 				break;

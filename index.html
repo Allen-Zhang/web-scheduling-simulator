@@ -22,7 +22,7 @@
 			<div class="col-md-10">
 				<div class="row">
 					<div class="col-md-5">
-						<h3><b><span id="alg-title"></span> Scheduling Algorithm</b></h3>
+						<h3><b><span id="alg-title"></span> Scheduling Algorithm </b><div class="instruction-icon"></div></h3>
 					</div>
 					<div class="col-md-7">
 						<form class="form-inline" id="control-pane">
@@ -69,7 +69,7 @@
 				<div id="result-legend">
 					<ul class="list-inline">
   						<li><span>&#8593</span> arrival event<span></span></li>
-  						<li><span style="color:blue;">&#8593</span><span> preempt event</span></li>
+  						<li><span style="color:rgb(36,222,249);">&#8593</span><span> preempt event</span></li>
   						<li><span style="color:red;text-decoration:line-through">&nbsp&nbspP#&nbsp&nbsp</span><span> miss event</span></li>
   						<li><span id="legend-runningprocess"> </span><span> running process</span></li>
   						<li><span id="legend-readyqueue"> </span><span> ready queue</span></li>
@@ -88,10 +88,12 @@
 					<div class="col-md-3">
 						<h4>Strategy</h4>
 						<p id="scheme-text"></p>
+						<div class='instruction-icon scheme-instruction-icon' style="width:15px;height:15px;background-image:url(icon/question2.png);"></div>
 					</div>
 					<div class="col-md-3">
 						<h4>Algorithm</h4>
 						<p id="algorithm-text"></p>
+						<div class='instruction-icon' style="width:15px;height:15px;background-image:url(icon/question2.png);"></div>
 					</div>
 					<div class="col-md-6">
 						<h4>Workload</h4>
@@ -130,14 +132,14 @@
 		</div>
 
 		<!-- Statistics Pane -->
-		<div class="row main-pane">
+		<div class="row main-pane" id="statistics-panel">
 			<h3><b>Statistics</b></h3>
 			<hr/>
 			<div class="row">
-				<div class="col-md-4">	
+				<div class="col-md-4" >	
 					<h4>The Whole System</h4>					
-					<div id="statstics-system">
-						<table class="table table-hover">
+					<div id="statistics-system">
+						<table class="table table-hover" >
 							<tr class="info">
 								<th>Number of CPUs</th>
 								<th>Avg. Utilization</th>
@@ -148,7 +150,7 @@
 				</div>
 				<div class="col-md-4">
 					<h4>Per CPU</h4>
-					<div id="statstics-cpu"> 
+					<div id="statistics-cpu"> 
 						<table class="table table-hover">
 							<tr class="info">
 								<th>CID</th>
@@ -160,7 +162,7 @@
 				</div>
 				<div class="col-md-4">
 					<h4>Per Process</h4>
-					<div id="statstics-process"> 
+					<div id="statistics-process"> 
 						<table class="table table-hover">
 							<tr class="info">
 								<th>PID</th>
@@ -318,7 +320,8 @@
 	<script src="js/object/process.js"></script>
 	<script src="js/object/resource.js"></script>
 	<script src="js/object/simulator.js"></script>
-	<script src="js/object/recorder.js"></script>		
+	<script src="js/object/recorder.js"></script>
+	<script src="js/object/statistics.js"></script>	
 	<script src="js/controller/execController.js"></script>
 	<script src="js/controller/eventController.js"></script>
 	<script src="js/controller/renderController.js"></script>
@@ -328,5 +331,6 @@
 	<script src="js/algorithm/P_EDF.js"></script>
 	<script src="js/algorithm/P_RMS.js"></script>
 	<script src="js/algorithm/G_EDF.js"></script>
+	<script src="js/algorithm/G_RMS.js"></script>
 </body>
 </html>

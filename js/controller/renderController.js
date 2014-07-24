@@ -124,12 +124,15 @@ function drawGlobalReadyQueue(){
 
 function showNextEvents(flag){
 	var index = recorder_manager.getNextEventIndex();
+
 	if(index>=0){
 		for(var i in recorder_manager.recorderSequence[index]){
 			var recorderIndex = recorder_manager.recorderSequence[index][i];
 			renderNextEvent(recorderIndex,flag);
 		}
 	}
+	else
+		showStatistics();
 }
 
 
@@ -145,7 +148,9 @@ function renderNextEvent(eventIndex,flag){
 	var divID = "result-div"+eventIndex;
 	var text = "";
 	var scheme = simulator.scheme;
-
+	//auto scrolling
+	var left = (start-14)*40;
+		$("#running-results").scrollLeft(left);
 	
 	if (type == "execution") {	
 		var td = "#table"+cid+"td"+start;
@@ -160,8 +165,6 @@ function renderNextEvent(eventIndex,flag){
 			var td = "#currentRunningP"+cid;
 				$(td).html("P"+recorder.runningProcess+" ("+recorder.runningProcessPriority+")");
 		}
-		var left = (start-14)*40;
-		$("#running-results").scrollLeft(left);
 	}
 	if(type == "arrival"){
 		if(scheme == "partitioned")
@@ -178,7 +181,7 @@ function renderNextEvent(eventIndex,flag){
 	}
 	if(type == "interrupt"){
 		var td = "#event-table"+cid+"td"+start;
-		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:blue;'>&#8593 P"+pid+"</div>");
+		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:rgb(36,222,249);'>&#8593 P"+pid+"</div>");
 		div.appendTo($(td));
 		$("#"+divID).hide().fadeIn(1000);
 		text = "P"+pid+" preempts on CPU"+cid;
@@ -283,6 +286,7 @@ function showAllEvent(){
 }
 
 function showStatistics() {
+	
 	// Show the statistics of the whole system
 	var html = "<table class='table table-hover'><tr class='info'>"
 				+ "<th>Number of CPUs</th>"
@@ -291,51 +295,51 @@ function showStatistics() {
 				+ "</tr>";
 	// Specific data
 	html += "<tr>"
-			+ "<td>" +  + "</td>"
-			+ "<td>" +  + "</td>"
+			+ "<td>" +simulator.resourceList.length+ "</td>"
+			+ "<td>" +statistics.averageUtilization.toPrecision(3)+ "</td>"
 			+ "<td>" +  + "</td>"
 			+ "</tr>"
 	 		+ "</table>";
-	$("#statstics-system").html(html);
+	$("#statistics-system").html(html);
 
 	// Show the statistics of per CPU
 	html = "<table class='table table-hover'><tr class='info'>"
 			+ "<th>CID</th>";			
-	if(simulator.scheme == "partitioned") {
-		html += "<th>Number of Processes</th>";
-	}
+	// if(simulator.scheme == "partitioned") {
+	// 	html += "<th>Number of Processes</th>";
+	// }
 	html += "<th>Utilization</th>"
 			+ "<th>Missing Rate</th>";
 	// Specific data
-	for(var i = 0; i < process_manager.processList.length; i++){
-		var process = process_manager.processList[i];
+	for(var i = 0; i < cpu_manager.CPUList.length; i++){
+		var cpu = cpu_manager.CPUList[i];
 			html += "<tr>"
-					+ "<td>" +  + "</td>";			
-		if(simulator.scheme == "partitioned") {
-			html += "<td>"+  + "</td>";
-		}
-		html += "<td>" +  + "</td>"
+					+ "<td>" +cpu.cid+ "</td>";			
+		// if(simulator.scheme == "partitioned") {
+		// 	html += "<td>"+  + "</td>";
+		// }
+		html += "<td>" +statistics.CPUUtilization[cpu.cid].toPrecision(3)+ "</td>"
 				+ "<td>" +  + "</td>"
 				+ "</tr>";
 	}
 	html += "</table>";
-	$("#statstics-cpu").html(html);
+	$("#statistics-cpu").html(html);
 
 	// Show the statistics of per process
 	html = "<table class='table table-hover'><tr class='info'>"
-			+ "<th>PID</th>";			
+			+ "<th>PID</th>"			
 			+ "<th>Utilization</th>"
-			+ "<th>Missing Rate</th>";
+			+ "<th>Missing Rate</th></tr>";
 	// Specific data
 	for(var i = 0; i < process_manager.processList.length; i++){
 		var process = process_manager.processList[i];
 			html += "<tr>"
-					+ "<td>" +  + "</td>";			
-					+ "<td>" +  + "</td>"
+					+ "<td>" +process.pid+ "</td>"		
+					+ "<td>" +statistics.processUtilization[process.pid].toPrecision(3)+ "</td>"
 					+ "<td>" +  + "</td>"
 					+ "</tr>";
 	}
 	html += "</table>";
-	$("#statstics-process").html(html);
+	$("#statistics-process").html(html);
 }
 

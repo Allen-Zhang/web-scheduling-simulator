@@ -38,26 +38,6 @@ function RecorderManager() {
 		this.index = -1;
 	}
 	
-	this.testCase = function() {
-
-		this.addRecorder(new Recorder(0, 0, "arrival", 0));
-		this.addRecorder(new Recorder(1, 0, "execution", 0, 5));
-		this.addRecorder(new Recorder(1, 0, "arrival", 1));
-		this.addRecorder(new Recorder(2, 1, "arrival", 1));
-		this.addRecorder(new Recorder(3, 1, "arrival", 1));
-		this.addRecorder(new Recorder(4, 1, "arrival", 1));
-		this.addRecorder(new Recorder(4, 2, "execution", 3, 10));
-		
-		
-		this.addRecorder(new Recorder(3, 1, "execution", 5, 10));
-		
-		this.addRecorder(new Recorder(5, 0, "execution", 11, 13));
-		this.addRecorder(new Recorder(3, 2, "execution", 18, 25));
-
-	}
-	
-	//this.testCase();
-	
 	this.recordNewEvent = function(pid, cid, eventType, eventStartTime, eventEndTime, readyQueue,runningProcess){
 		var readyQueueList = [];
 		var readyqueuePriority = [];
@@ -84,7 +64,6 @@ function RecorderManager() {
 					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, runningProcess.pid,runningProcess.period);		
 				break;
 			case "G-EDF":
-			//alert(readyQueue.length);
 				for(var i in readyQueue){
 					readyQueueList[i] = readyQueue[i].pid;
 					readyqueuePriority[i] = readyQueue[i].deadline;
@@ -93,6 +72,16 @@ function RecorderManager() {
 					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, "","");
 				else
 					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, runningProcess.pid,runningProcess.deadline);		
+				break;
+			case "G-RMS":
+				for(var i in readyQueue){
+					readyQueueList[i] = readyQueue[i].pid;
+					readyqueuePriority[i] = readyQueue[i].period;
+				}
+				if(runningProcess == "")
+					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, "","");
+				else
+					var record = new Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueueList, readyqueuePriority, runningProcess.pid,runningProcess.period);		
 				break;
 		}
 		this.addRecorder(record);

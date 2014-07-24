@@ -1,12 +1,9 @@
 
 // Click function for Add Case button
 $('#add-case').click(function(){
-	cpu_manager.CPUList.length = 0;
-	process_manager.processList.length = 0;
+	
 	$('#myModal1').modal({'backdrop': 'static'});
 	cleanResultPanel();
-	recorder_manager.recorderList.length = 0;
-	recorder_manager.recorderSequence.length = 0;
 });
 
 // Click function for Next button on modal1 
@@ -127,11 +124,12 @@ $("#start-simulator").click(function(){
 	$('#start-running').hide();
 	$('#stop-running').fadeIn('fast');
 
+	cleanResultPanel();
+
 	recorder_manager.recorderList.length = 0;
 	recorder_manager.recorderSequence.length = 0;
-
 	initializeData();
-	cleanResultPanel();
+	statistics.initialize();
 
 	drawResultPanel();
 	$("#result-display-panel").css("width","2050px");
@@ -140,9 +138,11 @@ $("#start-simulator").click(function(){
 	var height = simulator.resourceList.length * 140+100;
 	$(".result-global-readyqueue").css("height",height+"px");
 
-
 	simulator.startSimulator();
+
 	recorder_manager.handleRecorderSequence();
+
+	statistics.calculation();
 
 	showNextEvents();
 	showCaseSettings();
@@ -158,6 +158,7 @@ $("#stop-simulator").click(function(){
 	$('#case-panel').fadeIn('fast');
 	$('#start-running').fadeIn('fast');
 	$('#stop-running').hide();
+	$('#statistics-panel table td').remove();
 	process_manager.resetProcessAllocation();
 	showCaseSettings();
 });
@@ -172,8 +173,47 @@ $("#step-back").click(function(){
 
 $("#finish-simulator").click(function(){
 	showAllEvent();
+	showStatistics();
+});
+$(".instruction-icon").mouseenter(function(){
+	var div = $("<div class='instruction-div'> </div>");
+	div.appendTo($(this));
+	var algorithm = simulator.algorithm;
+	var text = "";
+	switch(algorithm){
+		case "G-EDF":
+			text = "<span>G</span>-EDF is the extension of EDF for multiple processors based on partitioned strategy. The highest priority job is the one with the earliest deadline."
+			break;
+		case "G-RMS":
+			text = "<span>G</span>-RMS is the extension of EDF for multiple processors based on partitioned strategy. Task with the smallest period is assigned the highest priority."
+			break;
+		case "P-EDF":
+			text = "<span>P</span>-EDF is the extension of EDF for multiple processors based on partitioned strategy. The highest priority job is the one with the earliest deadline."
+			break;
+		case "P-RMS":
+			text = "<span>P</span>-RMS is the extension of EDF for multiple processors based on partitioned strategy. Task with the smallest period is assigned the highest priority."
+			break;
+	}
+	div.css({"width":"350px","height":"200px"}).html(text);
 });
 
+$(".scheme-instruction-icon").mouseenter(function(){
+	var scheme = simulator.scheme;
+	var text = "";
+	switch(scheme){
+		case "partitioned":
+			text = "<span>P</span>artitioned scheme, task is assigned one by one from ready queue to processors by using one scheduling algorithm. If the CPU is idle, task is assigned directly. If the CPU is busy, then comparing the current running task with the task to be allcocated, interrupting the task with lowest priority. Interrupted task is assiged back to ready queue."
+			break;
+		case "global":
+			text = "<span>G</span>lobal scheme, according to their utilization, all tasks are assigned from ready queue to processors before execution. Each processor could execute different scheduling algorithm.In this simulator, we have already chosen algorithm for partitioned scheme."
+			break;
+	}
+	$(".instruction-div").css({"width":"500px","height":"250px"}).html(text);
+});
+
+$(".instruction-icon").mouseleave(function(){
+	$(this).empty();
+});
 function addSchemeSelector(scheme) {
 	var html = "";
 	if (scheme == "global") {
@@ -208,6 +248,8 @@ function saveCase() {
 	var cpuQty = $('#cpu-quantity').val();  // Get the quantity of CPU
 	var processQty=$("#process-quantity").val();  // Get the quantity of process
 	var execAlg = "";
+	recorder_manager.recorderList.length = 0;
+	recorder_manager.recorderSequence.length = 0;
 
 	if (scheme == "global")  // Get the algorithm under global scheme
 		execAlg = $('#g-Algorithm').val();  
@@ -243,6 +285,7 @@ function saveCase() {
  */
 function changeAlgTitle(algorithm) {
 	$("#alg-title").html(algorithm);
+	$(".instruction-icon").css("display","inline-block").show();
 }
 
 function showCaseSettings() {
@@ -250,6 +293,7 @@ function showCaseSettings() {
 	$("#scheme-text").html("<b>" + simulator.scheme + "</b>");
 	// Algorithm information
 	$("#algorithm-text").html("<b>" + simulator.algorithm + "</b>");
+
 	// Workload information
 	var results = simulator.compareTotalProcessUtilWithTotalCpuRemainingUtil();
 	var workloadHtml = "<table id='workload-table'>"
@@ -402,5 +446,4 @@ function initializeData(){
 	simulator.leastPriorityProcess = "";
 	simulator.globalReadyQueue = [];
 }
-
 

@@ -1,15 +1,20 @@
+/*
+ * recorder object
+ */
 function Recorder(pid, cid, eventType, eventStartTime, eventEndTime, readyQueue, readyQueuePriority ,runningProcess, runningProcessPriority) {
-	this.pid = pid !== undefined ? pid : "";
+	this.pid = pid !== undefined ? pid : "";  //which process
 	this.cid = cid !== undefined ? cid : "";  // Event happend on which CPU
 	this.eventType = eventType !== undefined ? eventType : "";  // arrival, interrupt, missing, restart, execution
 	this.eventStartTime = eventStartTime !== undefined ? eventStartTime : "";
 	this.eventEndTime = eventEndTime !== undefined ? eventEndTime : eventStartTime;  // For execution event
-	this.readyQueue = readyQueue !== undefined ? readyQueue : [];
+	this.readyQueue = readyQueue !== undefined ? readyQueue : [];	//the current readyqueue
 	this.readyQueuePriority = readyQueuePriority !== undefined ? readyQueuePriority : [];
-	this.runningProcess = runningProcess !== undefined ? runningProcess: "";
+	this.runningProcess = runningProcess !== undefined ? runningProcess: "";	//current running process
 	this.runningProcessPriority = runningProcessPriority !== undefined ? runningProcessPriority: "";
 }
-
+/*
+ * record manager
+ */
 function RecorderManager() {
     this.recorderList = [];
     this.index = -1;
@@ -37,7 +42,7 @@ function RecorderManager() {
 	this.resetIndex =function(){
 		this.index = -1;
 	}
-	
+	//write new record
 	this.recordNewEvent = function(pid, cid, eventType, eventStartTime, eventEndTime, readyQueue,runningProcess){
 		var readyQueueList = [];
 		var readyqueuePriority = [];
@@ -86,7 +91,7 @@ function RecorderManager() {
 		}
 		this.addRecorder(record);
 	}
-
+	//handle the record sequence for rendering
 	this.handleRecorderSequence = function(){
 		//order arrival event before execution event
 		for(var i=0; i<this.recorderList.length;i++){
@@ -132,41 +137,6 @@ function RecorderManager() {
 			}
 
 		}
-
-
-		// var index = 0;
-		// var pointer = 0;
-
-		// for(var i=0; i<this.recorderList.length;i++){
-		// 	if(this.recorderList[i].checked == 0){
-		// 		var recorder = this.recorderList[i];
-		// 		var type = recorder.eventType;
-		// 		var startT = recorder.eventStartTime;
-		// 		this.recorderSequence[index] = [];
-		// 		pointer = 0;
-		// 		this.recorderSequence[index][pointer] = i;
-
-		// 		for(var j=i+1;j<this.recorderList.length;j++){
-		// 			var nextRecorder = this.recorderList[j];
-		// 			var nextStartT = nextRecorder.eventStartTime;
-		// 			var nextType = nextRecorder.eventType;
-		// 			var checked = nextRecorder.checked;
-
-		// 			if(nextStartT != startT){
-		// 				break;
-		// 			}
-		// 			if(nextType == type && checked == 0){
-		// 				pointer++;
-		// 				this.recorderSequence[index][pointer] = j;
-		// 				this.recorderList[j].checked = 1;
-		// 			}
-		// 		}
-		// 		index++;
-		// 	}	
-		// }
 	}
 
 }
-
-
-

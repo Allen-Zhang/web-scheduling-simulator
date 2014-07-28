@@ -1,4 +1,5 @@
 /*
+ * Partioned CPU allocation Scheme (Greedy)
  * Current process is allocated to the CPU 
  * whose remaining utilization is the largest
  */
@@ -33,7 +34,3 @@ function partitioningStrategy() {
 	}
 
 }
-/*
- * First, find an idle cpu
- * if not, allocate this process to a cpu whose running process's priority is smallest.
- */

@@ -1,3 +1,6 @@
+/*
+ * Statistics object
+ */
 function Statistics() {
 	this.processArrivalTimes = [];
 	this.CPUArrivalTimes = [];
@@ -13,7 +16,7 @@ function Statistics() {
 	this.averageUtilization = 0;
 	this.averageMissingRate = 0;
 
-
+	//initialize the data
 	this.initialize = function(){
 		this.averageUtilization = 0;
 		this.averageMissingRate = 0;
@@ -38,13 +41,17 @@ function Statistics() {
 			this.processMissingRate[pid] = 0;
 		}
 	}
-
+	//calculate the data
 	this.calculation = function(){
 
 		for(var i in recorder_manager.recorderList){
 			var recorder = recorder_manager.recorderList[i];
 			if(recorder.eventType == "execution"){
-				this.CPURunningTime[recorder.cid] += (recorder.eventEndTime - recorder.eventStartTime);
+				var end = recorder.eventEndTime;
+				var start = recorder.eventStartTime;
+				if(recorder.eventEndTime > 50)
+					end = 50;
+				this.CPURunningTime[recorder.cid] += (end - start);
 			}
 		}
 
@@ -66,15 +73,4 @@ function Statistics() {
 		}
 
 	}
-
-	// this.firstArrivalTime = arrivalTime;
-	// this.arrivalTime = arrivalTime !== undefined ? arrivalTime : 0;
-	// this.period = period !== undefined ? period : 1;
-	// this.execTime = execTime !== undefined ? execTime : 0;
-	// this.executedCPU = executedCPU !== undefined ? executedCPU : "Not Allocated";
-	// this.showColor = colors[pid%10];
-	// this.startTime = -1;
-	// this.remainingTime = this.execTime;
-	// this.deadline = parseInt(this.arrivalTime) + parseInt(this.period);	//first deadline
-
 }

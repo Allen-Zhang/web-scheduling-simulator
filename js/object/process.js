@@ -1,6 +1,10 @@
-
+/*
+ * process display color array
+ */
 var colors = new Array("#2ecc71","#f1c40f","#3498db","#e74c3c","#e67e22","#9b59b6","#ecf0f1","#7f8c8d","#f39c12","#1abc9c");
-
+/*
+ * process object
+ */
 function Process(pid, arrivalTime, execTime, period, executedCPU) {
 	
 	this.pid = pid;
@@ -19,12 +23,13 @@ function Process(pid, arrivalTime, execTime, period, executedCPU) {
 	this.deadline = parseInt(this.arrivalTime) + parseInt(this.period);	//first deadline
 
 }
-
-
+/*
+ * process manager
+ */
 function ProcessManager() {
 
     this.processList = [];
-    this.pid = -1;
+    this.pid = -1;	
     this.copyOfProcessList = [];
 
     this.addProcess = function(process) {
@@ -32,8 +37,7 @@ function ProcessManager() {
 	}
 
 	this.getNextID = function() {
-		//var index = this.processList.length
-		return ++this.pid;  // Using index as pid
+		return ++this.pid;
 	}
 
 	this.resetProcessList = function() {
@@ -339,6 +343,5 @@ function ProcessManager() {
 	}
 
 	/* JavaScript File Read/Write Functions End */
-
 }
 

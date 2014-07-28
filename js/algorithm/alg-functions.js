@@ -1,6 +1,7 @@
-
+/*
+ * Function for checking and handling new process arrival event 
+ */ 
 function checkAndHandleArrivalProcess(time, resource){
-
 	var algorithm = simulator.algorithm;
 	switch(algorithm){
 		case "P-EDF":
@@ -8,22 +9,29 @@ function checkAndHandleArrivalProcess(time, resource){
 			var interruptOccur = 0;
 			var deadline = resource.runningProcess.deadline;
 
-			for(var i in pList){		
-				if((pList[i].arrivalTime == time ) && (pList[i].executedCPU == resource.cid)){
+			for(var i in pList){
+				//check and find new arrival process		
+				if((pList[i].arrivalTime == time ) && (pList[i].executedCPU == resource.cid)){	
 					var newP = new Process(pList[i].pid, pList[i].arrivalTime, pList[i].execTime, pList[i].period, pList[i].executedCPU);
 					pList[i].arrivalTime = pList[i].deadline;
 					pList[i].deadline = parseInt(pList[i].deadline) + parseInt(pList[i].period);	
+					//update readyqueue
 					handleArrvialEvent(newP,resource);
+					//check preempt
 					if(deadline > newP.deadline){
-						handleInterrupt(time, resource);
+						//handle preempt	
+						handleInterrupt(time, resource);	
+						//record interrupt event
 						recorder_manager.recordNewEvent(newP.pid,resource.cid,"interrupt",newP.arrivalTime,newP.arrivalTime,resource.readyQueue,"");
 						deadline = newP.deadline;
 						interruptOccur = 1; 			
 					}
 					else
+						//record new arrival event
 						recorder_manager.recordNewEvent(newP.pid,resource.cid,"arrival",newP.arrivalTime,newP.arrivalTime,resource.readyQueue,resource.runningProcess);
 				}
 			}
+			//execute preempt process
 			if(interruptOccur == 1){	
 				executionProcess(time, resource);
 			}
@@ -33,22 +41,29 @@ function checkAndHandleArrivalProcess(time, resource){
 			var interruptOccur = 0;
 			var period = resource.runningProcess.period;
 
-			for(var i in pList){		
+			for(var i in pList){
+				//check and find new arrival process		
 				if((pList[i].arrivalTime == time ) && (pList[i].executedCPU == resource.cid)){
 					var newP = new Process(pList[i].pid, pList[i].arrivalTime, pList[i].execTime, pList[i].period, pList[i].executedCPU);
 					pList[i].arrivalTime = pList[i].deadline;
 					pList[i].deadline = parseInt(pList[i].deadline) + parseInt(pList[i].period);	
+					//update readyqueue
 					handleArrvialEvent(newP,resource);
+					//check preempt
 					if(period > newP.period){
+						//handle preempt	
 						handleInterrupt(time,resource);
+						//record interrupt event
 						recorder_manager.recordNewEvent(newP.pid,resource.cid,"interrupt",newP.arrivalTime,newP.arrivalTime,resource.readyQueue,"");
 						period = newP.period;
 						interruptOccur = 1; 			
 					}
 					else
+						//record new arrival event
 						recorder_manager.recordNewEvent(newP.pid,resource.cid,"arrival",newP.arrivalTime,newP.arrivalTime,resource.readyQueue,resource.runningProcess);
 				}
 			}
+			//execute preempt process
 			if(interruptOccur == 1){	
 				executionProcess(time,resource);
 			}
@@ -121,7 +136,9 @@ function checkAndHandleArrivalProcess(time, resource){
 			break;
 	}	
 }
-
+/*
+ * Function for updating readyqueue
+ */ 
 function handleArrvialEvent(arrivalP,resource){
 
 	var algorithm = simulator.algorithm;
@@ -172,7 +189,9 @@ function handleArrvialEvent(arrivalP,resource){
 			break;
 	}
 }
-
+/*
+ * Function for execution process and record
+ */ 
 function executionProcess(time,resource){
 	var scheme = simulator.scheme;
 	switch(scheme){
@@ -205,31 +224,42 @@ function executionProcess(time,resource){
 			break;
 	}
 }
-
+/*
+ * Function for checking and handling process finish event
+ */ 
 function checkAndHandleFinishProcess(time,resource){
 
 	var finishList = simulator.finishEventList;
-	//alert(simulator.finishEventList.length);
 	for(var i in finishList){
-		//alert(time+"|"+resource.cid);
 		if( parseInt(finishList[i].startTime)+parseInt(finishList[i].execTime) == time && resource.cid == finishList[i].executedCPU){
 			handleFinishEvent(finishList[i],resource);
 			
 		}
 	}
 }
-
+/*
+ * Function for updating finishprocesslist and cpu status
+ */ 
 function handleFinishEvent(process,resource){
 	resource.status = 0;
 	resource.runningProcess = "";	
 	deleteFinishEvent(process.pid,process.executedCPU,process.startTime);
 	if(simulator.scheme == "global"){
-		//resource.remainingUtil -= process.execTime/process.period;
-		//simulator.idleCPUList.push(resource);
 		updateIdleCPUListAndLeastPriorityProcess();
 	}
 }
-
+/*
+ * Function for deleting corresponding process form processfinishlist
+ */ 
+function deleteFinishEvent(pid,cid,startTime){
+	for(var i in simulator.finishEventList){
+		if(simulator.finishEventList[i].pid == pid&&simulator.finishEventList[i].executedCPU == cid&&simulator.finishEventList[i].startTime == startTime)
+			simulator.finishEventList.splice(i,1);
+	}
+}
+/*
+ * Function for handling preempt event and record
+ */ 
 function handleInterrupt(time, resource){
 	if(resource.runningProcess){
 		var interP = resource.runningProcess;
@@ -243,14 +273,9 @@ function handleInterrupt(time, resource){
 		modifyRecorderEndTime(interP.pid, interP.executedCPU, interP.startTime, "execution", time );
 	}
 }
-
-function deleteFinishEvent(pid,cid,startTime){
-	for(var i in simulator.finishEventList){
-		if(simulator.finishEventList[i].pid == pid&&simulator.finishEventList[i].executedCPU == cid&&simulator.finishEventList[i].startTime == startTime)
-			simulator.finishEventList.splice(i,1);
-	}
-}
-
+/*
+ * Function for checking process miss deadling event and record
+ */ 
 function checkMissEvent(time, resource){
 	var scheme = simulator.scheme;
 	switch(scheme){
@@ -283,7 +308,9 @@ function checkMissEvent(time, resource){
 			break;
 	}
 }
-
+/*
+ * Function for modify previous recorder when preempt occurs
+ */ 
 function modifyRecorderEndTime(pid,cid,startTime,eventType,newEndTime){
 	for(var i=recorder_manager.recorderList.length-1;i>=0;i--){
 		var temp = recorder_manager.recorderList[i];
@@ -293,7 +320,9 @@ function modifyRecorderEndTime(pid,cid,startTime,eventType,newEndTime){
 		}
 	}
 }
-
+/*
+ * Function for updating cpu idle list and find process whose priority is least
+ */ 
 function updateIdleCPUListAndLeastPriorityProcess(){
 	var algorithm = simulator.algorithm;
 	switch(algorithm){

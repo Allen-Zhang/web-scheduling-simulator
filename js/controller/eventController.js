@@ -148,7 +148,7 @@ $("#start-simulator").click(function(){
 	showCaseSettings();
 });
 
-// Click function for stop simulator button
+// Click function for restart button
 $("#stop-simulator").click(function(){
 	recorder_manager.resetIndex();
 	$('.event').remove();
@@ -162,15 +162,15 @@ $("#stop-simulator").click(function(){
 	process_manager.resetProcessAllocation();
 	showCaseSettings();
 });
-
+// Click function for step-forward button
 $("#step-forward").click(function(){
 	showNextEvents();
 });
-
+// Click function for step-back button
 $("#step-back").click(function(){
 	removeCurrentEvents();
 });
-
+// Click function for finish button
 $("#finish-simulator").click(function(){
 	showAllEvent();
 	showStatistics();
@@ -389,7 +389,6 @@ function resetObjList() {
 
 function saveEditCase() {
 	var execAlg = "";
-
 	if (simulator.scheme == "global")  // Get the algorithm under global scheme
 		execAlg = $('#edit-g-Algorithm').val();  
 	else if (simulator.scheme == "partitioned")  // Get the algorithm under partitioned scheme	
@@ -433,7 +432,6 @@ function initializeData(){
 		//alert(simulator.processList[i].pid+"|"+simulator.processList[i].arrivalTime);
 	}
 	//initialize resouseList
-
 	var resources = cpu_manager.CPUList;
 	simulator.resourceList.length = 0;
 	for(var i in resources){

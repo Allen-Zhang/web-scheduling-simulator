@@ -5,7 +5,7 @@ var colors = new Array("#2ecc71","#f1c40f","#3498db","#e74c3c","#e67e22","#9b59b
 /*
  * process object
  */
-function Process(pid, arrivalTime, execTime, period, executedCPU) {
+function Process(pid, arrivalTime, execTime, period, assignedCPU) {
 	
 	this.pid = pid;
 	this.name = "P" + this.pid;
@@ -16,7 +16,7 @@ function Process(pid, arrivalTime, execTime, period, executedCPU) {
 	this.arrivalTime = arrivalTime !== undefined ? arrivalTime : 0;
 	this.period = period !== undefined ? period : 1;
 	this.execTime = execTime !== undefined ? execTime : 0;
-	this.executedCPU = executedCPU !== undefined ? executedCPU : "Not Allocated";
+	this.assignedCPU = assignedCPU !== undefined ? assignedCPU : "Not Allocated";
 	this.showColor = colors[pid%10];
 	this.startTime = -1;
 	this.remainingTime = this.execTime;
@@ -206,7 +206,7 @@ function ProcessManager() {
 	this.resetProcessAllocation = function()  {
 		var pList = this.processList;
 		for (var i in pList) {
-			pList[i].executedCPU = "Not Allocated";
+			pList[i].assignedCPU = "Not Allocated";
 		}
 	}
 

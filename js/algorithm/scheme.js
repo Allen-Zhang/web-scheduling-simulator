@@ -25,8 +25,8 @@ function partitioningStrategy() {
 		}
 
 		// Allocate current process to the target CPU
-		simPList[i].executedCPU = targetCid;
-		manPList[i].executedCPU = targetCid;
+		simPList[i].assignedCPU = targetCid;
+		manPList[i].assignedCPU = targetCid;
 
 		// Update this target CPU's remaining utilization
 		simRList[targetRListIndex].remainingUtil = targetReUtil - simPList[i].execTime / simPList[i].period;

@@ -124,6 +124,9 @@ function RecorderManager() {
 
 		for(var i=1; i<this.recorderList.length;i++){
 			var nextRecorder = this.recorderList[i];
+
+			if(nextRecorder.eventStartTime > simulator.totalRunningTime)
+				break;
 			if( recorder.eventType!="interrupt" && recorder.eventType == nextRecorder.eventType && nextRecorder.eventStartTime== recorder.eventStartTime){
 				pointer++;
 				this.recorderSequence[index][pointer] = i;

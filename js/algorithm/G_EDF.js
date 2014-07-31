@@ -5,8 +5,8 @@ function G_EDF(){
 	//initialize idle CPU list and find the process whose priority(deadline) is least
 	updateIdleCPUListAndLeastPriorityProcess();
 
-	//simulate 0~50 time unit
-	for(var i=0; i < 50; i++){
+	//simulate 0~totalRunningTime time unit
+	for(var i=0; i <= simulator.totalExecutionTime; i++){
 		//check deadline miss event and record
 		checkMissEvent(i);
 

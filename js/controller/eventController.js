@@ -175,17 +175,17 @@ $("#finish-simulator").click(function(){
 	showAllEvent();
 	showStatistics();
 });
-$(".instruction-icon").mouseenter(function(){
+$(".algorithm-instruction-icon").mouseenter(function(){
 	var div = $("<div class='instruction-div'> </div>");
 	div.appendTo($(this));
 	var algorithm = simulator.algorithm;
 	var text = "";
 	switch(algorithm){
 		case "G-EDF":
-			text = "<span>G</span>-EDF is the extension of EDF for multiple processors based on partitioned strategy. The highest priority job is the one with the earliest deadline."
+			text = "<span>G</span>-EDF is the extension of EDF for multiple processors based on global strategy. The highest priority job is the one with the earliest deadline."
 			break;
 		case "G-RMS":
-			text = "<span>G</span>-RMS is the extension of RMS for multiple processors based on partitioned strategy. Task with the smallest period is assigned the highest priority."
+			text = "<span>G</span>-RMS is the extension of RMS for multiple processors based on global strategy. Task with the smallest period is assigned the highest priority."
 			break;
 		case "P-EDF":
 			text = "<span>P</span>-EDF is the extension of EDF for multiple processors based on partitioned strategy. The highest priority job is the one with the earliest deadline."
@@ -194,21 +194,23 @@ $(".instruction-icon").mouseenter(function(){
 			text = "<span>P</span>-RMS is the extension of RMS for multiple processors based on partitioned strategy. Task with the smallest period is assigned the highest priority."
 			break;
 	}
-	div.css({"width":"350px","height":"200px"}).html(text);
+	div.css({"width":"350px","height":"auto"}).html(text);
 });
 
 $(".scheme-instruction-icon").mouseenter(function(){
+	var div = $("<div class='instruction-div'> </div>");
+	div.appendTo($(this));
 	var scheme = simulator.scheme;
 	var text = "";
 	switch(scheme){
 		case "partitioned":
-			text = "<span>P</span>artitioned scheme, task is assigned one by one from ready queue to processors by using one scheduling algorithm. If the CPU is idle, task is assigned directly. If the CPU is busy, then comparing the current running task with the task to be allcocated, interrupting the task with lowest priority. Interrupted task is assiged back to ready queue."
+			text = "<span>P</span>artitioned scheme, each process has its own ready queue. Task is assigned one by one from ready queue to processors by using one scheduling algorithm. If the CPU is idle, task is assigned directly. If the CPU is busy, then comparing the current running task with the task to be allcocated, interrupting the task with lowest priority. Interrupted task is assiged back to ready queue."
 			break;
 		case "global":
-			text = "<span>G</span>lobal scheme, according to their utilization, all tasks are assigned from ready queue to processors before execution. Each processor could execute different scheduling algorithm.In this simulator, we have already chosen algorithm for partitioned scheme."
+			text = "<span>G</span>lobal scheme, all cpus shares one global ready queue. According to their utilization, all tasks are assigned from global ready queue to specific processors before execution. Each processor could execute different scheduling algorithm.In this simulator, we have already chosen algorithm for partitioned scheme."
 			break;
 	}
-	$(".instruction-div").css({"width":"500px","height":"250px"}).html(text);
+	$(".instruction-div").css({"width":"500px","height":"auto"}).html(text);
 });
 
 $(".instruction-icon").mouseleave(function(){
@@ -299,11 +301,23 @@ function showCaseSettings() {
 	var workloadHtml = "<table id='workload-table'>"
 						  + "<tr>"
 						 	  + "<td>Total number of CPUs: <b>" + results.totalCpuUtil + "</b></td>"
-							  + "<td>Total utilization: <b>" + results.totalProUtil + "</b></td>"							  
+							  + "<td>Total utilization <div class='instruction-icon workload-instruction-icon'  style='width:15px;height:15px;background-image:url(icon/question2.png);display:inline-block'></div> :<b>" + results.totalProUtil + "</b></td>"							  
 							  + "<td>Status: <b>" + results.condition + "</b></td>"
 						  + "</tr>"
 					  + "</table>"
 	$("#workload-text").html(workloadHtml);
+	
+	//bind mouseenter event
+	$(".workload-instruction-icon").bind("mouseenter",function(){
+  		var div = $("<div class='instruction-div'>The sum of execution time/period of all processes.</div>");
+		div.appendTo($(this));
+		div.css({"width":"330px","height":"100px"});
+	});
+
+	//bind mouseleave event
+	$(".workload-instruction-icon").bind("mouseleave",function(){
+  		$(this).empty();
+	});
 
 	//CPU info show
 	var html="<table class='table table-hover'><tr class='info'>"
@@ -328,7 +342,7 @@ function showCaseSettings() {
 			+"<th>Execution Time</th>"
 			+"<th>Period</th>";
 	if(simulator.scheme == "partitioned")
-		html+="<th>Executed CPU</th>";
+		html+="<th>Assigned CPU</th>";
 	html += "<th>Color</th></tr>";
 	
 	for(var i=0;i<process_manager.processList.length;i++){
@@ -340,7 +354,7 @@ function showCaseSettings() {
 					+"<td>"+process.execTime+"</td>"
 					+"<td>"+process.period+"</td>";
 			if(simulator.scheme == "partitioned") {
-				html+="<td>"+process.executedCPU+"</td>";
+				html+="<td>"+process.assignedCPU+"</td>";
 			}
 			html+="<td style='background-color: "+process.showColor+";'> </td>"
 				+"</tr>";

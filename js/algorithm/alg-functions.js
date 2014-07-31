@@ -11,14 +11,14 @@ function checkAndHandleArrivalProcess(time, resource){
 
 			for(var i in pList){
 				//check and find new arrival process		
-				if((pList[i].arrivalTime == time ) && (pList[i].executedCPU == resource.cid)){	
-					var newP = new Process(pList[i].pid, pList[i].arrivalTime, pList[i].execTime, pList[i].period, pList[i].executedCPU);
+				if((pList[i].arrivalTime == time ) && (pList[i].assignedCPU == resource.cid)){	
+					var newP = new Process(pList[i].pid, pList[i].arrivalTime, pList[i].execTime, pList[i].period, pList[i].assignedCPU);
 					pList[i].arrivalTime = pList[i].deadline;
 					pList[i].deadline = parseInt(pList[i].deadline) + parseInt(pList[i].period);	
 					//update readyqueue
 					handleArrvialEvent(newP,resource);
 					//check preempt
-					if(deadline > newP.deadline){
+					if(parseInt(deadline) > parseInt(newP.deadline)){
 						//handle preempt	
 						handleInterrupt(time, resource);	
 						//record interrupt event
@@ -43,14 +43,15 @@ function checkAndHandleArrivalProcess(time, resource){
 
 			for(var i in pList){
 				//check and find new arrival process		
-				if((pList[i].arrivalTime == time ) && (pList[i].executedCPU == resource.cid)){
-					var newP = new Process(pList[i].pid, pList[i].arrivalTime, pList[i].execTime, pList[i].period, pList[i].executedCPU);
+				if((pList[i].arrivalTime == time ) && (pList[i].assignedCPU == resource.cid)){
+					var newP = new Process(pList[i].pid, pList[i].arrivalTime, pList[i].execTime, pList[i].period, pList[i].assignedCPU);
 					pList[i].arrivalTime = pList[i].deadline;
 					pList[i].deadline = parseInt(pList[i].deadline) + parseInt(pList[i].period);	
 					//update readyqueue
 					handleArrvialEvent(newP,resource);
 					//check preempt
-					if(period > newP.period){
+					if(parseInt(period) > parseInt(newP.period)){
+						//alert(period+"|"+newP.period);
 						//handle preempt	
 						handleInterrupt(time,resource);
 						//record interrupt event
@@ -88,10 +89,10 @@ function checkAndHandleArrivalProcess(time, resource){
 					if(simulator.idleCPUList.length != 0){			
 						executionProcess(time,simulator.idleCPUList[0]);
 					}
-					else if(simulator.leastPriorityProcess.deadline > arrivalPs[i].deadline){
+					else if(parseInt(simulator.leastPriorityProcess.deadline) > parseInt(arrivalPs[i].deadline)){
 						var resource = "";
 						for(var j in simulator.resourceList){
-							if(simulator.resourceList[j].cid == simulator.leastPriorityProcess.executedCPU)
+							if(simulator.resourceList[j].cid == simulator.leastPriorityProcess.assignedCPU)
 								resource = simulator.resourceList[j];
 						}
 						handleInterrupt(time,resource);
@@ -121,10 +122,10 @@ function checkAndHandleArrivalProcess(time, resource){
 					if(simulator.idleCPUList.length != 0){			
 						executionProcess(time,simulator.idleCPUList[0]);
 					}
-					else if(simulator.leastPriorityProcess.period > arrivalPs[i].period){
+					else if(parseInt(simulator.leastPriorityProcess.period) > parseInt(arrivalPs[i].period)){
 						var resource = "";
 						for(var j in simulator.resourceList){
-							if(simulator.resourceList[j].cid == simulator.leastPriorityProcess.executedCPU)
+							if(simulator.resourceList[j].cid == simulator.leastPriorityProcess.assignedCPU)
 								resource = simulator.resourceList[j];
 						}
 						handleInterrupt(time,resource);
@@ -138,8 +139,9 @@ function checkAndHandleArrivalProcess(time, resource){
 }
 /*
  * Function for updating readyqueue
+ * flag =1 represents interruption arrival event
  */ 
-function handleArrvialEvent(arrivalP,resource){
+function handleArrvialEvent(arrivalP,resource,flag){
 
 	var algorithm = simulator.algorithm;
 	switch(algorithm){
@@ -147,7 +149,7 @@ function handleArrvialEvent(arrivalP,resource){
 			var readyQueue = resource.readyQueue;
 			readyQueue.push(arrivalP);
 			for(var t = readyQueue.length-2;t>=0;t--){
-				if(arrivalP.deadline < readyQueue[t].deadline){ // if arrival preocee deadline is equal with other, put it first place
+				if(parseInt(arrivalP.deadline) < parseInt(readyQueue[t].deadline)){ // if arrival preocee deadline is equal with other, put it first place
 					var temp = readyQueue[t];
 					readyQueue[t]=arrivalP;
 					readyQueue[t+1]=temp;
@@ -158,10 +160,19 @@ function handleArrvialEvent(arrivalP,resource){
 			var readyQueue = resource.readyQueue;
 			readyQueue.push(arrivalP);
 			for(var t = readyQueue.length-2;t>=0;t--){
-				if(arrivalP.period < readyQueue[t].period){ // if arrival preocee deadline is equal with other, put it first place
-					var temp = readyQueue[t];
-					readyQueue[t]=arrivalP;
-					readyQueue[t+1]=temp;
+				if(flag == 1){
+					if(parseInt(arrivalP.period) <= parseInt(readyQueue[t].period)){ // if arrival preocee deadline is equal with other, put it first place
+						var temp = readyQueue[t];
+						readyQueue[t]=arrivalP;
+						readyQueue[t+1]=temp;
+					}
+				}
+				else{
+					if(parseInt(arrivalP.period) < parseInt(readyQueue[t].period)){ // if arrival preocee deadline is equal with other, put it first place
+						var temp = readyQueue[t];
+						readyQueue[t]=arrivalP;
+						readyQueue[t+1]=temp;
+					}	
 				}
 			}
 			break;
@@ -169,7 +180,7 @@ function handleArrvialEvent(arrivalP,resource){
 			var readyQueue = simulator.globalReadyQueue;
 			readyQueue.push(arrivalP);
 			for(var t = readyQueue.length-2;t>=0;t--){
-				if(arrivalP.deadline < readyQueue[t].deadline){ // if arrival preocee deadline is equal with other, put it first place
+				if(parseInt(arrivalP.deadline) < parseInt(readyQueue[t].deadline)){ // if arrival preocee deadline is equal with other, put it first place
 					var temp = readyQueue[t];
 					readyQueue[t]=arrivalP;
 					readyQueue[t+1]=temp;
@@ -180,10 +191,19 @@ function handleArrvialEvent(arrivalP,resource){
 			var readyQueue = simulator.globalReadyQueue;
 			readyQueue.push(arrivalP);
 			for(var t = readyQueue.length-2;t>=0;t--){
-				if(arrivalP.period < readyQueue[t].period){ // if arrival preocee deadline is equal with other, put it first place
+				if(flag == 1){
+					if(parseInt(arrivalP.period) <= parseInt(readyQueue[t].period)){ // if arrival preocee deadline is equal with other, put it first place
+						var temp = readyQueue[t];
+						readyQueue[t]=arrivalP;
+						readyQueue[t+1]=temp;
+					}
+				}
+				else{
+					if(parseInt(arrivalP.period) < parseInt(readyQueue[t].period)){ // if arrival preocee deadline is equal with other, put it first place
 					var temp = readyQueue[t];
 					readyQueue[t]=arrivalP;
 					readyQueue[t+1]=temp;
+					}	
 				}
 			}
 			break;
@@ -211,7 +231,7 @@ function executionProcess(time,resource){
 			if(simulator.globalReadyQueue.length!=0){
 				var execP = simulator.globalReadyQueue.shift();
 				execP.startTime = time;
-				execP.executedCPU = resource.cid;
+				execP.assignedCPU = resource.cid;
 				simulator.finishEventList.push(execP);		
 				resource.status = 1;
 				resource.runningProcess = execP;
@@ -231,7 +251,7 @@ function checkAndHandleFinishProcess(time,resource){
 
 	var finishList = simulator.finishEventList;
 	for(var i in finishList){
-		if( parseInt(finishList[i].startTime)+parseInt(finishList[i].execTime) == time && resource.cid == finishList[i].executedCPU){
+		if( parseInt(finishList[i].startTime)+parseInt(finishList[i].execTime) == time && resource.cid == finishList[i].assignedCPU){
 			handleFinishEvent(finishList[i],resource);
 			
 		}
@@ -243,7 +263,7 @@ function checkAndHandleFinishProcess(time,resource){
 function handleFinishEvent(process,resource){
 	resource.status = 0;
 	resource.runningProcess = "";	
-	deleteFinishEvent(process.pid,process.executedCPU,process.startTime);
+	deleteFinishEvent(process.pid,process.assignedCPU,process.startTime);
 	if(simulator.scheme == "global"){
 		updateIdleCPUListAndLeastPriorityProcess();
 	}
@@ -253,7 +273,7 @@ function handleFinishEvent(process,resource){
  */ 
 function deleteFinishEvent(pid,cid,startTime){
 	for(var i in simulator.finishEventList){
-		if(simulator.finishEventList[i].pid == pid&&simulator.finishEventList[i].executedCPU == cid&&simulator.finishEventList[i].startTime == startTime)
+		if(simulator.finishEventList[i].pid == pid&&simulator.finishEventList[i].assignedCPU == cid&&simulator.finishEventList[i].startTime == startTime)
 			simulator.finishEventList.splice(i,1);
 	}
 }
@@ -266,11 +286,11 @@ function handleInterrupt(time, resource){
 		interP.execTime = interP.execTime-(time - interP.startTime);
 
 		//put it into ready queue
-		handleArrvialEvent(interP,resource);
+		handleArrvialEvent(interP,resource,1);
 		//delete interrupt previous finish event
 		handleFinishEvent(interP,resource);
 		//modify interrupted process execution recorder
-		modifyRecorderEndTime(interP.pid, interP.executedCPU, interP.startTime, "execution", time );
+		modifyRecorderEndTime(interP.pid, interP.assignedCPU, interP.startTime, "execution", time );
 	}
 }
 /*
@@ -281,7 +301,7 @@ function checkMissEvent(time, resource){
 	switch(scheme){
 		case "partitioned":
 			var process = resource.runningProcess;
-			if((parseInt(process.startTime)+parseInt(process.execTime)) > process.deadline && process.deadline == time)
+			if((parseInt(process.startTime)+parseInt(process.execTime)) > parseInt(process.deadline) && process.deadline == time)
 				recorder_manager.recordNewEvent(process.pid,resource.cid,"miss",time,time,resource.readyQueue,resource.runningProcess);
 
 			var readyQueue = resource.readyQueue;
@@ -296,7 +316,7 @@ function checkMissEvent(time, resource){
 			for(var i in simulator.resourceList){
 				if(simulator.resourceList[i].status == 1){
 					var process = simulator.resourceList[i].runningProcess;
-					if((parseInt(process.startTime)+parseInt(process.execTime)) > process.deadline && process.deadline == time)
+					if((parseInt(process.startTime)+parseInt(process.execTime)) > parseInt(process.deadline) && process.deadline == time)
 						recorder_manager.recordNewEvent(process.pid,-1,"miss",time,time,readyQueue,"");	
 				}
 			}
@@ -334,7 +354,7 @@ function updateIdleCPUListAndLeastPriorityProcess(){
 					simulator.idleCPUList.push(simulator.resourceList[i]);
 				}
 				else{
-					if(simulator.resourceList[i].runningProcess.deadline > deadline){
+					if(parseInt(simulator.resourceList[i].runningProcess.deadline) > parseInt(deadline)){
 						deadline = simulator.resourceList[i].runningProcess.deadline;
 						simulator.leastPriorityProcess = simulator.resourceList[i].runningProcess;
 					}
@@ -349,7 +369,7 @@ function updateIdleCPUListAndLeastPriorityProcess(){
 					simulator.idleCPUList.push(simulator.resourceList[i]);
 				}
 				else{
-					if(simulator.resourceList[i].runningProcess.period > period){
+					if(parseInt(simulator.resourceList[i].runningProcess.period) > parseInt(period)){
 						period = simulator.resourceList[i].runningProcess.period;
 						simulator.leastPriorityProcess = simulator.resourceList[i].runningProcess;
 					}

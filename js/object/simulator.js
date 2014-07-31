@@ -9,6 +9,8 @@ function Simulator(scheme, algorithm, resourceList, processList) {
 	this.globalReadyQueue = [];		//for global scheme
 	this.leastPriorityProcess = "";	//for global scheme
 	this.idleCPUList = [];//for global scheme
+	this.totalRunningTime = 50; //axis execution time range
+	this.totalExecutionTime = 500; //statistics calculation time range
 
 	this.startSimulator = function() {
 		switch(this.scheme){

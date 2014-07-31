@@ -2,8 +2,8 @@
  * Function for P-EDF algorithm
  */ 
 function P_EDF(){
-	//simulate 0~50 time unit
-	for(var i=0; i < 50; i++){
+	//simulate 0~totalRunningTime time unit
+	for(var i=0; i <= simulator.totalExecutionTime; i++){
 		for(var j in simulator.resourceList){
 			var resource = simulator.resourceList[j];
 

@@ -42,7 +42,7 @@ function drawEventDiagram(){
 	{
 		var tr=$("<tr></tr>");
 		tr.appendTo(table);
-		for(var j=0;j<50;j++)
+		for(var j=0;j<=simulator.totalRunningTime;j++)
 		{	
 			if(i==0){
 				var td=$("<td class='row1' id='miss-table-td"+j+"'></td>");
@@ -80,7 +80,7 @@ function drawCPUDiagram(cid){
 	{
 		var tr=$("<tr></tr>");
 		tr.appendTo(table);
-		for(var j=0;j<50;j++)
+		for(var j=0;j<=simulator.totalRunningTime;j++)
 		{	
 			if(i==0 && scheme == "partitioned"){
 				var td=$("<td class='row1' id='miss-table"+cid+"td"+j+"'></td>");
@@ -154,8 +154,8 @@ function renderNextEvent(eventIndex,flag){
 	
 	if (type == "execution") {	
 		var td = "#table"+cid+"td"+start;
-		if(end > 50)
-			end = 50;
+		if(end > simulator.totalRunningTime)
+			end = simulator.totalRunningTime+1;
 		var length = (end-start)*40;
 		var div = $("<div class='cpu-div event' id='"+divID+"' style='width:0px;height:55px;background-color: "+color+";'> P"+pid+"</div>");
 		div.appendTo($(td));
@@ -181,10 +181,13 @@ function renderNextEvent(eventIndex,flag){
 	}
 	if(type == "interrupt"){
 		var td = "#event-table"+cid+"td"+start;
-		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:rgb(36,222,249);'>&#8593 P"+pid+"</div>");
+		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:red;'>&#8593 P"+pid+"</div>");
 		div.appendTo($(td));
 		$("#"+divID).hide().fadeIn(1000);
 		text = "P"+pid+" preempts on CPU"+cid;
+		if(scheme == "global")
+			$("#currentRunningP"+cid).empty();
+
 	}
 	if(type == "miss"){
 		if(scheme == "partitioned")
@@ -198,7 +201,10 @@ function renderNextEvent(eventIndex,flag){
 		}
 		div.appendTo($(td));
 		$("#"+divID).hide().fadeIn(1000);
-		text = "P"+pid+" misses on CPU"+cid;
+		if(scheme == "partitioned")
+			text = "P"+pid+" misses on CPU"+cid;
+		else
+			text = "P"+pid+" misses";
 	}
 
 	//draw readyQueue
@@ -250,7 +256,7 @@ function removeCurrentEvents(){
 	var index = recorder_manager.getCurrentIndex();
 	for(var i in recorder_manager.recorderSequence[index]){
 		var recorderIndex = recorder_manager.recorderSequence[index][i];
-		$("#event-record"+recorderIndex).fadeOut(500,function(){ $("#event-record"+recorderIndex).remove();});
+		$("#event-record"+recorderIndex).fadeOut(300,function(){ $("#event-record"+recorderIndex).remove();});
 		if(i == recorder_manager.recorderSequence[index].length-1)
 			deleteEvent(recorderIndex,1);
 		else
@@ -260,7 +266,7 @@ function removeCurrentEvents(){
 
 function deleteEvent(eventIndex,flag){
 	if(flag == 1){
-		$("#result-div"+eventIndex).fadeOut(600,function(){
+		$("#result-div"+eventIndex).fadeOut(300,function(){
 			$(".event").remove();
 			var index = recorder_manager.getCurrentIndex();
 			recorder_manager.resetIndex();	
@@ -271,7 +277,7 @@ function deleteEvent(eventIndex,flag){
 		});
 	}
 	else
-		$("#result-div"+eventIndex).fadeOut(600,function(){ this.remove();});
+		$("#result-div"+eventIndex).fadeOut(300,function(){ this.remove();});
 }
 
 
@@ -291,13 +297,13 @@ function showStatistics() {
 	var html = "<table class='table table-hover'><tr class='info'>"
 				+ "<th>Number of CPUs</th>"
 				+ "<th>Avg. Utilization</th>"
-				+ "<th>Avg. Missing Rate</th>"
+				+ "<th>Avg. Miss Rate</th>"
 				+ "</tr>";
 	// Specific data
 	html += "<tr>"
 			+ "<td>" +simulator.resourceList.length+ "</td>"
 			+ "<td>" +statistics.averageUtilization.toPrecision(3)+ "</td>"
-			+ "<td>" +  + "</td>"
+			+ "<td>" +statistics.averageMissRate.toPrecision(3)+ "</td>"
 			+ "</tr>"
 	 		+ "</table>";
 	$("#statistics-system").html(html);
@@ -309,18 +315,18 @@ function showStatistics() {
 	// 	html += "<th>Number of Processes</th>";
 	// }
 	html += "<th>Utilization</th>"
-			+ "<th>Missing Rate</th>";
+			+ "<th>Miss Rate</th>";
 	// Specific data
 	for(var i = 0; i < cpu_manager.CPUList.length; i++){
 		var cpu = cpu_manager.CPUList[i];
 			html += "<tr>"
-					+ "<td>" +cpu.cid+ "</td>";			
-		// if(simulator.scheme == "partitioned") {
-		// 	html += "<td>"+  + "</td>";
-		// }
-		html += "<td>" +statistics.CPUUtilization[cpu.cid].toPrecision(3)+ "</td>"
-				+ "<td>" +  + "</td>"
-				+ "</tr>";
+					+ "<td>" +cpu.cid+ "</td>"		
+					+ "<td>" +statistics.CPUUtilization[cpu.cid].toPrecision(3)+ "</td>";
+					if(simulator.scheme == "partitioned")
+						html +="<td>" +statistics.CPUMissRate[cpu.cid].toPrecision(3)+ "</td>";
+					else
+						html +="<td>NULL</td>";
+			html += "</tr>";
 	}
 	html += "</table>";
 	$("#statistics-cpu").html(html);
@@ -329,14 +335,14 @@ function showStatistics() {
 	html = "<table class='table table-hover'><tr class='info'>"
 			+ "<th>PID</th>"			
 			+ "<th>Utilization</th>"
-			+ "<th>Missing Rate</th></tr>";
+			+ "<th>Miss Rate</th></tr>";
 	// Specific data
 	for(var i = 0; i < process_manager.processList.length; i++){
 		var process = process_manager.processList[i];
 			html += "<tr>"
 					+ "<td>" +process.pid+ "</td>"		
 					+ "<td>" +statistics.processUtilization[process.pid].toPrecision(3)+ "</td>"
-					+ "<td>" +   + "</td>"
+					+ "<td>" +statistics.processMissRate[process.pid].toPrecision(3)+ "</td>"
 					+ "</tr>";
 	}
 	html += "</table>";

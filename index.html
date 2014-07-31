@@ -22,7 +22,7 @@
 			<div class="col-md-10">
 				<div class="row">
 					<div class="col-md-5">
-						<h3><b><span id="alg-title"></span> Scheduling Algorithm </b><div class="instruction-icon"></div></h3>
+						<h3><b><span id="alg-title"></span> Scheduling Algorithm </b><div class="instruction-icon algorithm-instruction-icon"></div></h3>
 					</div>
 					<div class="col-md-7">
 						<form class="form-inline" id="control-pane">
@@ -69,7 +69,7 @@
 				<div id="result-legend">
 					<ul class="list-inline">
   						<li><span>&#8593</span> arrival event<span></span></li>
-  						<li><span style="color:rgb(36,222,249);">&#8593</span><span> preempt event</span></li>
+  						<li><span style="color:red;">&#8593</span><span> preempt event</span></li>
   						<li><span style="color:red;text-decoration:line-through">&nbsp&nbspP#&nbsp&nbsp</span><span> miss event</span></li>
   						<li><span id="legend-runningprocess"> </span><span> running process</span></li>
   						<li><span id="legend-readyqueue"> </span><span> ready queue</span></li>
@@ -93,7 +93,7 @@
 					<div class="col-md-3">
 						<h4>Algorithm</h4>
 						<p id="algorithm-text"></p>
-						<div class='instruction-icon' style="width:15px;height:15px;background-image:url(icon/question2.png);"></div>
+						<div class='instruction-icon algorithm-instruction-icon' style="width:15px;height:15px;background-image:url(icon/question2.png);"></div>
 					</div>
 					<div class="col-md-6">
 						<h4>Workload</h4>
@@ -133,7 +133,7 @@
 
 		<!-- Statistics Panel -->
 		<div class="row main-pane" id="statistics-panel">
-			<h3><b>Statistics</b></h3>
+			<h3><b>Statistics </b><span style="font-size:14px;"> (Time range 0~500)</span></h3>
 			<hr/>
 			<div class="row">
 				<div class="col-md-4" >	
@@ -143,7 +143,7 @@
 							<tr class="info">
 								<th>Number of CPUs</th>
 								<th>Avg. Utilization</th>
-								<th>Avg. Missing Rate</th>
+								<th>Avg. Miss Rate</th>
 							</tr>
 						</table>
 					</div>	
@@ -155,7 +155,7 @@
 							<tr class="info">
 								<th>CID</th>
 								<th>Utilization</th>
-								<th>Missing Rate</th>
+								<th>Miss Rate</th>
 							</tr>
 						</table>
 					</div>
@@ -167,7 +167,7 @@
 							<tr class="info">
 								<th>PID</th>
 								<th>Utilization</th>
-								<th>Missing Rate</th>
+								<th>Miss Rate</th>
 							</tr>
 						</table>
 					</div>
@@ -264,7 +264,7 @@
 				  </div>
 			    </div>
 			    <div>
-				  <button class="btn btn-primary" id="save-process">Save Process</button>
+				  <button class="btn btn-primary" id="save-process">Save</button>
 			    </div>
 			  </div>
 			  <div class="form-group">
@@ -273,7 +273,7 @@
 			      <input type="file" id="files" name="file"/>
 			    </div>
 			    <div>
-				  <button class="btn btn-primary" id="load-process">Load Process</button>
+				  <button class="btn btn-primary" id="load-process">Load</button>
 			    </div>
 			  </div>
 		    </div>

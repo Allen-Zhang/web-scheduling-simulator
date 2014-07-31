@@ -336,7 +336,7 @@ function showStatistics() {
 			html += "<tr>"
 					+ "<td>" +process.pid+ "</td>"		
 					+ "<td>" +statistics.processUtilization[process.pid].toPrecision(3)+ "</td>"
-					+ "<td>" +  + "</td>"
+					+ "<td>" +   + "</td>"
 					+ "</tr>";
 	}
 	html += "</table>";

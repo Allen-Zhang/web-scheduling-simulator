@@ -185,13 +185,13 @@ $(".instruction-icon").mouseenter(function(){
 			text = "<span>G</span>-EDF is the extension of EDF for multiple processors based on partitioned strategy. The highest priority job is the one with the earliest deadline."
 			break;
 		case "G-RMS":
-			text = "<span>G</span>-RMS is the extension of EDF for multiple processors based on partitioned strategy. Task with the smallest period is assigned the highest priority."
+			text = "<span>G</span>-RMS is the extension of RMS for multiple processors based on partitioned strategy. Task with the smallest period is assigned the highest priority."
 			break;
 		case "P-EDF":
 			text = "<span>P</span>-EDF is the extension of EDF for multiple processors based on partitioned strategy. The highest priority job is the one with the earliest deadline."
 			break;
 		case "P-RMS":
-			text = "<span>P</span>-RMS is the extension of EDF for multiple processors based on partitioned strategy. Task with the smallest period is assigned the highest priority."
+			text = "<span>P</span>-RMS is the extension of RMS for multiple processors based on partitioned strategy. Task with the smallest period is assigned the highest priority."
 			break;
 	}
 	div.css({"width":"350px","height":"200px"}).html(text);

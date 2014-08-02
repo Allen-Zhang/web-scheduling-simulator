@@ -301,13 +301,23 @@ function checkMissEvent(time, resource){
 	switch(scheme){
 		case "partitioned":
 			var process = resource.runningProcess;
-			if((parseInt(process.startTime)+parseInt(process.execTime)) > parseInt(process.deadline) && process.deadline == time)
+			if((parseInt(process.startTime)+parseInt(process.execTime)) > parseInt(process.deadline) && process.deadline == time){
+				//if running process misses its deadline, abandon its rest parts
+				handleFinishEvent(process,resource);
+				modifyRecorderEndTime(process.pid,resource.cid,process.startTime,"execution",time);
 				recorder_manager.recordNewEvent(process.pid,resource.cid,"miss",time,time,resource.readyQueue,resource.runningProcess);
+			}
 
 			var readyQueue = resource.readyQueue;
-			for(var i in readyQueue){
-				if(time == readyQueue[i].deadline){
-					recorder_manager.recordNewEvent(readyQueue[i].pid,resource.cid,"miss",time,time,resource.readyQueue,resource.runningProcess);
+			for(var i=0 ;i<readyQueue.length;i++){
+				if(i >= readyQueue.length)
+						break;
+				if(time == readyQueue[i].deadline){	
+					//if miss, abandon this process
+					var pid = readyQueue[i].pid;
+					readyQueue.splice(i,1);
+					i--;
+					recorder_manager.recordNewEvent(pid,resource.cid,"miss",time,time,resource.readyQueue,resource.runningProcess);
 				}
 			}
 			break;
@@ -316,13 +326,29 @@ function checkMissEvent(time, resource){
 			for(var i in simulator.resourceList){
 				if(simulator.resourceList[i].status == 1){
 					var process = simulator.resourceList[i].runningProcess;
-					if((parseInt(process.startTime)+parseInt(process.execTime)) > parseInt(process.deadline) && process.deadline == time)
-						recorder_manager.recordNewEvent(process.pid,-1,"miss",time,time,readyQueue,"");	
+					var resource = simulator.resourceList[i];
+					if((parseInt(process.startTime)+parseInt(process.execTime)) > parseInt(process.deadline) && process.deadline == time){
+						//if running process misses its deadline, abandon its rest parts
+						handleFinishEvent(process,resource);
+						modifyRecorderEndTime(process.pid,resource.cid,process.startTime,"execution",time);
+						recorder_manager.recordNewEvent(process.pid,resource.cid,"miss",time,time,readyQueue,"");
+					}
 				}
 			}
-			for(var i in readyQueue){
-				if(time == readyQueue[i].deadline){
-					recorder_manager.recordNewEvent(readyQueue[i].pid,-1,"miss",time,time,readyQueue,"");
+			// for(var i in readyQueue){
+			// 	if(time == readyQueue[i].deadline){
+			// 		recorder_manager.recordNewEvent(readyQueue[i].pid,-1,"miss",time,time,readyQueue,"");
+			// 	}
+			// }
+			for(var i=0 ;i<readyQueue.length;i++){
+				if(i >= readyQueue.length)
+						break;
+				if(time == readyQueue[i].deadline){	
+					//if miss, abandon this process
+					var pid = readyQueue[i].pid;
+					readyQueue.splice(i,1);
+					i--;
+					recorder_manager.recordNewEvent(pid,-1,"miss",time,time,readyQueue,"");
 				}
 			}
 			break;

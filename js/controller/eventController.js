@@ -182,16 +182,16 @@ $(".algorithm-instruction-icon").mouseenter(function(){
 	var text = "";
 	switch(algorithm){
 		case "G-EDF":
-			text = "<span>G</span>-EDF is the extension of EDF for multiple processors based on global strategy. The highest priority job is the one with the earliest deadline."
+			text = "<span>G</span>-EDF is the extension of EDF for multiple processors based on global strategy. The highest priority job is the one with the earliest deadline. Missed process will be abandoned."
 			break;
 		case "G-RMS":
-			text = "<span>G</span>-RMS is the extension of RMS for multiple processors based on global strategy. Task with the smallest period is assigned the highest priority."
+			text = "<span>G</span>-RMS is the extension of RMS for multiple processors based on global strategy. Task with the smallest period is assigned the highest priority. Missed process will be abandoned."
 			break;
 		case "P-EDF":
-			text = "<span>P</span>-EDF is the extension of EDF for multiple processors based on partitioned strategy. The highest priority job is the one with the earliest deadline."
+			text = "<span>P</span>-EDF is the extension of EDF for multiple processors based on partitioned strategy. The highest priority job is the one with the earliest deadline. Missed process will be abandoned."
 			break;
 		case "P-RMS":
-			text = "<span>P</span>-RMS is the extension of RMS for multiple processors based on partitioned strategy. Task with the smallest period is assigned the highest priority."
+			text = "<span>P</span>-RMS is the extension of RMS for multiple processors based on partitioned strategy. Task with the smallest period is assigned the highest priority. Missed process will be abandoned."
 			break;
 	}
 	div.css({"width":"350px","height":"auto"}).html(text);
@@ -207,12 +207,18 @@ $(".scheme-instruction-icon").mouseenter(function(){
 			text = "<span>P</span>artitioned scheme, each process has its own ready queue. Task is assigned one by one from ready queue to processors by using one scheduling algorithm. If the CPU is idle, task is assigned directly. If the CPU is busy, then comparing the current running task with the task to be allcocated, interrupting the task with lowest priority. Interrupted task is assiged back to ready queue."
 			break;
 		case "global":
-			text = "<span>G</span>lobal scheme, all cpus shares one global ready queue. According to their utilization, all tasks are assigned from global ready queue to specific processors before execution. Each processor could execute different scheduling algorithm.In this simulator, we have already chosen algorithm for partitioned scheme."
+			text = "<span>G</span>lobal scheme, all CPUs shares one global ready queue. According to their utilization, all tasks are assigned from global ready queue to specific processors before execution. Each processor could execute different scheduling algorithm.In this simulator, we have already chosen algorithm for partitioned scheme."
 			break;
 	}
 	$(".instruction-div").css({"width":"500px","height":"auto"}).html(text);
 });
-
+$(".select-scheme-instruction-icon").mouseenter(function(){
+	var div = $("<div class='instruction-div' style='text-align:left;'> </div>");
+	div.appendTo($(this));
+	var text = "<p><b style='color:red;font-size:20px;'>Global:</b> All CPUs shares one global ready queue. According to their utilization, all tasks are assigned from global ready queue to specific processors before execution. Each processor could execute different scheduling algorithm.In this simulator, we have already chosen algorithm for partitioned scheme.</p>"
+				+"<p><b style='color:red;font-size:20px;'>Partitioned:</b> Each process has its own ready queue. Task is assigned one by one from ready queue to processors by using one scheduling algorithm. If the CPU is idle, task is assigned directly. If the CPU is busy, then comparing the current running task with the task to be allcocated, interrupting the task with lowest priority. Interrupted task is assiged back to ready queue.</p>"
+	$(".instruction-div").css({"width":"500px","height":"auto"}).html(text);
+});
 $(".instruction-icon").mouseleave(function(){
 	$(this).empty();
 });
@@ -309,9 +315,9 @@ function showCaseSettings() {
 	
 	//bind mouseenter event
 	$(".workload-instruction-icon").bind("mouseenter",function(){
-  		var div = $("<div class='instruction-div'>The sum of execution time/period of all processes.</div>");
+  		var div = $("<div class='instruction-div'>&#8721; T/P of all processes.&nbsp;&nbsp;&nbsp;&nbsp; (T: execution time P: period)</div>");
 		div.appendTo($(this));
-		div.css({"width":"330px","height":"100px"});
+		div.css({"width":"300px","height":"auto"});
 	});
 
 	//bind mouseleave event

@@ -192,8 +192,11 @@ function renderNextEvent(eventIndex,flag){
 	if(type == "miss"){
 		if(scheme == "partitioned")
 			var td = "#miss-table"+cid+"td"+start;
-		else
+		else{
 			var td = "#miss-table-td"+start;
+			if(cid >=0)
+				$("#currentRunningP"+cid).empty();	
+		}
 		var div = $("<div class='event-div event' id='"+divID+"' style='width:40px;height:15px;color:red;top:0px;text-decoration:line-through;'>&nbsp&nbspP"+pid+"&nbsp&nbsp</div>");
 		if($(td).html()){
 			var top = $(td).children().last().css("top").slice(0,-2)-30;
@@ -201,10 +204,7 @@ function renderNextEvent(eventIndex,flag){
 		}
 		div.appendTo($(td));
 		$("#"+divID).hide().fadeIn(1000);
-		if(scheme == "partitioned")
-			text = "P"+pid+" misses on CPU"+cid;
-		else
-			text = "P"+pid+" misses";
+		text = "P"+pid+" misses";
 	}
 
 	//draw readyQueue
